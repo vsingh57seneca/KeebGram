@@ -1,2 +1,2 @@
-# KeyGram
+# KeebGram
 PRJ project for a social media platform called KeyGram.
