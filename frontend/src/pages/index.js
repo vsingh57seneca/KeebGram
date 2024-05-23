@@ -53,7 +53,7 @@ export default function Home() {
             src="/images/landing-page/custom-keycap.png"
             width={450}
             height={150}
-            priority
+            fetchPriority=""
           />
         </div>
 
