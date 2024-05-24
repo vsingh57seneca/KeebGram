@@ -11,18 +11,26 @@ import {
   MdAccountBox,
   MdKeyboard,
 } from "react-icons/md";
-import UpwardDowndrop from "./UpwardDowndrop";
+import UpwardDowndrop from "./NavbarMoreUpwardDowndrop";
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/router";
 
-const NavBar = () => {
+const NavBar = ({ user }) => {
   const [morePanelOpen, setMorePanelOpen] = useState(false);
   const morePanelRef = useRef(null);
+  const router = useRouter();
 
   const handleClickOutside = (e) => {
     if (morePanelRef.current && !morePanelRef.current.contains(e.target)) {
       setMorePanelOpen(false);
     }
   };
+
+  useEffect(() => {
+    if(user == null) {
+      router.push('/')
+    }
+  }, [user])
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -68,7 +76,7 @@ const NavBar = () => {
       <ul className="p-4 space-y-2 text-md">
         <li className="flex items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit">
           <MdAccountBox className="lg:mr-4" />
-          <label className="lg:block hidden">Profile</label>
+          <label className="lg:block hidden">{user?.username ? user.username : 'Profile'}</label>
         </li>
         <li
           className="flex items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit"
