@@ -12,8 +12,14 @@ function LoginForm({ onLoginSuccess }) {
         username,
         password,
       });
-      alert(response.data);
-      onLoginSuccess(username); // Pass username
+      
+      if (response.status == 200) {
+        alert(response.data);
+        const userObject = { username: username };
+        // Save the user object to localStorage
+        localStorage.setItem("user", JSON.stringify(userObject));
+        onLoginSuccess(username); // Pass username
+      }
     } catch (error) {
       console.error("Error during login:", error);
       alert("Invalid username or password");
