@@ -23,6 +23,12 @@ connection.connect((err) => {
   console.log("Connected to the database");
 });
 
+//Route to get account
+app.get("/getAccount", (req, res) => {
+  const { email } = req.body;
+  const query = 
+    `SELECT * FROM keebgram.accounts WHERE email=${user.email}`
+})
 // Route to add an account
 app.post("/addAccount", (req, res) => {
   const { username, email, password } = req.body;
@@ -47,7 +53,10 @@ app.post("/login", (req, res) => {
       return;
     }
     if (results.length > 0) {
-      res.send("Login successful");
+      const user = results[0];
+      delete user.password;
+
+      res.status(200).json(user);
     } else {
       res.status(401).send("Invalid username or password");
     }
