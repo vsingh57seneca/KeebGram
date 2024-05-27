@@ -11,7 +11,7 @@ import {
   MdAccountBox,
   MdKeyboard,
 } from "react-icons/md";
-import UpwardDowndrop from "./NavbarMoreUpwardDowndrop";
+import NavbarMoreUpwardDowndrop from '@/components/navigation/NavbarMoreUpwardDowndrop';
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 
@@ -48,17 +48,13 @@ const NavBar = ({ user }) => {
         </li>
       </label>
       <ul className="p-4 space-y-2 text-md">
-        <li className="flex items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit">
+        <li onClick={() => router.push('/feed')} className="flex items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit">
           <IoMdHome className="lg:mr-4" />
           <label className="lg:block hidden">Home</label>
         </li>
         <li className="flex items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit">
           <IoMdSearch className="lg:mr-4" />
           <label className="lg:block hidden">Search</label>
-        </li>
-        <li className="flex items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit">
-          <MdContentCopy className="lg:mr-4" />
-          <label className="lg:block hidden">Feed</label>
         </li>
         <li className="flex items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit">
           <MdMessage className="lg:mr-4" />
@@ -74,7 +70,7 @@ const NavBar = ({ user }) => {
         </li>
       </ul>
       <ul className="p-4 space-y-2 text-md">
-        <li className="flex items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit">
+        <li onClick={() => router.push('/account/manage')} className="flex items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit">
           <MdAccountBox className="lg:mr-4" />
           <label className="lg:block hidden">{user?.username ? user.username : 'Profile'}</label>
         </li>
@@ -85,7 +81,7 @@ const NavBar = ({ user }) => {
         >
           <IoMdMenu className="lg:mr-4" />
           <label className="lg:block hidden">More</label>
-          <UpwardDowndrop morePanelOpen={morePanelOpen} />
+          <NavbarMoreUpwardDowndrop morePanelOpen={morePanelOpen} />
         </li>
       </ul>
     </ul>

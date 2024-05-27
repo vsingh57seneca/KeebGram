@@ -57,7 +57,7 @@ export default function Home() {
   }, [isLoggedIn]);
 
   return (
-    <div className="min-h-screen flex bg-white text-black relative">
+    <div className="min-h-screen flex relative">
       {/* Create Account Modal */}
       <div className={`absolute bg-gray-400/70 h-full w-full items-center justify-center ${showAddAccountForm ? 'flex' : 'hidden'}`}>
         <div className="bg-white p-8 rounded">
@@ -73,6 +73,7 @@ export default function Home() {
             alt=""
             width={450}
             height={150}
+            priority={true}
           />
         </div>
 

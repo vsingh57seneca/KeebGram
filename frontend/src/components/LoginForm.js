@@ -14,8 +14,9 @@ function LoginForm({ onLoginSuccess }) {
       });
       
       if (response.status == 200) {
-        alert(response.data);
-        const userObject = { username: username };
+        // alert(response.data);
+        const userObject = response.data;
+        console.log(userObject)
         // Save the user object to localStorage
         localStorage.setItem("user", JSON.stringify(userObject));
         onLoginSuccess(username); // Pass username

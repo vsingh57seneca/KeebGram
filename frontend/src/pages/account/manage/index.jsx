@@ -1,3 +1,4 @@
+import AccountManagementForm from "@/components/account/manage/AccountManagementForm";
 import NavBar from "@/components/navigation/NavBar";
 import React, { useEffect, useState } from "react";
 
@@ -19,13 +20,13 @@ const index = () => {
 
   return (
     <>
-      <div className="flex">
+      <div className="flex w-full">
         <div className="w-fit m-2">
           <NavBar user={user} />
         </div>
         <div className="w-px min-h-screen bg-gradient-to-b from-white via-gray-700 to-white hidden md:block"></div>
-        <div className="m-4 w-full flex justify-center items-center">
-          Content
+        <div className="m-4 w-full flex">
+          <AccountManagementForm user={user}/>
         </div>
       </div>
     </>
