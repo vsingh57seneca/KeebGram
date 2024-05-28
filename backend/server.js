@@ -24,11 +24,6 @@ connection.connect((err) => {
   console.log("Connected to the database");
 });
 
-//Route to get account
-app.get("/getAccount", (req, res) => {
-  const { email } = req.body;
-  const query = `SELECT * FROM keebgram.accounts WHERE email=${user.email}`;
-});
 // Route to add an account
 app.post("/addAccount", (req, res) => {
   const { email, password } = req.body;
@@ -54,7 +49,7 @@ app.post("/addAccount", (req, res) => {
 // Route to verify login
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-  const query = "CALL login(?, ?, @ok); SELECT @ok as ok;";
+  let query = "CALL login(?, ?, @ok); SELECT @ok as ok;";
   connection.query(query, [email, password], (err, results) => {
     if (err) {
       res.status(500).send("Error during login");
@@ -64,7 +59,19 @@ app.post("/login", (req, res) => {
     const ok = results[1][0].ok;
     if (ok === 1) {
       // Login successful
-      return res.status(200).send("Login sucessful");
+      query = "SELECT * FROM accounts WHERE email = ?";
+      connection.query(query, [email], (err, results) => {
+        if (err) {
+          res.status(500).send("Error during login");
+          return;
+        }
+        if (results.length > 0) {
+          const user = results[0];
+          delete user.password;
+
+          res.status(200).json(user);
+        }
+      });
     } else {
       return res.status(401).send("Invalid email or password");
     }
