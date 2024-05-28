@@ -20,11 +20,11 @@ const index = () => {
   return (
     <>
       <div className="flex">
-        <div className="w-fit m-2">
+        <div className={`w-fit ${user.setup_finished ? 'm-2' : ''}`}>
           <NavBar user={user} />
         </div>
         <div className="w-px min-h-screen bg-gradient-to-b from-white via-gray-700 to-white hidden md:block"></div>
-        <div className="m-4 w-full flex justify-center items-center">
+        <div className={`m-4 w-full justify-center items-center ${user.setup_finished ? 'flex' : 'hidden'}`}>
           Content
         </div>
       </div>
