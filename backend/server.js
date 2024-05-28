@@ -12,6 +12,7 @@ const connection = mysql.createConnection({
   user: "keebgram",
   password: "Password1",
   database: "KeebGram",
+  multipleStatements: true,
 });
 
 // Connect to the database
@@ -26,39 +27,46 @@ connection.connect((err) => {
 //Route to get account
 app.get("/getAccount", (req, res) => {
   const { email } = req.body;
-  const query = 
-    `SELECT * FROM keebgram.accounts WHERE email=${user.email}`
-})
+  const query = `SELECT * FROM keebgram.accounts WHERE email=${user.email}`;
+});
 // Route to add an account
 app.post("/addAccount", (req, res) => {
-  const { username, email, password } = req.body;
-  const query =
-    "INSERT INTO accounts (username, email, password) VALUES (?, ?, ?)";
-  connection.query(query, [username, email, password], (err, result) => {
+  const { email, password } = req.body;
+
+  // Call the stored procedure
+  const query = "CALL create_account(?, ?, @ok); SELECT @ok AS ok;";
+  connection.query(query, [email, password], (err, results) => {
     if (err) {
-      res.status(500).send("Error adding account");
-      return;
+      console.error(err);
+      return res.status(500).send("Error adding account");
     }
-    res.send("Account added successfully");
+
+    // Extract the value of ok from the results
+    const ok = results[1][0].ok;
+    if (ok === 1) {
+      return res.status(201).send("Account added successfully");
+    } else if (ok === 0) {
+      return res.status(409).send("Account with the same email already exists");
+    }
   });
 });
 
 // Route to verify login
 app.post("/login", (req, res) => {
-  const { username, password } = req.body;
-  const query = "SELECT * FROM accounts WHERE username = ? AND password = ?";
-  connection.query(query, [username, password], (err, results) => {
+  const { email, password } = req.body;
+  const query = "CALL login(?, ?, @ok); SELECT @ok as ok;";
+  connection.query(query, [email, password], (err, results) => {
     if (err) {
       res.status(500).send("Error during login");
       return;
     }
-    if (results.length > 0) {
-      const user = results[0];
-      delete user.password;
 
-      res.status(200).json(user);
+    const ok = results[1][0].ok;
+    if (ok === 1) {
+      // Login successful
+      return res.status(200).send("Login sucessful");
     } else {
-      res.status(401).send("Invalid username or password");
+      return res.status(401).send("Invalid email or password");
     }
   });
 });
