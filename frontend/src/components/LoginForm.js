@@ -2,21 +2,28 @@ import React, { useState } from "react";
 import axios from "axios";
 
 function LoginForm({ onLoginSuccess }) {
-  const [username, setUsername] = useState("");
+  const [email, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post("http://localhost:3001/login", {
-        username,
+        email,
         password,
       });
-      alert(response.data);
-      onLoginSuccess(username); // Pass username
+      
+      if (response.status == 200) {
+        // alert(response.data);
+        const userObject = response.data;
+        console.log(userObject)
+        // Save the user object to localStorage
+        localStorage.setItem("user", JSON.stringify(userObject));
+        onLoginSuccess(email); // Pass username
+      }
     } catch (error) {
       console.error("Error during login:", error);
-      alert("Invalid username or password");
+      alert(error.response.data);
     }
   };
 
@@ -24,13 +31,13 @@ function LoginForm({ onLoginSuccess }) {
     <form onSubmit={handleSubmit}>
       <div className="text-left mb-3">
         <label className="font-semibold" htmlFor="username">
-          Username
+          Email
         </label>
         <input
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           id="username"
           type="text"
-          value={username}
+          value={email}
           onChange={(e) => setUsername(e.target.value)}
           required
         />

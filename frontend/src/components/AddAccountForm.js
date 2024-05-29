@@ -14,7 +14,6 @@ function AddAccountForm({ onClose }) {
 
     // Object representing the new account details
     const newAccount = {
-      username,
       email,
       password,
     };
@@ -25,30 +24,23 @@ function AddAccountForm({ onClose }) {
         "http://localhost:3001/addAccount",
         newAccount
       );
-      alert(response.data); // Alert the response from the server
+
+      console.log(response.status);
+      if (response.status === 201) {
+        // Handle case where the account is added successfully
+        console.log("Account added successfully");
+      }
       onClose(); // Close the form
     } catch (error) {
-      console.error("Error adding account:", error); // Log any errors
-      alert("Error adding account."); // Alert the user of an error
+      if(error.response.status === 409) {
+        alert(error.response.data)
+      }
+      // console.error("Error adding account:", error); // Log any errors
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="text-left mb-3">
-        <label className="font-semibold" htmlFor="new-username">
-          Username
-        </label>
-        <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="new-username"
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)} // Update the username state on input change
-          required
-          placeholder="Username" // Placeholder text
-        />
-      </div>
       <div className="text-left mb-3">
         <label className="font-semibold" htmlFor="new-email">
           Email
