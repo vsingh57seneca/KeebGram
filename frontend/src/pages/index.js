@@ -2,53 +2,21 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import LoginForm from "../components/LoginForm";
 import AddAccountForm from "../components/AddAccountForm";
-import DeleteAccountButton from "../components/DeleteAccountButton";
-import EditAccountForm from "../components/EditAccountForm";
 import { useRouter } from "next/router";
 
 export default function Home() {
   const router = useRouter();
-  // track if a user is logged in
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  // control the visibility of the add account form
   const [showAddAccountForm, setShowAddAccountForm] = useState(false);
 
-  // control the visibility of the edit account form
-  const [showEditAccountForm, setShowEditAccountForm] = useState(false);
-
-  // store the logged in username
-  const [username, setUsername] = useState("");
-
-  // successful login
-  const handleLoginSuccess = (username) => {
+  const handleLoginSuccess = () => {
     setIsLoggedIn(true);
-    setUsername(username);
+    router.push("/feed");
   };
 
-  // logout
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUsername("");
+  const onCloseAddAccountForm = () => {
+    setShowAddAccountForm(false);
   };
-
-  // successful account deletion
-  const handleDeleteSuccess = () => {
-    setIsLoggedIn(false);
-    setUsername("");
-    alert("Account deleted successfully");
-  };
-
-  //  successful account edit
-  const handleUpdateSuccess = (newUsername) => {
-    setUsername(newUsername);
-    setShowEditAccountForm(false);
-    alert("Account updated successfully");
-  };
-
-  const onCloseAddAcountForm = () => {
-    setShowAddAccountForm(false)
-  }
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -58,10 +26,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex relative">
-      {/* Create Account Modal */}
-      <div className={`absolute bg-gray-400/70 h-full w-full items-center justify-center ${showAddAccountForm ? 'flex' : 'hidden'}`}>
+      <div
+        className={`absolute bg-gray-400/70 h-full w-full items-center justify-center ${
+          showAddAccountForm ? "flex" : "hidden"
+        }`}
+      >
         <div className="bg-white p-8 rounded">
-          <AddAccountForm onClose={onCloseAddAcountForm}/>
+          <AddAccountForm onClose={onCloseAddAccountForm} />
         </div>
       </div>
 
