@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "@/components/navigation/NavBar";
 import FinishSetup from "@/components/FinishSetup";
+import axios from "axios";
 
 const Index = () => {
   const [user, setUser] = useState(null);
@@ -8,13 +9,45 @@ const Index = () => {
   const [setupComplete, setSetupComplete] = useState(false);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      setSetupComplete(JSON.parse(storedUser).setup_finished);
-    }
-    setIsLoading(false);
+    const fetchData = async () => {
+      try {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+          setSetupComplete(JSON.parse(storedUser).setup_finished);
+        }
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching stored user:", error);
+        setIsLoading(false);
+      }
+    };
+    fetchData();
   }, []);
+
+  useEffect(() => {
+    const updateUser = async () => {
+      try {
+        if (user) {
+          const getAccountResponse = await axios.get(
+            "http://localhost:3001/getAccountByEmail",
+            {
+              params: {
+                email: user.email,
+              },
+            }
+          );
+          setUser(getAccountResponse.data);
+          setSetupComplete(getAccountResponse.data.setup_finished);
+          localStorage.setItem("user", JSON.stringify(getAccountResponse.data));
+        }
+      } catch (error) {
+        console.error("Error updating account details:", error);
+        alert(error.response.data);
+      }
+    };
+    updateUser();
+  }, [user]);
 
   const handleSetupComplete = () => {
     setSetupComplete(true);

@@ -29,6 +29,48 @@ db.connect((err) => {
   console.log("Connected to the database");
 });
 
+app.get("/getAccountByEmail", (req, res) => {
+  const { email } = req.query; // Use req.query.email to get the email parameter from the query string
+
+  const query = "SELECT * FROM accounts WHERE email = ?";
+
+  db.query(query, [email], (err, results) => {
+    if (err) {
+      res.status(500).send("Error");
+      return;
+    }
+    if (results.length > 0) {
+      const user = results[0];
+      delete user.password;
+
+      res.status(200).json(user);
+    } else {
+      res.status(404).send("User not found");
+    }
+  });
+});
+
+// DELETE endpoint to delete an account by email
+app.delete("/deleteAccountByEmail", (req, res) => {
+  const { email } = req.query; // Assuming email is passed as a query parameter
+
+  const query = "DELETE FROM accounts WHERE email = ?";
+
+  db.query(query, [email], (err, result) => {
+    if (err) {
+      console.error("Error deleting account:", err);
+      res.status(500).send("Error deleting account");
+      return;
+    }
+
+    if (result.affectedRows === 1) {
+      res.status(200).send("Account deleted successfully");
+    } else {
+      res.status(404).send("Account not found");
+    }
+  });
+});
+
 // Route to add an account
 app.post("/addAccount", (req, res) => {
   const { email, password } = req.body;
@@ -87,19 +129,6 @@ app.post("/login", (req, res) => {
     } else {
       return res.status(401).send("Invalid email or password");
     }
-  });
-});
-
-// Route to delete an account
-app.post("/deleteAccount", (req, res) => {
-  const { username } = req.body;
-  const query = "DELETE FROM accounts WHERE username = ?";
-  db.query(query, [username], (err, result) => {
-    if (err) {
-      res.status(500).send("Error deleting account");
-      return;
-    }
-    res.send("Account deleted successfully");
   });
 });
 

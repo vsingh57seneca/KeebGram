@@ -1,31 +1,53 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/router";
+import Dropdown from "./ui_elements/Dropdown";
+import countryList from "./data/country_list.json";
+import genderList from "./data/gender_list.json";
+import languageList from "./data/language_list.json";
 
 const FinishSetup = ({ user, onComplete }) => {
+  const router = useRouter();
+  const [countries, setCountries] = useState([]);
+  const [genders, setGenders] = useState([]);
+  const [languages, setLanguages] = useState([]);
+  const [language, setLanguage] = useState("");
+  const [gender, setGender] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState(null);
+
+  useEffect(() => {
+    setCountries(countryList);
+    setGenders(genderList);
+    setLanguages(languageList);
+  }, []);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     displayName: "",
     country: "",
     birthdate: "",
-    displayImage: null,
     gender: "",
     language: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
-      displayImage: e.target.files[0],
-    });
+  
+    // For regular input fields, update the formData directly
+    if (name !== "gender" && name !== "language") {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    } else {
+      // For gender and language dropdowns, update the respective state
+      if (name === "gender") {
+        setGender(value); // Update gender state
+      } else if (name === "language") {
+        setLanguage(value); // Update language state
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -36,11 +58,10 @@ const FinishSetup = ({ user, onComplete }) => {
     formDataToSend.append("firstName", formData.firstName);
     formDataToSend.append("lastName", formData.lastName);
     formDataToSend.append("displayName", formData.displayName);
-    formDataToSend.append("country", formData.country);
+    formDataToSend.append("country", selectedCountry);
     formDataToSend.append("birthdate", formData.birthdate);
-    formDataToSend.append("displayImage", formData.displayImage);
-    formDataToSend.append("gender", formData.gender);
-    formDataToSend.append("language", formData.language);
+    formDataToSend.append("gender", gender);
+    formDataToSend.append("language", language);
 
     try {
       const response = await axios.post(
@@ -52,15 +73,25 @@ const FinishSetup = ({ user, onComplete }) => {
           },
         }
       );
-      console.log("Account details updated:", response.data);
-      onComplete(); // Call the onComplete function to indicate setup completion
+      console.log(response.status);
+
+      if (response.status === 200) {
+        let user = localStorage.getItem("user");
+        user = JSON.parse(user);
+        user.setup_finished = 1;
+        const updatedUser = JSON.stringify(user);
+        localStorage.setItem("user", updatedUser);
+        console.log("Send to /feed");
+        window.location.reload();
+      }
     } catch (error) {
       console.error("Error updating account details:", error);
+      alert(error.response.data);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="flex rounded-md items-center justify-center">
       <div className="bg-white p-8 rounded shadow-lg w-full max-w-md overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Complete Your Account Setup</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -99,17 +130,18 @@ const FinishSetup = ({ user, onComplete }) => {
               className="border border-gray-300 rounded px-3 py-2 w-full"
             />
           </div>
+
           <div>
             <label className="block text-sm mb-1">Country:</label>
-            <input
-              type="text"
-              name="country"
-              value={formData.country}
-              onChange={handleChange}
-              required
-              className="border border-gray-300 rounded px-3 py-2 w-full"
-            />
+            {countries && (
+              <Dropdown
+                list={countries}
+                selectedItem={selectedCountry}
+                setSelectedItem={setSelectedCountry}
+              />
+            )}
           </div>
+
           <div>
             <label className="block text-sm mb-1">Birthdate:</label>
             <input
@@ -122,36 +154,24 @@ const FinishSetup = ({ user, onComplete }) => {
             />
           </div>
           <div>
-            <label className="block text-sm mb-1">Display Image:</label>
-            <input
-              type="file"
-              name="displayImage"
-              onChange={handleFileChange}
-              required
-              className="border border-gray-300 rounded px-3 py-2 w-full"
-            />
-          </div>
-          <div>
             <label className="block text-sm mb-1">Gender:</label>
-            <input
-              type="text"
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              required
-              className="border border-gray-300 rounded px-3 py-2 w-full"
-            />
+            {genders && (
+              <Dropdown 
+                list={genders}
+                selectedItem={gender}
+                setSelectedItem={setGender}
+              />
+            )}
           </div>
           <div>
             <label className="block text-sm mb-1">Language:</label>
-            <input
-              type="text"
-              name="language"
-              value={formData.language}
-              onChange={handleChange}
-              required
-              className="border border-gray-300 rounded px-3 py-2 w-full"
-            />
+            {languages && (
+              <Dropdown 
+                list={languages}
+                selectedItem={language}
+                setSelectedItem={setLanguage}
+              />
+            )}
           </div>
           <button
             type="submit"
