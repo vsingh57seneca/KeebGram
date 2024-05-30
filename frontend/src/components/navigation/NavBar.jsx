@@ -15,7 +15,7 @@ import NavbarMoreUpwardDowndrop from "@/components/navigation/NavbarMoreUpwardDo
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import FinishSetup from "../FinishSetup";
+import FinishSetup from "../feed/FinishSetup";
 
 const NavBar = ({ user }) => {
   const [morePanelOpen, setMorePanelOpen] = useState(false);

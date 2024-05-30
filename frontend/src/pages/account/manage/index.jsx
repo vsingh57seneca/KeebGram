@@ -21,11 +21,11 @@ const index = () => {
   return (
     <>
       <div className="flex w-full">
-        <div className="w-fit m-2">
+        <div className="w-fit lg:m-2">
           <NavBar user={user} />
         </div>
         <div className="w-px min-h-screen bg-gradient-to-b from-white via-gray-700 to-white hidden md:block"></div>
-        <div className="m-4 w-full flex">
+        <div className="w-full m-4">
           <AccountManagementForm user={user}/>
         </div>
       </div>
