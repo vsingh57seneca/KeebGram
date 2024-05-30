@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { MdAccountCircle } from "react-icons/md";
 import axios from "axios";
-import Dropdown from "@/components/ui_elements/Dropdown";
 import countryList from "../../data/country_list.json";
 import genderList from "../../data/gender_list.json";
 import languageList from "../../data/language_list.json";
 import { useRouter } from "next/router";
+import toast, { Toaster } from "react-hot-toast";
 
 const AccountManagementForm = ({ user }) => {
   const router = useRouter();
@@ -44,70 +44,102 @@ const AccountManagementForm = ({ user }) => {
     }
   }, [user]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const formDataToSend = {
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-      displayName: displayName,
-      country: country,
-      birthdate: birthdate,
-      gender: gender,
-      language: language,
-    };
-
+  const handleSubmit = async () => {
+    console.log(
+      firstName,
+      lastName,
+      displayName,
+      country,
+      language,
+      gender,
+      birthdate
+    );
     try {
-      const response = await axios.post(
-        "http://localhost:3001/updateAccountDetails",
-        formDataToSend,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      if (
+        firstName === "" ||
+        lastName === "" ||
+        displayName === "" ||
+        country === "" ||
+        language === "" ||
+        gender === "" ||
+        birthdate === ""
+      ) {
+        toast("All fields required");
+        return;
+      }
 
-      // Log the status of the response
-      console.log(response.status);
-      alert(response.data)
+      let reqOptions = {
+        url: "http://localhost:3001/api/accounts/update",
+        method: "POST",
+        data: {
+          firstName: firstName,
+          lastName: lastName,
+          displayName: displayName,
+          country: country,
+          birthdate: birthdate,
+          gender: gender,
+          language: language,
+          email: user?.email,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
 
-      // After successfully updating account details, make a GET request to fetch updated account information
-      const getAccountResponse = await axios.get(
-        "http://localhost:3001/getAccountByEmail",
-        {
-          // Assuming you're using JSON for the request body
-          params: {
-            email: email,
-          },
-        }
-      );
-      // Store user data in localStorage
-      localStorage.setItem("user", JSON.stringify(getAccountResponse.data));
+      let response = await axios.request(reqOptions);
+      console.log(response.data);
+      toast(response.data);
 
+      updateLocalStorage();
+      // document.getElementById(modal_name).close();
     } catch (error) {
-      console.error("Error updating account details:", error);
-      alert(error.response.data);
+      console.error("Error creating account:", error);
+      toast(error.response.data);
     }
+  };
+
+  const updateLocalStorage = async () => {
+    try {
+      // Construct the URL with the email parameter
+      let url = `http://localhost:3001/api/accounts/getOneByEmail?email=${user?.email}`;
+
+      // Send a GET request to the server
+      let response = await axios.get(url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log(response.status);
+      if (response.status === 200) {
+        localStorage.setItem("user", JSON.stringify(response.data));
+      }
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      // Handle errors
+      toast(error.response.data);
+    }
+  };
+
+  const handleCancel = () => {
+    router.push("/feed");
   };
 
   const handleDelete = async () => {
     try {
       const response = await axios.delete(
-        "http://localhost:3001/deleteAccountByEmail",
+        "http://localhost:3001/api/accounts/delete",
         {
           params: {
             email: email, // Pass the email as a query parameter
           },
         }
       );
-  
+
       // Handle different response status codes
       if (response.status === 200) {
-        alert("Account deleted successfully");
-        localStorage.removeItem('user');
-        router.push('/'); // Redirect the user to the home page after successful deletion
+        toast("Account deleted successfully");
+        router.push("/"); // Redirect the user to the home page after successful deletion
       } else {
         console.error("Unexpected status code:", response.status);
         // Handle other unexpected status codes
@@ -119,7 +151,7 @@ const AccountManagementForm = ({ user }) => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-y-4">
+    <div className="min-h-screen flex flex-col gap-y-4 h-full">
       <div className="w-full flex items-center p-2 gap-x-4 rounded-lg">
         <h1 className="font-semibold">Account Details</h1>
       </div>
@@ -133,102 +165,157 @@ const AccountManagementForm = ({ user }) => {
         </button>
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="w-full border grid grid-cols-2 items-center p-4 gap-x-4 gap-y-2 rounded-lg"
-      >
-        <label htmlFor="name" className="w-full col-span-1">
-          <h1 className="font-semibold">Name</h1>
-          <input
-            value={firstName + " " + lastName}
-            disabled={true}
-            type="text"
-            className="border rounded-lg w-full px-1 py-1"
-          />
-        </label>
-        <div className="">
-          <label htmlFor="language" className="w-full col-span-1 font-semibold">
-            Language:
+      <div className="w-full border flex flex-col items-center p-2 gap-x-4 rounded-lg">
+        <div className="w-full flex gap-x-4 items-center">
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Name</span>
+            </div>
+            <p className="border p-2 rounded w-full bg-gray-200">
+              {firstName + " " + lastName}
+            </p>
           </label>
-          {language && (
-            <Dropdown
-              list={languages}
-              selectedItem={language}
-              setSelectedItem={setLanguage}
-            />
-          )}
-        </div>
-        <label htmlFor="display-name" className="w-full col-span-1">
-          <h1 className="font-semibold">Display Name:</h1>
-          <input
-            type="text"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            className="border rounded-lg w-full px-1 py-1"
-          />
-        </label>
-        <div>
-          <label className="block font-semibold">Country:</label>
-          {countries && (
-            <Dropdown
-              list={countries}
-              selectedItem={country}
-              setSelectedItem={setCountry}
-            />
-          )}
-        </div>
-        <label htmlFor="email" className="w-full col-span-2">
-          <h1 className="font-semibold">Email</h1>
-          <input
-            disabled={true}
-            value={email}
-            type="text"
-            className="border rounded-lg w-full px-1 py-1"
-          />
-        </label>
-        <div className="">
-          <label htmlFor="language" className="w-full col-span-1 font-semibold">
-            Gender:
+
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Country</span>
+            </div>
+            <div className="dropdown">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-sm m-1 w-full bg-white text-black hover:bg-white"
+              >
+                {country ? country : "Select Country"}
+              </div>
+              <ul
+                tabIndex={0}
+                className="dropdown-content z-[1] p-2 shadow w-fit rounded-box bg-white overflow-y-auto h-[150px]"
+              >
+                {countries.map((country, index) => {
+                  return (
+                    <li
+                      key={index}
+                      onClick={() => setCountry(country.name)}
+                      className="w-full hover:bg-gray-300 rounded"
+                    >
+                      {country.name}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </label>
-          {genders && (
-            <Dropdown
-              list={genders}
-              selectedItem={gender}
-              setSelectedItem={setGender}
-            />
-          )}
         </div>
-        <label htmlFor="birthdate" className="w-full col-span-1">
-          <h1 className="font-semibold">Birthdate</h1>
-          <input
-            disabled={true}
-            value={birthdate}
-            type="date"
-            className="border rounded-lg w-full px-1 py-1"
-          />
+
+        <div className="flex w-full gap-x-4 items-center">
+          <div className="w-full">
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Display Name</span>
+              </div>
+              <input
+                type="text"
+                placeholder="Type here"
+                className="input input-bordered w-full bg-white"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+              />
+            </label>
+          </div>
+
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Language</span>
+            </div>
+            <div className="dropdown">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-sm m-1 w-full bg-white text-black hover:bg-white"
+              >
+                {language ? language : "Select Language"}
+              </div>
+              <ul
+                tabIndex={0}
+                className="dropdown-content z-[1] p-2 shadow w-full rounded-box bg-white overflow-y-auto h-[150px]"
+              >
+                {languages.map((lang, index) => {
+                  return (
+                    <li
+                      key={index}
+                      onClick={() => setLanguage(lang.name)}
+                      className="w-full hover:bg-gray-300 rounded"
+                    >
+                      {lang.name}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </label>
+        </div>
+
+        <label className="form-control w-full">
+          <div className="label">
+            <span className="label-text">Email</span>
+          </div>
+          <p className="border p-2 rounded w-full bg-gray-200">{email}</p>
         </label>
 
-        <div className="flex w-full justify-between text-sm">
-          <div className="flex gap-x-2">
-            <button
-              type="submit"
-              className="border-2 px-3 py-1 rounded-lg bg-blue-500 text-white"
-            >
-              Save Changes
-            </button>
-            <button
-            type="button"
-              onClick={() => router.push("/feed")}
-              className="border-2 px-3 py-1 rounded-lg"
-            >
-              Cancel
-            </button>
-          </div>
-          <button type="button" onClick={handleDelete} className="border-2 px-3 py-1 rounded-lg bg-red-700 text-white">
-            Delete Account
+        <div className="flex w-full gap-x-4 items-center">
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Gender</span>
+            </div>
+            <div className="dropdown">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-sm m-1 w-full bg-white text-black hover:bg-white"
+              >
+                {gender ? gender : "Select Gender"}
+              </div>
+              <ul
+                tabIndex={0}
+                className="dropdown-content z-[1] p-2 shadow w-full rounded-box bg-white overflow-y-auto h-[200px]"
+              >
+                {genders.map((gend, index) => {
+                  return (
+                    <li
+                      key={index}
+                      onClick={() => setGender(gend.name)}
+                      className="w-full hover:bg-gray-300 rounded"
+                    >
+                      {gend.name}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </label>
+
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Birthdate</span>
+            </div>
+            <p className="border p-2 rounded w-full bg-gray-200">{birthdate}</p>
+          </label>
+        </div>
+      </div>
+      <div className="flex justify-between">
+        <div className="flex gap-x-4">
+          <button onClick={handleSubmit} className="btn btn-success text-white">
+            Update
+          </button>
+          <button onClick={handleCancel} className="btn btn-error text-white">
+            Cancel
           </button>
         </div>
-      </form>
+        <button onClick={handleDelete} className="btn btn-warning">
+          Delete
+        </button>
+      </div>
     </div>
   );
 };
