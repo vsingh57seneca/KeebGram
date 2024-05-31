@@ -25,7 +25,7 @@ const index = () => {
           <NavBar user={user} />
         </div>
         <div className="w-px min-h-screen bg-gradient-to-b from-white via-gray-700 to-white hidden md:block"></div>
-        <div className="w-full mx-8">
+        <div className="w-full mx-8 lg:mx-16">
           <AccountManagementForm user={user}/>
         </div>
       </div>

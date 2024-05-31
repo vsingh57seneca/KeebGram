@@ -74,7 +74,7 @@ const AccountManagementForm = ({ user }) => {
   const handleDelete = async () => {
     let response = await Account.delete(user?.email)
     if (response.status === 200) {
-      toast(response.data)
+      toast.success(response.data)
       router.push("/"); // Redirect the user to the home page after successful deletion 
     }
 
