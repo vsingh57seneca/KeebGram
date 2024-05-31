@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import Account from '@/functions/Accounts.js'
 
 import countryList from "../data/country_list.json";
 import genderList from "../data/gender_list.json";
@@ -30,82 +31,26 @@ const FinishSetup = ({ user }) => {
   }, []);
 
   const handleSubmit = async () => {
-    console.log(
-      firstName,
-      lastName,
-      displayName,
-      country,
-      language,
-      gender,
-      birthdate
-    );
-    try {
-      if (
-        firstName === "" ||
-        lastName === "" ||
-        displayName === "" ||
-        country === "" ||
-        language === "" ||
-        gender === "" ||
-        birthdate === ""
-      ) {
-        toast("All fields required");
-        return;
-      }
+    const updatedUser = {
+      firstName: firstName,
+      lastName: lastName,
+      displayName: displayName,
+      country: country,
+      language: language,
+      gender: gender,
+      birthdate: birthdate,
+      email: user?.email
+    };
 
-      let reqOptions = {
-        url: "http://localhost:3001/api/accounts/update",
-        method: "POST",
-        data: {
-          firstName: firstName,
-          lastName: lastName,
-          displayName: displayName,
-          country: country,
-          birthdate: birthdate,
-          gender: gender,
-          language: language,
-          email: user?.email,
-        },
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
+    let response = await Account.update(updatedUser);
+    console.log(response)
+    toast(response.data)
 
-      let response = await axios.request(reqOptions);
-      console.log(response.data);
-      toast(response.data);
-
-      updateLocalStorage()
-      // document.getElementById(modal_name).close();
-    } catch (error) {
-      console.error("Error creating account:", error);
-      toast(error.response.data);
+    if(response.status === 200) {
+      response = await Account.getOne(user?.email)
+      window.location.reload();
     }
-  };
-
-  const updateLocalStorage = async () => {
-    try {
-      // Construct the URL with the email parameter
-      let url = `http://localhost:3001/api/accounts/getOneByEmail?email=${user?.email}`;
-  
-      // Send a GET request to the server
-      let response = await axios.get(url, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-  
-      console.log(response.status);
-      if(response.status === 200) {
-        localStorage.setItem('user', JSON.stringify(response.data));
-        toast("Account setup finished")
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      // Handle errors
-      toast(error.response.data)
-    }
+    
   };
 
   return (

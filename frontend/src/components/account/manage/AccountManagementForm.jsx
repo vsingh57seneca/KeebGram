@@ -7,6 +7,8 @@ import languageList from "../../data/language_list.json";
 import { useRouter } from "next/router";
 import toast, { Toaster } from "react-hot-toast";
 
+import Account from '../../../functions/Accounts.js'
+
 const AccountManagementForm = ({ user }) => {
   const router = useRouter();
 
@@ -45,113 +47,42 @@ const AccountManagementForm = ({ user }) => {
   }, [user]);
 
   const handleSubmit = async () => {
-    console.log(
-      firstName,
-      lastName,
-      displayName,
-      country,
-      language,
-      gender,
-      birthdate
-    );
-    try {
-      if (
-        firstName === "" ||
-        lastName === "" ||
-        displayName === "" ||
-        country === "" ||
-        language === "" ||
-        gender === "" ||
-        birthdate === ""
-      ) {
-        toast("All fields required");
-        return;
-      }
+    let response = await Account.update({
+      firstName: firstName,
+      lastName: lastName,
+      displayName: displayName,
+      country: country,
+      birthdate: birthdate,
+      gender: gender,
+      language: language,
+      email: user?.email,
+    })
 
-      let reqOptions = {
-        url: "http://localhost:3001/api/accounts/update",
-        method: "POST",
-        data: {
-          firstName: firstName,
-          lastName: lastName,
-          displayName: displayName,
-          country: country,
-          birthdate: birthdate,
-          gender: gender,
-          language: language,
-          email: user?.email,
-        },
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
+    console.log(response);
 
-      let response = await axios.request(reqOptions);
-      console.log(response.data);
-      toast(response.data);
+    toast(response.data)
 
-      updateLocalStorage();
-      // document.getElementById(modal_name).close();
-    } catch (error) {
-      console.error("Error creating account:", error);
-      toast(error.response.data);
+    if(response.status === 200) {
+      response = await Account.getOne(user?.email)
     }
-  };
-
-  const updateLocalStorage = async () => {
-    try {
-      // Construct the URL with the email parameter
-      let url = `http://localhost:3001/api/accounts/getOneByEmail?email=${user?.email}`;
-
-      // Send a GET request to the server
-      let response = await axios.get(url, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      console.log(response.status);
-      if (response.status === 200) {
-        localStorage.setItem("user", JSON.stringify(response.data));
-      }
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      // Handle errors
-      toast(error.response.data);
-    }
-  };
+  }
 
   const handleCancel = () => {
     router.push("/feed");
   };
 
   const handleDelete = async () => {
-    try {
-      const response = await axios.delete(
-        "http://localhost:3001/api/accounts/delete",
-        {
-          params: {
-            email: email, // Pass the email as a query parameter
-          },
-        }
-      );
-
-      // Handle different response status codes
-      if (response.status === 200) {
-        toast("Account deleted successfully");
-        router.push("/"); // Redirect the user to the home page after successful deletion
-      } else {
-        console.error("Unexpected status code:", response.status);
-        // Handle other unexpected status codes
-      }
-    } catch (error) {
-      // Handle network errors or other issues
-      console.error("Error deleting account:", error);
+    let response = await Account.delete(user?.email)
+    if (response.status === 200) {
+      toast(response.data)
+      router.push("/"); // Redirect the user to the home page after successful deletion 
     }
+
+
   };
 
   return (
-    <div className="min-h-screen flex flex-col gap-y-4 h-full">
+    <div className="flex flex-col gap-y-4 h-full min-h-screen">
       <div className="w-full flex items-center p-2 gap-x-4 rounded-lg">
         <h1 className="font-semibold">Account Details</h1>
       </div>
