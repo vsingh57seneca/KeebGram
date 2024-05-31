@@ -1,17 +1,22 @@
 import ContentDisplay from "@/components/content/ContentDisplay";
 import NavBar from "@/components/navigation/NavBar";
 import React, { useEffect, useState } from "react";
+import Account from '@/functions/Accounts.js'
 
 const index = () => {
   const [user, setUser] = useState({});
-
+  
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")));
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    setUser(storedUser);
+    if (storedUser && storedUser.email) {
+      Account.getOne(storedUser.email);
+    }
   }, []);
 
   return (
     <>
-      <div className="flex">
+      <div className="flex min-h-screen">
         <div className={`w-fit lg:m-2`}>
           <NavBar user={user} />
         </div>
