@@ -9,11 +9,17 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import FinishSetup from "../feed/FinishSetup";
 import NavBarMoreMenu from "./NavBarMoreMenu";
+import CreatePostForm from "../posts/CreatePostForm";
+import { useAtom } from "jotai";
+import { displayImageAtom } from "../../../store";
 
-const NavBar = ({ user }) => {
+const NavBar = ({ user, posts, setPosts }) => {
   const [morePanelOpen, setMorePanelOpen] = useState(false);
   const morePanelRef = useRef(null);
   const router = useRouter();
+
+  const [showCreatePostModal, setShowCreatePostModal] = useState(false);
+  const [displayImage, setDisplayImage] = useAtom(displayImageAtom);
 
   const handleClickOutside = (e) => {
     if (morePanelRef.current && !morePanelRef.current.contains(e.target)) {
@@ -22,28 +28,41 @@ const NavBar = ({ user }) => {
   };
 
   useEffect(() => {
-    if (user == null) {
-      router.push("/");
-    }
-  }, [user]);
-
-  useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
+  useEffect(() => {
+    if (user == null) {
+      router.push("/");
+    }
+  }, [user]);
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     router.push("/");
+  };
+
+  const handleCloseModal = () => {
+    setShowCreatePostModal(false);
   };
 
   return (
     <>
       {user.setup_finished ? (
         <>
-          <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white flex justify-around items-center shadow-lg z-10">
+          <div className="">
+            <CreatePostForm
+              showCreatePostModal={showCreatePostModal}
+              onClose={handleCloseModal}
+              user={user}
+              posts={posts}
+              setPosts={setPosts}
+            />
+          </div>
+          <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white flex justify-around items-center shadow-lg z-20">
             <button
               onClick={() => router.push("/feed")}
               className="flex flex-col items-center p-2"
@@ -52,7 +71,7 @@ const NavBar = ({ user }) => {
               <span className="text-xs">Home</span>
             </button>
             <button
-              onClick={() => router.push("/create")}
+              onClick={() => setShowCreatePostModal(!showCreatePostModal)}
               className="flex flex-col items-center p-2"
             >
               <MdCreateNewFolder className="text-xl" />
@@ -63,10 +82,13 @@ const NavBar = ({ user }) => {
               onClick={() => router.push("/account/manage")}
               className="flex flex-col items-center p-2"
             >
-              <MdAccountBox className="text-xl" />
-              <span className="text-xs">
+              <img
+                src={displayImage}
+                className="w-8 h-8 rounded-full object-cover"
+              />
+              {/* <span className="text-xs">
                 {user?.display_name ? user.display_name : "Profile"}
-              </span>
+              </span> */}
             </button>
             <button
               onClick={() => router.push("/admin")}
@@ -108,7 +130,7 @@ const NavBar = ({ user }) => {
               </div>
               <ul
                 tabIndex={0}
-                className="dropdown-content z-[1] menu p-2 shadow bg-white rounded-box w-52"
+                className="dropdown-content menu p-2 shadow bg-white rounded-box w-52"
               >
                 <li>
                   <a>Settings</a>
@@ -120,7 +142,7 @@ const NavBar = ({ user }) => {
             </div>
           </div>
 
-          <ul className="hidden md:flex flex-col justify-between h-full w-full select-none">
+          <ul className="hidden md:flex flex-col justify-between h-full w-full select-none p-2">
             <label className="flex items-center justify-center">
               <Image
                 className=""
@@ -143,7 +165,7 @@ const NavBar = ({ user }) => {
                 <label className="lg:block hidden">Home</label>
               </li>
               <li
-                onClick={() => router.push("/create")}
+                onClick={() => setShowCreatePostModal(!showCreatePostModal)}
                 className="flex items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit"
               >
                 <MdCreateNewFolder className="lg:mr-4" />
@@ -186,14 +208,10 @@ const NavBar = ({ user }) => {
               </li> */}
               <li>
                 <div className="dropdown dropdown-top flex items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit">
-                  <div
-                    tabIndex={0}
-                    role="button"
-                    className="flex items-center"
-                  >
+                  <div tabIndex={0} role="button" className="flex items-center">
                     <IoMdMenu className="lg:mr-4" />
                     <span className="">
-                      <p>More</p>
+                      <p className="lg:block hidden">More</p>
                       <div
                         className={`${
                           morePanelOpen ? "flex" : "hidden"
@@ -203,7 +221,7 @@ const NavBar = ({ user }) => {
                   </div>
                   <ul
                     tabIndex={0}
-                    className="dropdown-content z-[1] menu p-2 shadow bg-white rounded-box w-52"
+                    className="dropdown-content menu p-2 shadow bg-white rounded-box w-52"
                   >
                     <li>
                       <a>Settings</a>
@@ -219,7 +237,7 @@ const NavBar = ({ user }) => {
         </>
       ) : (
         <>
-          <div className="absolute w-full flex h-full justify-center items-center z-20 bg-black/70">
+          <div className="absolute w-full flex h-full justify-center items-center bg-black/70">
             <FinishSetup user={user} />
           </div>
         </>

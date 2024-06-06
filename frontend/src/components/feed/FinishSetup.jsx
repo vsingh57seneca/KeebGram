@@ -119,7 +119,7 @@ const FinishSetup = ({ user }) => {
                 </div>
                 <ul
                   tabIndex={0}
-                  className="dropdown-content z-[1] p-2 shadow w-fit rounded-box bg-white overflow-y-auto h-[150px]"
+                  className="dropdown-content p-2 shadow w-fit rounded-box bg-white overflow-y-auto h-[150px]"
                 >
                   {countries.map((country, index) => {
                     return (
@@ -150,7 +150,7 @@ const FinishSetup = ({ user }) => {
                 </div>
                 <ul
                   tabIndex={0}
-                  className="dropdown-content z-[1] p-2 shadow w-full rounded-box bg-white overflow-y-auto h-[150px]"
+                  className="dropdown-content p-2 shadow w-full rounded-box bg-white overflow-y-auto h-[150px]"
                 >
                   {languages.map((lang, index) => {
                     return (
@@ -183,7 +183,7 @@ const FinishSetup = ({ user }) => {
                 </div>
                 <ul
                   tabIndex={0}
-                  className="dropdown-content z-[1] p-2 shadow w-full rounded-box bg-white overflow-y-auto h-[200px]"
+                  className="dropdown-content p-2 shadow w-full rounded-box bg-white overflow-y-auto h-[200px]"
                 >
                   {genders.map((gend, index) => {
                     return (

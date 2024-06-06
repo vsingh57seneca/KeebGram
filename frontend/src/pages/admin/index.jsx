@@ -16,7 +16,7 @@ const index = () => {
   return (
     <>
     <div className="flex min-h-screen">
-      <div className={`w-fit lg:m-2`}>
+      <div className={`w-fit`}>
         <NavBar user={user} />
       </div>
       <div className="w-px min-h-screen bg-gradient-to-b from-white via-gray-700 to-white hidden md:block"></div>
