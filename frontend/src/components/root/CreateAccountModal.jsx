@@ -1,37 +1,20 @@
 import React, { useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import Account from '@/functions/Accounts';
 
 const CreateAccountModal = ({ modal_name }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async () => {
-    try {
-      if(!email || !password) {
-        toast("All fields are required")
-        return;
-      }
-
-      let reqOptions = {
-        url: "http://localhost:3001/api/accounts/create",
-        method: "POST",
-        data: {
-          email: email,
-          password: password,
-        },
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-
-      let response = await axios.request(reqOptions);
-      // console.log(response.data);
-      toast(response.data)
-      document.getElementById(modal_name).close()
-    } catch (error) {
-      // console.error("Error creating account:", error);
-      toast(error.response.data)
+    let results = await Account.create({email: email, password: password});
+    
+    if (results.status === 201) {
+      toast.success(results.data)
+      document.getElementById(modal_name).close();
+    } else {
+      toast.error(results.response.data)
     }
   };
 

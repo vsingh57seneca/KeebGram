@@ -1,5 +1,6 @@
 const express = require("express");
 const db = require("../db");
+const multer = require('multer');
 
 const router = express.Router();
 
