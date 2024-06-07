@@ -87,7 +87,7 @@ const AccountManagementForm = ({ user }) => {
 
   return (
     <>
-      <div className="min-h-screen overflow-y-auto p-4 mb-10 md:mb-0">
+      <div className="">
         <div className="grid grid-cols-3 gap-y-4 my-4">
           <div className="col-span-3">
             <h1 className="font-semibold">Account Details</h1>
