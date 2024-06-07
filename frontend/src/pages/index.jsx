@@ -3,16 +3,17 @@ import Image from "next/image";
 import SignInForm from "@/components/root/SignInForm";
 
 export default function Home() {
-
   useEffect(() => {
-    localStorage.removeItem('user');
-  }, [])
+    localStorage.removeItem("user");
+  }, []);
+
   return (
-    <div className="min-h-screen flex relative">
-      <div className="flex items-center justify-center w-full gap-x-4">
-        <div className="hidden lg:flex">
-        <Image
-            className="rounded-lg"
+    <>
+      <div className="min-h-screen flex items-center justify-center w-full">
+        <div className="">
+          {" "}
+          <Image
+            className="rounded-lg hidden lg:flex"
             src="/images/landing-page/custom-keycap.png"
             alt=""
             width={450}
@@ -20,8 +21,10 @@ export default function Home() {
             priority={true}
           />
         </div>
-        <div className="lg:w-1/4 md:w-2/3"><SignInForm /></div>
+        <div className="">
+          <SignInForm />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

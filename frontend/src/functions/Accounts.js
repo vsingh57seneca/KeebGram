@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { headers } = require("next/headers");
 const baseUrl = "http://localhost:3001/images/"; // Define the base URL where the images are served from
 
 module.exports = {
@@ -21,6 +22,29 @@ module.exports = {
 
       if (response.status === 200) {
         localStorage.setItem("user", JSON.stringify(response.data));
+      }
+    } catch (error) {
+      console.error("Error fetching user data", error);
+    }
+  },
+
+  getOneById: async (id) => {
+    if (!id) {
+      console.error("No Id provided")
+      return;
+    }
+
+    let url = `http://localhost:3001/api/accounts/getOneById?id=${id}`;
+
+    try {
+      let response = await axios.get(url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 200) {
+        return response.data;
       }
     } catch (error) {
       console.error("Error fetching user data", error);

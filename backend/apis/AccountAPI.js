@@ -25,6 +25,28 @@ router.get("/getOneByEmail", (req, res) => {
   });
 });
 
+router.get("/getOneByID", (req, res) => {
+  const { id } = req.query;
+
+  const query = "SELECT * FROM accounts WHERE account_id = ?";
+
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      res.status(500).send("Error");
+      return;
+    }
+
+    if(results.length > 0){
+      const user = results[0];
+      delete user.password;
+
+      res.status(200).json(user);
+    } else {
+      res.status(404).send("User not found");
+    }
+  })
+})
+
 // Route to add an account
 router.post("/create", (req, res) => {
   const { email, password } = req.body;

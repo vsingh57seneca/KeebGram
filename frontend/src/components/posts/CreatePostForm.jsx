@@ -4,28 +4,23 @@ import Posts from "@/functions/Posts";
 import toast from "react-hot-toast";
 import { useAtom } from "jotai";
 import { displayImageAtom } from "../../../store";
-import fFile from '@/functions/Files'
+import fFile from "@/functions/Files";
 
 const CreatePostForm = ({
-  showCreatePostModal,
+  showModal,
+  setShowModal,
   onClose,
   user,
-  posts,
   setPosts,
 }) => {
   const MAX_CHAR = 140;
   const [message, setMessage] = useState("");
-  const [image, setImage] = useState("");
-  const [date, setDate] = useState("");
   const [displayImage, setDisplayImage] = useAtom(displayImageAtom);
   const [imageURL, setImageURL] = useState(null);
   const [file, setFile] = useState(null);
-  const [showModal, setShowModal] = useState(false);
 
   const onCreate = async () => {
     let nextPostId = await Posts.next();
-
-    console.log(nextPostId)
 
     if (file) {
       try {
@@ -48,19 +43,23 @@ const CreatePostForm = ({
     }
 
     const data = {
-      account_id: user.account_id,
+      account_id: user?.account_id,
       content_text: message,
-      content_image: file ? `http://localhost:3001/images/post_${nextPostId}.jpg` : null,
+      content_image: file
+        ? `http://localhost:3001/images/post_${nextPostId}.jpg`
+        : null,
       created_at: Date.now(),
     };
 
     let results = await Posts.create(data);
+    console.log(results)
     toast.success(results.data);
 
     if (results.status === 201) {
       let results = await Posts.getAll();
       setPosts(results.data.reverse());
       setFile(null);
+      setMessage("")
       onClose();
     } else {
       toast.error(results);
@@ -76,13 +75,14 @@ const CreatePostForm = ({
 
   return (
     <>
-      {showCreatePostModal && (
+      {showModal && (
         <>
-          <div className="absolute flex w-full h-[calc(100%-52px)] bg-black/70 justify-center md:hidden z-50">
-            <div className="bg-white h-2/5 w-full">
-              <div className="mt-8 flex flex-col m-2">
+          <div className="absolute top-0 left-0 flex w-full min-h-screen bg-black/70 z-50">
+            <div className="flex md:items-center md:justify-center w-full">
+              <div className="bg-white h-fit p-8 rounded w-full md:w-1/2 flex flex-col gap-y-2">
                 <label className="font-semibold mb-4">Create A Post</label>
-                <div className="flex mx-4">
+
+                <div className="flex">
                   <img
                     src={displayImage}
                     className="w-12 h-12 rounded-full object-cover mr-2"
@@ -96,67 +96,28 @@ const CreatePostForm = ({
                     onChange={(e) => setMessage(e.target.value)}
                   ></textarea>
                 </div>
-                <div className="text-xs flex justify-end mr-4 mt-1">{`${message.length}/${MAX_CHAR}`}</div>
-                <div className="lg:ml-16 mt-4 mx-4">
-                  <input
-                    type="file"
-                    className="file-input file-input-xs file-input-success bg-white w-full"
-                    onChange={handleFileChange}
-                  />
-                </div>
-                <div className="flex justify-end mt-4 mr-4 gap-x-4">
-                  <button
-                    className="btn btn-sm btn-success text-white"
-                    onClick={onCreate}
-                  >
-                    Create
-                  </button>
-                  <button
-                    className="btn btn-sm btn-error text-white"
-                    onClick={onClose}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="absolute md:flex w-full h-full bg-black/70 justify-center items-center hidden z-50">
-            <div className="bg-white h-3/6 w-3/4 lg:w-2/4 rounded">
-              <div
-                className="flex justify-between m-4 cursor-pointer items-center"
-                onClick={onClose}
-              >
-                <label className="font-semibold">Create A Post</label>
-                <MdClose />
-              </div>
-              <div className="mt-4 flex flex-col h-full">
-                <div className="lg:ml-16 mt-4 mx-4">
-                  <input
-                    type="file"
-                    className="bg-white w-full"
-                    onChange={handleFileChange}
-                  />
+                <div className="text-xs flex justify-end mr-4">{`${message.length}/${MAX_CHAR}`}</div>
+
+                <input
+                  type="file"
+                  className={`file-input file-input-xs file-input-success bg-white w-full`}
+                  onChange={handleFileChange}
+                />
+
+                <div className="flex w-full justify-center">
+                  {file && (
+                    <>
+                      <img
+                        src={imageURL}
+                        alt=""
+                        className="flex w-1/4 rounded border-2"
+                      />
+                    </>
+                  )}
                 </div>
-                <div className="flex mx-4 gap-x-2">
-                  <img
-                    src={displayImage}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                  <div className="border-2 rounded-lg w-full h-full mt-4">
-                    <textarea
-                      className="textarea w-full resize-none bg-white h-full"
-                      placeholder="Type here..."
-                      value={message}
-                      maxLength={140}
-                      minLength={1}
-                      onChange={(e) => setMessage(e.target.value)}
-                    ></textarea>
-                  </div>
-                </div>
-                <div className="text-xs flex justify-end mr-4 mt-6">{`${message.length}/${MAX_CHAR}`}</div>
-                <div className="flex justify-end mt-12 md:mt-16 mr-4 gap-x-4">
+
+                <div className="flex justify-end gap-x-4 mt-5">
                   <button
                     className="btn btn-sm btn-success text-white"
                     onClick={onCreate}

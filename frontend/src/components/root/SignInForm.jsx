@@ -12,7 +12,7 @@ const SignInForm = () => {
   const handleSubmit = async () => {
 
     if(!email || !password) {
-        toast("All fields are required")
+        toast.error("All fields are required")
         return;
       }
 
@@ -35,7 +35,7 @@ const SignInForm = () => {
         router.push('/feed')
       }
     } catch (error) {
-      toast(error?.response?.data);
+      toast.error(error?.response?.data);
     }
   };
 
@@ -101,16 +101,4 @@ const SignInForm = () => {
   );
 };
 
-// import toast, { Toaster } from 'react-hot-toast';
-
-// const notify = () => toast('Here is your toast.');
-
-// const SignInForm = () => {
-//   return (
-//     <div>
-//       <button onClick={notify}>Make me a toast</button>
-//       <Toaster />
-//     </div>
-//   );
-// };
 export default SignInForm;

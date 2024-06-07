@@ -1,9 +1,11 @@
 import AccountManagementForm from "@/components/account/manage/AccountManagementForm";
 import NavBar from "@/components/navigation/NavBar";
+import { useAtom } from "jotai";
 import React, { useEffect, useState } from "react";
+import { userAtom } from "../../../../store";
 
 const index = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useAtom(userAtom);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -20,15 +22,7 @@ const index = () => {
 
   return (
     <>
-      <div className="flex w-full">
-        <div className="w-fit">
-          <NavBar user={user} />
-        </div>
-        <div className="w-px min-h-screen bg-gradient-to-b from-white via-gray-700 to-white hidden md:block"></div>
-        <div className="w-full mx-8 lg:mx-16">
-          <AccountManagementForm user={user}/>
-        </div>
-      </div>
+      <AccountManagementForm user={user} />
     </>
   );
 };
