@@ -3,6 +3,24 @@ const { headers } = require("next/headers");
 const baseUrl = "http://localhost:3001/images/"; // Define the base URL where the images are served from
 
 module.exports = {
+  getAll: async () => {
+    let url = `http://localhost:3001/api/accounts/getAll`;
+
+    try {
+      let response = await axios.get(url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 200) {
+        return response.data
+      }
+    } catch (error) {
+      console.error("Error fetching users", error);
+    }
+  },
+
   getOne: async (email) => {
     if (!email) {
       console.error("No email provided");

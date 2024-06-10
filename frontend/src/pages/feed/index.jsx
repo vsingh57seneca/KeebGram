@@ -19,7 +19,7 @@ const index = () => {
 
     const fetchPosts = async () => {
       const postArray = await Posts.getAll();
-      setPosts(postArray.data.reverse())
+      setPosts(postArray?.reverse())
     };
     fetchPosts();
   }, []);

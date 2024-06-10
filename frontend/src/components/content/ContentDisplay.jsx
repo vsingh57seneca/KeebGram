@@ -3,12 +3,11 @@ import Posts from "@/functions/Posts";
 import PostDisplay from "../posts/PostDisplay";
 
 const ContentDisplay = ({ posts, setPosts }) => {
-
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         let results = await Posts.getAll();
-        setPosts(results.data.reverse());
+        setPosts(results);
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
@@ -19,16 +18,18 @@ const ContentDisplay = ({ posts, setPosts }) => {
 
   return (
     <>
-      <div>
-        {!posts || posts.length < 1 ? (
+      <div className="h-full">
+        {posts?.length < 1 ? (
           <div className="flex items-center justify-center h-full">
             No Posts Available
           </div>
-        )           : posts?.map((post, index) => (
-          <div key={index} className={`flex w-full`}>
-            <PostDisplay post={post} />
-          </div>
-        ))}
+        ) : (
+          posts?.map((post, index) => (
+            <div key={index} className={`flex w-full`}>
+              <PostDisplay post={post} />
+            </div>
+          ))
+        )}
       </div>
     </>
   );

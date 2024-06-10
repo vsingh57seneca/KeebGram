@@ -13,7 +13,7 @@ module.exports = {
         });
   
         if (response.status === 200) {
-          return response
+          return response.data;
         }
       } catch (error) {
         return error
