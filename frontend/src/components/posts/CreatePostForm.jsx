@@ -57,7 +57,7 @@ const CreatePostForm = ({
 
     if (results.status === 201) {
       let results = await Posts.getAll();
-      setPosts(results.data.reverse());
+      setPosts(results?.reverse());
       setFile(null);
       setMessage("")
       onClose();

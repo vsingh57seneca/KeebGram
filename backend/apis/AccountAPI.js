@@ -4,6 +4,24 @@ const multer = require('multer');
 
 const router = express.Router();
 
+router.get("/getAll", (req, res) => {
+  const query = "SELECT * FROM accounts";
+
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send("Error");
+      return;
+    }
+    if(results.length >0) {
+      const users = results;
+
+      res.status(200).json(users);
+    } else {
+      res.status(404).send("No users found.")
+    }
+  })
+})
+
 router.get("/getOneByEmail", (req, res) => {
   const { email } = req.query;
 
