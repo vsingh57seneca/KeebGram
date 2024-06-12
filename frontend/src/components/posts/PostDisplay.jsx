@@ -4,19 +4,17 @@ import { useAtom } from "jotai";
 import { displayImageAtom } from "../../../store";
 import Account from "@/functions/Accounts";
 
-const PostDisplay = ({ post }) => {
+const PostDisplay = ({ post, owner }) => {
   const [displayImage, setDisplayImage] = useAtom(displayImageAtom);
   const [user, setUser] = useState({});
-  const [owner, setOwner] = useState({});
+  const [postDetails, setPostDetails] = useState([]);
 
   useEffect(() => {
+
+    console.log(owner);
     const fetchUserAndOwner = async () => {
       const storedUser = JSON.parse(localStorage.getItem("user"));
       setUser(storedUser);
-      if (post?.account_id) {
-        const ownerData = await Account.getOneById(post.account_id);
-        setOwner(ownerData);
-      }
     };
 
     fetchUserAndOwner();
@@ -38,7 +36,7 @@ const PostDisplay = ({ post }) => {
               className="w-12 h-12 rounded-full object-cover"
             />
             <div className="flex flex-col">
-              <h1 className="font-semibold">{owner?.display_name}</h1>
+              <h1 className="font-semibold">{owner}</h1>
               <p className="text-xs">{post.created_at}</p>
             </div>
           </div>
