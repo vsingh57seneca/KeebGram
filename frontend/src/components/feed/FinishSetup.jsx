@@ -44,7 +44,7 @@ const FinishSetup = ({ user }) => {
 
     let response = await Account.update(updatedUser);
     console.log(response)
-    toast(response.data)
+    toast.success(response.data)
 
     if(response.status === 200) {
       response = await Account.getOne(user?.email)
@@ -109,7 +109,7 @@ const FinishSetup = ({ user }) => {
               <div className="label">
                 <span className="label-text">Country</span>
               </div>
-              <div className="dropdown">
+              <div className="dropdown z-10">
                 <div
                   tabIndex={0}
                   role="button"
