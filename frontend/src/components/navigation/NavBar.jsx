@@ -75,7 +75,7 @@ const NavBar = ({ user, posts, setPosts }) => {
           </ul>
           <ul className="p-4 space-y-2 text-md">
             <li
-              onClick={() => router.push("/admin")}
+              onClick={() => router.push("/admin/dashboard")}
               className={`${
                 user?.is_admin ? "flex" : "hidden"
               } items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit`}

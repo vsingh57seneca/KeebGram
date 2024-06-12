@@ -24,11 +24,15 @@ const ContentDisplay = ({ posts, setPosts }) => {
             No Posts Available
           </div>
         ) : (
-          posts?.map((post, index) => (
-            <div key={index} className={`flex w-full`}>
-              <PostDisplay post={post} />
+          <>
+            <div className="p-2">
+              {posts?.map((post, index) => (
+              <div key={index} className={`flex w-full`}>
+                <PostDisplay post={post} />
+              </div>
+              )) }
             </div>
-          ))
+          </>
         )}
       </div>
     </>
