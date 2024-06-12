@@ -5,6 +5,7 @@ import Account from "@/functions/Accounts.js";
 import Posts from "@/functions/Posts.js";
 import { useAtom } from "jotai";
 import { postsAtom, userAtom } from "../../../store";
+import FinishSetup from "@/components/feed/FinishSetup";
 
 const index = () => {
   const [user, setUser] = useAtom(userAtom);
@@ -16,7 +17,6 @@ const index = () => {
     if (storedUser && storedUser.email) {
       Account.getOne(storedUser.email);
     }
-
     const fetchPosts = async () => {
       const postArray = await Posts.getAll();
       setPosts(postArray?.reverse())
@@ -24,9 +24,16 @@ const index = () => {
     fetchPosts();
   }, []);
 
+  useEffect(() => {
+    console.log(user)
+    if(!user?.setup_finished) {
+      console.log("finish setup")
+    }
+  }, [user])
+
   return (
     <>
-      <ContentDisplay posts={posts} setPosts={setPosts} />
+      {!user?.setup_finished ? <FinishSetup user={user} /> :       <ContentDisplay posts={posts} setPosts={setPosts} />}
     </>
   );
 };
