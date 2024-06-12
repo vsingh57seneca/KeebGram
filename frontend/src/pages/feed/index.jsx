@@ -24,16 +24,9 @@ const index = () => {
     fetchPosts();
   }, []);
 
-  useEffect(() => {
-    console.log(user)
-    if(!user?.setup_finished) {
-      console.log("finish setup")
-    }
-  }, [user])
-
   return (
     <>
-      {!user?.setup_finished ? <FinishSetup user={user} /> :       <ContentDisplay posts={posts} setPosts={setPosts} />}
+      {!user?.setup_finished ? <FinishSetup user={user} /> : <ContentDisplay posts={posts} setPosts={setPosts} />}
     </>
   );
 };
