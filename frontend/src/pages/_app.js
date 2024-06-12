@@ -10,8 +10,13 @@ export default function App({ Component, pageProps }) {
   const [user, setUser] = useAtom(userAtom);
   const [posts, setPosts] = useAtom(postsAtom);
   const [isClient, setIsClient] = useState(false);
+  const [hideSecondaryOnRoot, setHideSecondaryOnRoot] = useState(false)
 
   useEffect(() => {
+    console.log(window.location.pathname)
+    if(window.location.pathname == '/') {
+      setHideSecondaryOnRoot(!hideSecondaryOnRoot);
+    }
     // This sets `isClient` to true when the component is mounted on the client side
     setIsClient(true);
   }, []);
@@ -40,8 +45,11 @@ export default function App({ Component, pageProps }) {
         </div>
       )}
       <div className="w-px bg-gradient-to-b from-white via-gray-700 to-white"></div>
-      <div className="md:min-h-screen h-[calc(100vh-58px)] p-4 overflow-hidden overflow-y-auto w-full">
-        <Component {...pageProps} />
+      <div className="md:min-h-screen p-4 h-[calc(100vh-58px)] overflow-hidden overflow-y-auto w-full flex">
+        <div className="w-full">
+          <Component {...pageProps} />
+        </div>
+        <div className={`lg:w-full lg:flex hidden ${isClient && window.location.pathname == "/" && 'lg:hidden'}`}></div>
       </div>
     </div>
   );

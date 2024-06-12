@@ -1,6 +1,4 @@
 const axios = require("axios");
-const { headers } = require("next/headers");
-const baseUrl = "http://localhost:3001/images/"; // Define the base URL where the images are served from
 
 module.exports = {
   getAll: async () => {

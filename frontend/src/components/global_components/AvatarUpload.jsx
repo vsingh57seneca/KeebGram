@@ -42,14 +42,14 @@ const AvatarUpload = ({ user, setDisplayImage, showModal, setShowModal }) => {
   return (
     <>
       <button
-        className="btn btn-success btn-sm text-white"
+        className="btn btn-success btn-xs text-white"
         onClick={() => setShowModal(true)} // Update this line
       >
         Upload
       </button>
       {showModal && (
         <dialog id="upload_avatar_modal" className="modal" open>
-          <div className="modal-box bg-white">
+          <div className="modal-box bg-white border-2">
             <h3 className="font-bold text-lg">Upload Display Image</h3>
             <p className="py-4">
               <input

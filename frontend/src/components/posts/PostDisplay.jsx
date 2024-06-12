@@ -30,7 +30,7 @@ const PostDisplay = ({ post }) => {
 
   return (
     <>
-      <div className="border w-full lg:w-1/3 md:w-3/4 xl:1/5">
+      <div className="border w-full">
         <div className="flex flex-col">
           <div className="flex items-center gap-x-4 p-2">
             <img
@@ -42,9 +42,17 @@ const PostDisplay = ({ post }) => {
               <p className="text-xs">{post.created_at}</p>
             </div>
           </div>
-          <div className="w-fit p-4">
-          <img className="rounded-lg" src={post?.content_image} />
-          <p>{post.content_text}</p>
+          <div className="w-fit p-4 flex flex-col gap-y-4">
+            <p>{post.content_text}</p>
+            <div className="max-h-96 overflow-hidden overflow-y-auto no-scrollbar">
+              {post?.content_image && (
+                <img
+                  className="rounded-lg"
+                  src={post?.content_image}
+                  width={300}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
