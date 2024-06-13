@@ -35,6 +35,7 @@ const Index = () => {
 
   useEffect(() => {
     socket.on("refresh_posts", () => {
+      console.log("Refresh posts");
       fetchPosts();
     });
   }, [socket]);
