@@ -1,22 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { MdAccountCircle, MdImage } from "react-icons/md";
 
-import { DEBUG, API_URL, IMAGE_URL } from "../../../config";
+import { DEBUG, API_URL } from "../../../config";
 
 const PostDisplay = ({ post, owner }) => {
-  const [imageURL, setImageURL] = useState("");
-  console.log(`${IMAGE_URL}${owner?.account_id}.jpg`)
-  useEffect(() => {
-    // console.log(IMAGE_URL)
-  }, [IMAGE_URL])
-
   return (
     <>
       <div className="border w-full">
         <div className="flex flex-col">
           <div className="flex items-center gap-x-4 p-2">
             <img
-              src={`${IMAGE_URL}${owner?.account_id}.jpg` ? `${IMAGE_URL}${owner?.account_id}.jpg` : <MdAccountCircle />}
+              src={`${API_URL[DEBUG]}/images/avatar_${owner?.account_id}.jpg`}
               className="w-12 h-12 rounded-full object-cover"
             />
             <div className="flex flex-col">
