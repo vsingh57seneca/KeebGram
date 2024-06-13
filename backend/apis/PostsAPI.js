@@ -28,8 +28,6 @@ router.get("/getAll", (req, res) => {
 router.post("/create", (req, res) => {
   const { account_id, content_text, content_image } = req.body;
 
-  console.log(req.body);
-
   const query = "CALL create_post(?, ?, ?, ?, @ok); SELECT @ok AS ok;";
   const date = formatDate(Date.now());
   db.query(

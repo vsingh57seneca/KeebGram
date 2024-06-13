@@ -7,15 +7,12 @@ const ContentDisplay = ({ posts, setPosts }) => {
   const [postDetails, setPostDetails] = useState([]);
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchPostsDetails = async () => {
       try {
-        let results = await Posts.getAll();
-        setPosts(results);
-
         const details = await Promise.all(
           posts.map(async (post) => {
             const account = await Accounts.getOneById(post?.account_id);
-            return { ...post, account }
+            return { ...post, account };
           })
         );
 
@@ -25,13 +22,12 @@ const ContentDisplay = ({ posts, setPosts }) => {
         }, {});
 
         setPostDetails(postDetailsMap);
-
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
     };
 
-    fetchPosts();
+    fetchPostsDetails();
   }, []);
 
   return (
@@ -45,10 +41,13 @@ const ContentDisplay = ({ posts, setPosts }) => {
           <>
             <div className="p-2">
               {posts?.map((post, index) => (
-              <div key={index} className={`flex w-full`}>
-                <PostDisplay post={post} owner={postDetails[post?.account_id]?.display_name} />
-              </div>
-              )) }
+                <div key={index} className={`flex w-full`}>
+                  <PostDisplay
+                    post={post}
+                    owner={postDetails[post?.account_id]}
+                  />
+                </div>
+              ))}
             </div>
           </>
         )}

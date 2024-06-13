@@ -7,13 +7,13 @@ import Account from "@/functions/Accounts";
 import React, { useState, useEffect } from "react";
 
 export default function App({ Component, pageProps }) {
+
   const [user, setUser] = useAtom(userAtom);
   const [posts, setPosts] = useAtom(postsAtom);
   const [isClient, setIsClient] = useState(false);
   const [hideSecondaryOnRoot, setHideSecondaryOnRoot] = useState(false)
 
   useEffect(() => {
-    console.log(window.location.pathname)
     if(window.location.pathname == '/') {
       setHideSecondaryOnRoot(!hideSecondaryOnRoot);
     }
