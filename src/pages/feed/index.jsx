@@ -1,5 +1,4 @@
 import ContentDisplay from "@/components/content/ContentDisplay";
-import NavBar from "@/components/navigation/NavBar";
 import React, { useEffect } from "react";
 import Account from "@/functions/Accounts.js";
 import Posts from "@/functions/Posts.js";
@@ -17,7 +16,7 @@ const Index = () => {
     const postArray = await Posts.getAll();
     if (postArray.length > 0) {
       const reversedArray = await postArray.reverse();
-      return reversedArray;
+      return setPosts(reversedArray);
     } else if (postArray?.response.status === 404) {
       toast.error(postArray?.response?.data);
     }
@@ -35,6 +34,7 @@ const Index = () => {
 
   useEffect(() => {
     socket.on("refresh_posts", () => {
+      console.log("Refresh posts");
       fetchPosts();
     });
   }, [socket]);

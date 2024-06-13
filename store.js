@@ -2,7 +2,8 @@ import { atom } from 'jotai';
 import io from 'socket.io-client'
 import { DEBUG, API_URL} from './config';
 
-const socket = io.connect(`${API_URL[DEBUG]}`);
+const options = DEBUG === 0 ? { secure: true } : {};
+const socket = io.connect(API_URL[DEBUG], options);
 
 export const userAtom = atom({});
 export const displayImageAtom = atom("");
