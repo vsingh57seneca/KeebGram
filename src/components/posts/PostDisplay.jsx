@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MdAccountCircle, MdImage } from "react-icons/md";
 
-import { DEBUG, API_URL } from "../../../config";
+import { DEBUG, API_URL, IMAGE_URL } from "../../../config";
 
 const PostDisplay = ({ post, owner }) => {
   return (
@@ -10,7 +10,7 @@ const PostDisplay = ({ post, owner }) => {
         <div className="flex flex-col">
           <div className="flex items-center gap-x-4 p-2">
             <img
-              src={`${API_URL[DEBUG]}/api/images/avatar_${owner?.account_id}.jpg` ? `${API_URL[DEBUG]}/api/images/avatar_${owner?.account_id}.jpg` : <MdAccountCircle />}
+              src={`${IMAGE_URL}${owner?.account_id}.jpg` ? `${IMAGE_URL}${owner?.account_id}.jpg` : <MdAccountCircle />}
               className="w-12 h-12 rounded-full object-cover"
             />
             <div className="flex flex-col">
