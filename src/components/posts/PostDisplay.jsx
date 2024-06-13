@@ -10,7 +10,7 @@ const PostDisplay = ({ post, owner }) => {
         <div className="flex flex-col">
           <div className="flex items-center gap-x-4 p-2">
             <img
-              src={`${API_URL[DEBUG]}/api/images/avatar_${owner?.account_id}.jpg` ? `${API_URL[DEBUG]}/api/images/avatar_${owner?.account_id}.jpg` : <MdAccountCircle />}
+              src={`${API_URL[DEBUG]}/images/avatar_${owner?.account_id}.jpg`}
               className="w-12 h-12 rounded-full object-cover"
             />
             <div className="flex flex-col">

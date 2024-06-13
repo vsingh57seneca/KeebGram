@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 import io from 'socket.io-client'
-import { DEBUG, API_URL } from './config';
+import { DEBUG, API_URL} from './config';
 
 const socket = io.connect(`${API_URL[DEBUG]}`);
 
