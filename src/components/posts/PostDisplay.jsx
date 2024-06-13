@@ -4,6 +4,12 @@ import { MdAccountCircle, MdImage } from "react-icons/md";
 import { DEBUG, API_URL, IMAGE_URL } from "../../../config";
 
 const PostDisplay = ({ post, owner }) => {
+  const [imageURL, setImageURL] = useState("");
+  console.log(`${IMAGE_URL}${owner?.account_id}.jpg`)
+  useEffect(() => {
+    // console.log(IMAGE_URL)
+  }, [IMAGE_URL])
+
   return (
     <>
       <div className="border w-full">
