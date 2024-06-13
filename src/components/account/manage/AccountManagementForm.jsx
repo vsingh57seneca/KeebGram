@@ -8,7 +8,7 @@ import Account from "../../../functions/Accounts.js";
 import AvatarUpload from "@/components/global_components/AvatarUpload";
 import { useAtom } from "jotai";
 import { displayImageAtom } from "../../../../store";
-import VendorApplicationForm from "./VendorApplicationForm";
+import { DEBUG, API_URL } from "../../../../config";
 
 const AccountManagementForm = ({ user }) => {
   const router = useRouter();
@@ -48,7 +48,7 @@ const AccountManagementForm = ({ user }) => {
       setGender(user.gender || "");
       setEmail(user.email || "");
       setDisplayImage(
-        `http://localhost:3001/images/avatar_${user.account_id}.jpg`
+        `${API_URL[DEBUG]}/images/avatar_${user.account_id}.jpg`
       );
     }
   }, [user]);

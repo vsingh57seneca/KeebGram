@@ -1,8 +1,9 @@
 const axios = require("axios");
+import { DEBUG, API_URL } from "../../config";
 
 module.exports = {
   getAll: async () => {
-    let url = "http://localhost:3001/api/posts/getAll";
+    let url = `${API_URL[DEBUG]}/api/posts/getAll`;
 
     try {
         // Send a GET request to the server
@@ -28,7 +29,7 @@ module.exports = {
         }
 
         let reqOptions = {
-            url: "http://localhost:3001/api/posts/create",
+            url: `${API_URL[DEBUG]}/api/posts/create`,
             method: "POST",
             data: {
                 account_id: post.account_id,
@@ -50,7 +51,7 @@ module.exports = {
   },
 
   next: async () => {
-    let url = "http://localhost:3001/api/posts/next";
+    let url = `${API_URL[DEBUG]}/api/posts/next`;
 
     try {
         // Send a GET request to the server
