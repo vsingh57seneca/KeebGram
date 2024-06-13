@@ -1,8 +1,9 @@
 const axios = require("axios");
+import { DEBUG, API_URL } from "../../config";
 
 module.exports = {
   getAll: async () => {
-    let url = `http://localhost:3001/api/accounts/getAll`;
+    let url = `${API_URL[DEBUG]}/api/accounts/getAll`;
 
     try {
       let response = await axios.get(url, {
@@ -26,7 +27,7 @@ module.exports = {
     }
 
     // Construct the URL with the email parameter
-    let url = `http://localhost:3001/api/accounts/getOneByEmail?email=${email}`;
+    let url = `${API_URL[DEBUG]}/api/accounts/getOneByEmail?email=${email}`;
 
     try {
       // Send a GET request to the server
@@ -50,7 +51,7 @@ module.exports = {
       return;
     }
 
-    let url = `http://localhost:3001/api/accounts/getOneById?id=${id}`;
+    let url = `${API_URL[DEBUG]}/api/accounts/getOneById?id=${id}`;
 
     try {
       let response = await axios.get(url, {
@@ -74,7 +75,7 @@ module.exports = {
       }
 
       let reqOptions = {
-        url: "http://localhost:3001/api/accounts/create",
+        url: `${API_URL[DEBUG]}/api/accounts/create`,
         method: "POST",
         data: {
           email: user?.email,
@@ -106,7 +107,7 @@ module.exports = {
     }
 
     let reqOptions = {
-      url: "http://localhost:3001/api/accounts/update",
+      url: `${API_URL[DEBUG]}/api/accounts/update`,
       method: "POST",
       data: {
         firstName: updatedUser.firstName,
@@ -135,7 +136,7 @@ module.exports = {
   delete: async (email) => {
     try {
       const response = await axios.delete(
-        "http://localhost:3001/api/accounts/delete",
+        `${API_URL[DEBUG]}/api/accounts/delete`,
         {
           params: {
             email: email, // Pass the email as a query parameter

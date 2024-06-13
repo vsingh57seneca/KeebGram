@@ -3,6 +3,7 @@ import CreateAccountModal from "./CreateAccountModal";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
+import { DEBUG, API_URL } from "../../../config";
 
 const SignInForm = () => {
   const router = useRouter();
@@ -18,7 +19,7 @@ const SignInForm = () => {
 
     try {
       let reqOptions = {
-        url: "http://localhost:3001/api/accounts/login",
+        url: `${API_URL[DEBUG]}/api/accounts/login`,
         method: "POST",
         data: {
           email: email,

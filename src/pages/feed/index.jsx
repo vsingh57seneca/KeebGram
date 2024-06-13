@@ -15,9 +15,12 @@ const Index = () => {
 
   const fetchPosts = async () => {
     const postArray = await Posts.getAll();
-    const reversedArray = await postArray.reverse();
-    console.log(reversedArray)
-    return reversedArray
+    if (postArray.length > 0) {
+      const reversedArray = await postArray.reverse();
+      return reversedArray;
+    } else if (postArray?.response.status === 404) {
+      toast.error(postArray?.response?.data);
+    }
   };
 
   useEffect(() => {
@@ -31,11 +34,10 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    socket.on('refresh_posts', () => {
+    socket.on("refresh_posts", () => {
       fetchPosts();
-    })
+    });
   }, [socket]);
-
 
   return (
     <>

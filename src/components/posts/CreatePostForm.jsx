@@ -6,6 +6,7 @@ import { useAtom } from "jotai";
 import { displayImageAtom } from "../../../store";
 import fFile from "@/functions/Files";
 import socket from "../../../store";
+import { DEBUG, API_URL } from "../../../config";
 
 const CreatePostForm = ({
   showModal,
@@ -47,7 +48,7 @@ const CreatePostForm = ({
       account_id: user?.account_id,
       content_text: message,
       content_image: file
-        ? `http://localhost:3001/images/post_${nextPostId}.jpg`
+        ? `${API_URL[DEBUG]}/images/post_${nextPostId}.jpg`
         : null,
       created_at: Date.now(),
     };

@@ -1,8 +1,9 @@
 const axios = require("axios");
+import { DEBUG, API_URL } from "../../config";
 
 module.exports = {
     getAll: async () => {
-        let url = `http://localhost:3001/api/vendors/getAll`;
+        let url = `${API_URL[DEBUG]}/api/vendors/getAll`;
     
         try {
           let response = await axios.get(url, {
@@ -26,7 +27,7 @@ module.exports = {
             }
 
             let reqOptions = {
-                url: "http://localhost:3001/api/vendors/create",
+                url: `${API_URL[DEBUG]}/api/vendors/create`,
                 method: "POST",
                 data: {
                     vendor: vendor
@@ -47,7 +48,7 @@ module.exports = {
       try {
         console.log(application)
         const response = await axios.post(
-          "http://localhost:3001/api/vendors/delete",
+          `${API_URL[DEBUG]}/api/vendors/delete`,
           {
             application: application, // Pass the application data in the body
           }
@@ -69,7 +70,7 @@ module.exports = {
     approve: async (application_id) => {
       try {
         const response = await axios.post(
-          "http://localhost:3001/api/vendors/approve",
+          `${API_URL[DEBUG]}/api/vendors/approve`,
           {
             application_id: application_id
           }
