@@ -35,10 +35,6 @@ const VendorApplicationsView = () => {
     fetchApplications();
   }, []);
 
-  useEffect(() => {
-    console.log(accountDetails);
-  }, [accountDetails]);
-
   const handleApprove = async (application_id) => {
     console.log("Approve:", application_id);
     // Add your approval logic here

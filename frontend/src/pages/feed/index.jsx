@@ -1,15 +1,24 @@
 import ContentDisplay from "@/components/content/ContentDisplay";
 import NavBar from "@/components/navigation/NavBar";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Account from "@/functions/Accounts.js";
 import Posts from "@/functions/Posts.js";
 import { useAtom } from "jotai";
 import { postsAtom, userAtom } from "../../../store";
 import FinishSetup from "@/components/feed/FinishSetup";
+import socket from "../../../store";
+import toast from "react-hot-toast";
 
-const index = () => {
+const Index = () => {
   const [user, setUser] = useAtom(userAtom);
   const [posts, setPosts] = useAtom(postsAtom);
+
+  const fetchPosts = async () => {
+    const postArray = await Posts.getAll();
+    const reversedArray = await postArray.reverse();
+    console.log(reversedArray)
+    return reversedArray
+  };
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -17,18 +26,26 @@ const index = () => {
     if (storedUser && storedUser.email) {
       Account.getOne(storedUser.email);
     }
-    const fetchPosts = async () => {
-      const postArray = await Posts.getAll();
-      setPosts(postArray?.reverse())
-    };
-    fetchPosts();
+    let fetchedPosts = fetchPosts();
+    setPosts(fetchedPosts);
   }, []);
+
+  useEffect(() => {
+    socket.on('refresh_posts', () => {
+      fetchPosts();
+    })
+  }, [socket]);
+
 
   return (
     <>
-      {!user?.setup_finished ? <FinishSetup user={user} /> : <ContentDisplay posts={posts} setPosts={setPosts} />}
+      {!user?.setup_finished ? (
+        <FinishSetup user={user} />
+      ) : (
+        <ContentDisplay posts={posts} setPosts={setPosts} />
+      )}
     </>
   );
 };
 
-export default index;
+export default Index;

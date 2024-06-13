@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useAtom } from "jotai";
 import { displayImageAtom } from "../../../store";
 import fFile from "@/functions/Files";
+import socket from "../../../store";
 
 const CreatePostForm = ({
   showModal,
@@ -57,9 +58,10 @@ const CreatePostForm = ({
 
     if (results.status === 201) {
       let results = await Posts.getAll();
-      setPosts(results?.reverse());
+      setPosts(results);
       setFile(null);
       setMessage("")
+      socket.emit('post_created');
       onClose();
     } else {
       toast.error(results);
