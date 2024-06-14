@@ -1,7 +1,6 @@
 const DEBUG = 0
 
 const API_URL = ["https://keebgram-backend.vercel.app", "http://localhost:3001"]
-const SOCKET_URL = ["https://keebgram-backend.vercel.app:3002", "http://localhost:3002"]
 const FRONTEND_URL = ["https://keebgram.vercel.app", "http://localhost:3000"]
 
 module.exports = {
