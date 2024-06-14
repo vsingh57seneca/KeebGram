@@ -16,6 +16,7 @@ const NavBar = ({ user, posts, setPosts }) => {
 
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
 
+
   useEffect(() => {
     if (user == null) {
       router.push("/");

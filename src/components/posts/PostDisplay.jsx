@@ -15,11 +15,11 @@ const PostDisplay = ({ post, owner }) => {
             />
             <div className="flex flex-col">
               <h1 className="font-semibold">{owner?.display_name}</h1>
-              <p className="text-xs">{post.created_at}</p>
+              <p className="text-xs">{post?.created_at}</p>
             </div>
           </div>
           <div className="w-fit p-4 flex flex-col gap-y-4">
-            <p>{post.content_text}</p>
+            <p>{post?.content_text}</p>
             <div className="max-h-96 overflow-hidden overflow-y-auto no-scrollbar">
               {post?.content_image && (
                 <img
