@@ -16,7 +16,7 @@ module.exports = {
             return response.data
           }
         } catch (error) {
-          console.error("Error fetching applications", error);
+          return error;
         }
       },
 

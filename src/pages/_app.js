@@ -19,6 +19,7 @@ export default function App({ Component, pageProps }) {
     }
     // This sets `isClient` to true when the component is mounted on the client side
     setIsClient(true);
+
   }, []);
 
   return (
