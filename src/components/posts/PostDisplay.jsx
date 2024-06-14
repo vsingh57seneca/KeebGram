@@ -4,7 +4,6 @@ import { MdAccountCircle, MdImage } from "react-icons/md";
 import { DEBUG, API_URL } from "../../../config";
 
 const PostDisplay = ({ post, owner }) => {
-  console.log(`${API_URL[DEBUG]}/images/avatar_${owner?.account_id}.jpg`)
   return (
     <>
       <div className="border w-full">

@@ -1,5 +1,4 @@
 import ContentDisplay from "@/components/content/ContentDisplay";
-import NavBar from "@/components/navigation/NavBar";
 import React, { useEffect } from "react";
 import Account from "@/functions/Accounts.js";
 import Posts from "@/functions/Posts.js";
@@ -35,6 +34,7 @@ const Index = () => {
 
   useEffect(() => {
     socket.on("refresh_posts", () => {
+      console.log("Refresh posts");
       fetchPosts();
     });
   }, [socket]);
