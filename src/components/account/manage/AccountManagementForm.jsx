@@ -9,6 +9,7 @@ import AvatarUpload from "@/components/global_components/AvatarUpload";
 import { useAtom } from "jotai";
 import { displayImageAtom } from "../../../../store";
 import { DEBUG, API_URL } from "../../../../config";
+import AddProductForm from "../../products/AddProductForm";
 
 const AccountManagementForm = ({ user }) => {
   const router = useRouter();
@@ -28,6 +29,8 @@ const AccountManagementForm = ({ user }) => {
   const [displayImage, setDisplayImage] = useAtom(displayImageAtom);
 
   const [showModal, setShowModal] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [showAddProductModal, setShowAddProductModal] = useState(false);
 
   useEffect(() => {
     setCountries(countryList);
@@ -47,11 +50,32 @@ const AccountManagementForm = ({ user }) => {
       setCountry(user.country || "");
       setGender(user.gender || "");
       setEmail(user.email || "");
-      setDisplayImage(
-        `${API_URL[DEBUG]}/images/avatar_${user.account_id}.jpg`
-      );
+      setDisplayImage(`${API_URL[DEBUG]}/images/avatar_${user.account_id}.jpg`);
+
+      if (user.is_vendor) {
+        (async () => {
+          const vendorId = await Account.getVendorByAccountId(user.account_id);
+          fetchProducts(vendorId);
+        })();
+      }
     }
   }, [user]);
+
+  const fetchProducts = async (vendorId) => {
+    console.log("Fetching products for vendor ID:", vendorId); // Debugging
+    const response = await Account.getProductsByVendorId(vendorId);
+    console.log("Response from fetchProducts:", response); // Debugging
+
+    if (response) {
+      setProducts(response);
+    } else {
+      console.error("No products found for vendor ID:", vendorId); // Debugging
+    }
+  };
+
+  const handleProductClick = (productId) => {
+    router.push(`/product/${productId}`);
+  };
 
   const handleSubmit = async () => {
     let response = await Account.update({
@@ -237,6 +261,49 @@ const AccountManagementForm = ({ user }) => {
           </div>
         </div>
       </div>
+
+      {user?.is_vendor && (
+        <div className="p-4 bg-white shadow rounded-lg space-y-4 overflow-auto">
+          <h1 className="font-semibold text-xl mb-4 text-gray-800">
+            Products
+          </h1>
+          <ul className="space-y-3">
+            {products.length > 0 ? (
+              products.map((product) => (
+                <li
+                  key={product.id}
+                  className="p-1 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-100 transition duration-200"
+                  onClick={() => handleProductClick(product.product_id)}
+                >
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium text-gray-700 text-xs">
+                      {product.name}
+                    </span>
+                    <span className="text-gray-500 text-xs">
+                      Units: {product.unit_count}
+                    </span>
+                  </div>
+                </li>
+              ))
+            ) : (
+              <li className="text-gray-500">No products available</li>
+            )}
+          </ul>
+          <button
+            className="btn btn-sm mt-6 w-full bg-green-500 text-white font-semibold py-2 rounded hover:bg-green-600 transition duration-200"
+            onClick={() => setShowAddProductModal(true)}
+          >
+            Add Product
+          </button>
+        </div>
+      )}
+
+      {showAddProductModal && (
+        <AddProductForm
+          onClose={() => setShowAddProductModal(false)}
+          fetchProducts={fetchProducts}
+        />
+      )}
     </>
   );
 };
