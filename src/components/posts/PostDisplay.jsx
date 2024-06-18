@@ -11,19 +11,31 @@ import { useAtom } from "jotai";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import EditPostForm from "./EditPostForm";
 
-const handleLikePost = async (postId, accountId) => {
+const handleLikePost = async (postId, accountId, liked, setLiked) => {
   console.log(
     `inside handleLikePost with post_id: ${postId} and account_id: ${accountId}`
   );
   if (postId) {
-    let response = await Like.add(postId, accountId);
-    console.log(response);
+    if (liked) {
+      let response = await Like.delete(postId, accountId);
+      console.log(response);
+      if (response.status === 200) {
+        setLiked(false);
+      }
+    } else {
+      let response = await Like.add(postId, accountId);
+      console.log(response);
+      if (response.status === 201) {
+        setLiked(true);
+      }
+    }
   }
 };
 
 const PostDisplay = ({ post, owner }) => {
   const [comments, setComments] = useState({});
   const [showComments, setShowComments] = useState(false);
+  const [liked, setLiked] = useState(false);
   const [posts, setPosts] = useAtom(postsAtom);
   const [user, setUser] = useAtom(userAtom);
   const [selectedPost, setselectedPost] = useState({});
@@ -38,9 +50,18 @@ const PostDisplay = ({ post, owner }) => {
     }
   };
 
+  const isPostLiked = async (post_id, account_id) => {
+    const liked = await Like.isPostLiked(post_id, account_id);
+    setLiked(liked);
+  }
+
   useEffect(() => {
     fetchComments(post?.post_id);
   }, [post]);
+
+  useEffect(() => {
+    isPostLiked(post?.post_id, user?.account_id);
+  }, [post, user]);
 
   return (
     <>
@@ -91,13 +112,25 @@ const PostDisplay = ({ post, owner }) => {
           </div>
         </div>
         <div className="p-2 flex flex-col gap-y-4">
-          {post?.account_id === user?.account_id && <EditPostForm post={post} key={post?.post_id}/>}
-            <div
-              className="cursor-pointer flex"
-              onClick={() => handleLikePost(post?.post_id, owner?.account_id)}
-            >
+          <div
+            className={`cursor-pointer flex ${
+              post?.account_id != user?.account_id && "hidden"
+            }`}
+          >
+            <MdOutlineEdit size={25} />
+          </div>
+          <div
+            className={`cursor-pointer flex ${
+              post?.account_id == user?.account_id && "hidden"
+            }`}
+            onClick={() => handleLikePost(post?.post_id, user?.account_id, liked, setLiked)}
+          >
+             {liked ? (
+              <GoHeartFill className="text-red-500" size={25} />
+            ) : (
               <GoHeart size={25} />
-            </div>
+            )}
+          </div>
         </div>
       </div>
     </>
