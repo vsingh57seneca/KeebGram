@@ -9,6 +9,7 @@ import CreateComment from "../comments/CreateComment";
 import socket, { postsAtom, userAtom } from "../../../store";
 import { useAtom } from "jotai";
 import { GoHeart, GoHeartFill } from "react-icons/go";
+import EditPostForm from "./EditPostForm";
 
 const handleLikePost = async (postId, accountId) => {
   console.log(
@@ -25,6 +26,7 @@ const PostDisplay = ({ post, owner }) => {
   const [showComments, setShowComments] = useState(false);
   const [posts, setPosts] = useAtom(postsAtom);
   const [user, setUser] = useAtom(userAtom);
+  const [selectedPost, setselectedPost] = useState({});
 
   const fetchComments = async (post_id) => {
     const comments = await Comment.getAll(post_id);
@@ -43,7 +45,7 @@ const PostDisplay = ({ post, owner }) => {
   return (
     <>
       <div className="flex border w-full justify-between">
-        <div className="relative w-full">
+        <div className="w-full">
           <div className="flex flex-col">
             <div className="flex items-center gap-x-4 p-2 w-fit">
               <img
@@ -57,10 +59,10 @@ const PostDisplay = ({ post, owner }) => {
             </div>
             <div className="w-fit p-4 flex flex-col gap-y-4">
               <p>{post?.content_text}</p>
-              <div className="max-h-96 overflow-hidden overflow-y-auto no-scrollbar">
+              <div className="overflow-hidden overflow-y-auto no-scrollbar">
                 {post?.content_image && (
                   <img
-                    className="rounded-lg w-fit"
+                    className="rounded-lg"
                     src={post?.content_image}
                     width={300}
                   />
@@ -89,22 +91,13 @@ const PostDisplay = ({ post, owner }) => {
           </div>
         </div>
         <div className="p-2 flex flex-col gap-y-4">
-          <div
-            className={`cursor-pointer flex ${
-              post?.account_id != user?.account_id && "hidden"
-            }`}
-          >
-            <MdOutlineEdit size={25} />
-          </div>
-          <div
-            className={`cursor-pointer flex ${
-              post?.account_id == user?.account_id && "hidden"
-            }`}
-            onClick={() => handleLikePost(post?.post_id, owner?.account_id)}
-          >
-            <GoHeart size={25} />
-            {/* <GoHeartFill className="text-red-500" size={25} /> */}
-          </div>
+          {post?.account_id === user?.account_id && <EditPostForm post={post} key={post?.post_id}/>}
+            <div
+              className="cursor-pointer flex"
+              onClick={() => handleLikePost(post?.post_id, owner?.account_id)}
+            >
+              <GoHeart size={25} />
+            </div>
         </div>
       </div>
     </>
