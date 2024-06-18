@@ -1,18 +1,43 @@
 import React, { useEffect, useState } from "react";
 import { MdAccountCircle, MdImage } from "react-icons/md";
-import Like from '@/functions/Likes';
-
+import Like from "@/functions/Likes";
+import Comment from "@/functions/Comments";
 import { DEBUG, API_URL } from "../../../config";
+import axios from "axios";
+import CommentsDisplay from "../comments/CommentsDisplay";
+import CreateComment from "../comments/CreateComment";
+import socket, { postsAtom } from "../../../store";
+import { useAtom } from "jotai";
 
 const handleLikePost = async (postId, accountId) => {
-  console.log(`inside handleLikePost with post_id: ${postId} and account_id: ${accountId}`);
+  console.log(
+    `inside handleLikePost with post_id: ${postId} and account_id: ${accountId}`
+  );
   if (postId) {
     let response = await Like.add(postId, accountId);
     console.log(response);
   }
-}
+};
 
 const PostDisplay = ({ post, owner }) => {
+  const [comments, setComments] = useState({});
+  const [showComments, setShowComments] = useState(false);
+  const [posts, setPosts] = useAtom(postsAtom);
+
+  const fetchComments = async (post_id) => {
+    const comments = await Comment.getAll(post_id);
+
+    if (comments?.fieldCount === 0) {
+      return;
+    } else {
+      setComments(comments);
+    }
+  };
+
+  useEffect(() => {
+    fetchComments(post?.post_id);
+  }, [post]);
+
   return (
     <>
       <div className="relative border w-full">
@@ -38,14 +63,36 @@ const PostDisplay = ({ post, owner }) => {
                 />
               )}
             </div>
-            <div className="absolute bottom-2 right-2 cursor-pointer" onClick={() => handleLikePost(post?.post_id, owner?.account_id)}>
-          <img 
-          src="/images/like/thumbs-up.png" 
-          alt="Thumbs Up" 
-          className="w-6 h-6"
-          />
-        </div>
+            <div
+              className="absolute top-2 right-2 cursor-pointer"
+              onClick={() => handleLikePost(post?.post_id, owner?.account_id)}
+            >
+              <img
+                src="/images/like/thumbs-up.png"
+                alt="Thumbs Up"
+                className="w-6 h-6"
+              />
+            </div>
           </div>
+        </div>
+        <div className="p-2">
+          {comments.length > 0 && (
+            <CommentsDisplay
+              comments={comments}
+              setShowComments={setShowComments}
+              showComments={showComments}
+              post={post}
+            />
+          )}
+        </div>
+
+        <div className="flex mt-2">
+          <CreateComment
+            post={post}
+            setShowComments={setShowComments}
+            showComments={showComments}
+            fetchComments={fetchComments}
+          />
         </div>
       </div>
     </>

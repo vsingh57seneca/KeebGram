@@ -50,6 +50,7 @@ module.exports = {
     }
   },
 
+  //Gets the next post_id available to create
   next: async () => {
     let url = `${API_URL[DEBUG]}/api/posts/next`;
 
