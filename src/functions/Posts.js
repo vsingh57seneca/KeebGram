@@ -34,6 +34,21 @@ module.exports = {
     }
   },
 
+  getLiked: async (account_id) => {
+    let url = `${API_URL[DEBUG]}/api/posts/getLiked?account_id=${account_id}`;
+
+    try {
+      let response = await axios.get(url);
+
+      if (response.status === 200) {
+        console.log(response.data);
+        return response.data[0];
+      }
+    } catch (error) {
+      return error;
+    }
+  },
+
   create: async (post) => {
     console.log(post);
     try {

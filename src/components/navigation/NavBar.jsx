@@ -3,6 +3,7 @@ import {
   MdCreateNewFolder,
   MdAccountBox,
   MdAdminPanelSettings,
+  MdFavorite,
 } from "react-icons/md";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -72,6 +73,13 @@ const NavBar = ({ user, posts, setPosts }) => {
             >
               <MdCreateNewFolder className="lg:mr-4" />
               <label className="lg:block hidden">Create</label>
+            </li>
+            <li
+              onClick={() => router.push("/posts/favorites")} 
+              className="flex items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit"
+            >
+              <MdFavorite className="lg:mr-4" />
+              <label className="lg:block hidden">Favorites</label>
             </li>
           </ul>
           <ul className="p-4 space-y-2 text-md">
