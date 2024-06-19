@@ -1,112 +1,165 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Account from "../../functions/Accounts.js";
+import Products from "@/functions/Products";
 import toast from "react-hot-toast";
-import EditProductForm from "./EditProductForm";
 
 const ProductDetails = () => {
   const router = useRouter();
   const { productId } = router.query;
   const [product, setProduct] = useState(null);
-  const [displayImage, setDisplayImage] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    price: "",
+    description: "",
+    unit_count: 0,
+  });
 
   useEffect(() => {
     if (productId) {
-      fetchProductDetails(productId);
+      fetchProductDetails();
     }
   }, [productId]);
 
-  const fetchProductDetails = async (id) => {
+  const fetchProductDetails = async () => {
     try {
-      const response = await Account.getProductById(id);
-      if (response) {
-        setProduct(response);
-        if (response.image_url) {
-          setDisplayImage(response.image_url);
-        } else {
-          setDisplayImage(null);
-        }
-      }
+      const productData = await Products.getProductById(productId);
+      setProduct(productData);
+      setFormData({
+        name: productData.name,
+        price: productData.price,
+        description: productData.description,
+        unit_count: productData.unit_count,
+      });
+      setLoading(false);
     } catch (error) {
-      toast.error("Failed to fetch product details");
-      console.error(error);
+      console.error("Error fetching product details:", error);
+      setLoading(false);
     }
   };
 
-  const handleEdit = () => {
-    setIsEditing(true);
+  const handleEdit = async () => {
+    try {
+      const updatedProduct = { ...product, ...formData };
+      const response = await Products.update(updatedProduct);
+
+      if (response.status === 200) {
+        setProduct(updatedProduct);
+        toast.success("Product updated successfully");
+        setIsEditing(false);
+      } else {
+        toast.error("Error updating product");
+      }
+    } catch (error) {
+      console.error("Error updating product:", error);
+      toast.error("An error occurred while updating the product");
+    }
   };
 
   const handleDelete = async () => {
     try {
-      const response = await Account.deleteProduct(productId);
+      const response = await Products.delete(productId);
+
       if (response.status === 200) {
         toast.success("Product deleted successfully");
-        router.push("/account/manage");
+        router.push("/account/manage"); // Redirect to the products list page
       } else {
-        toast.error("Failed to delete product");
+        toast.error("Error deleting product");
       }
     } catch (error) {
-      toast.error("Failed to delete product");
-      console.error(error);
+      console.error("Error deleting product:", error);
+      toast.error("An error occurred while deleting the product");
     }
   };
 
-  if (!product) {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  if (loading) {
     return <div>Loading...</div>;
   }
 
+  if (!product) {
+    return <div>Product not found</div>;
+  }
+
+  console.log(product)
+
   return (
-    <div className="max-w-4xl mx-auto mt-8 p-6 bg-white shadow-lg rounded-lg">
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">
+        Product Details for: {product.name}
+      </h1>
+      {/* temporarily removed the image */}
+      {/* <img
+        src={product.image_url}
+        alt={product.name}
+        className="w-full h-64 object-cover mb-4"
+      /> */}
       {isEditing ? (
-        <EditProductForm
-          product={product}
-          onClose={() => setIsEditing(false)}
-          fetchProducts={fetchProductDetails}
-        />
+        <div>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            className="block w-full p-2 mb-2 border"
+          />
+          <input
+            type="text"
+            name="price"
+            value={formData.price}
+            onChange={handleChange}
+            className="block w-full p-2 mb-2 border"
+          />
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            className="block w-full p-2 mb-2 border"
+          ></textarea>
+          <input
+            type="number"
+            name="unit_count"
+            value={formData.unit_count}
+            onChange={handleChange}
+            className="block w-full p-2 mb-2 border"
+          />
+          <button onClick={handleEdit} className="btn btn-primary mr-2">
+            Save
+          </button>
+          <button
+            onClick={() => setIsEditing(false)}
+            className="btn btn-secondary"
+          >
+            Cancel
+          </button>
+        </div>
       ) : (
-        <>
-          <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-semibold text-gray-800">
-              Product Details
-            </h1>
-            <div>
-              <button onClick={handleEdit} className="btn btn-warning mr-2">
-                Edit
-              </button>
-              <button onClick={handleDelete} className="btn btn-danger">
-                Delete
-              </button>
-            </div>
-          </div>
-          <div className="mt-4">
-            {/* <div className="flex items-center justify-center mb-4">
-              {displayImage ? (
-                <img
-                  src={displayImage}
-                  alt={product.name}
-                  className="max-h-80 object-contain"
-                />
-              ) : (
-                <p>No image available</p>
-              )}
-            </div> */}
-            <h2 className="text-xl font-semibold text-gray-700">
-              {product.name}
-            </h2>
-            <p className="text-gray-600">{product.description}</p>
-            <div className="mt-4">
-              <p className="text-gray-700">
-                <span className="font-semibold">Price:</span> ${product.price}
-              </p>
-              <p className="text-gray-700">
-                <span className="font-semibold">Units:</span>{" "}
-                {product.unit_count}
-              </p>
-            </div>
-          </div>
-        </>
+        <div>
+          <p className="text-lg mb-2">Price: ${product.price}</p>
+          <p className="text-lg mb-2">Units Remaining: {product.unit_count}</p>
+          <p className="text-lg mb-2">Description: {product.description}</p>
+          <p>Image: <img className="w-fit" src={product?.image_data} /></p>
+          <button
+            onClick={() => setIsEditing(true)}
+            className="btn btn-success mr-2"
+          >
+            Edit
+          </button>
+          <button onClick={handleDelete} className="btn btn-warning mr-2">
+            Delete
+          </button>
+          <button onClick={() => router.back()} className="btn btn-dark mt-2">
+            Back
+          </button>
+        </div>
       )}
     </div>
   );
