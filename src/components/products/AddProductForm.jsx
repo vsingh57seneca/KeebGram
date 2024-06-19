@@ -1,153 +1,160 @@
-import React, { useState, useEffect } from "react";
-import Account from "../../functions/Accounts";
+import React, { useState } from "react";
+import Products from "@/functions/Products";
+import Vendors from "@/functions/Vendors";
 import toast from "react-hot-toast";
-import axios from "axios";
+import fFile from "@/functions/Files";
+import { DEBUG, API_URL } from "../../../config";
 
-const AddProductForm = ({ onClose, fetchProducts }) => {
+const AddProductForm = ({
+  showModal,
+  setShowModal,
+  onClose,
+  user,
+  onProductAdded,
+}) => {
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
   const [productDescription, setProductDescription] = useState("");
-  const [unitCount, setUnitCount] = useState("");
-  const [vendorId, setVendorId] = useState(null);
-  const [file, setFile] = useState(null);
+  const [unitCount, setUnitCount] = useState(0);
   const [imageURL, setImageURL] = useState(null);
+  const [file, setFile] = useState(null);
 
-  useEffect(() => {
-    const fetchVendorId = async () => {
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (user && user.account_id) {
-        try {
-          const vendorData = await Account.getVendorByAccountId(
-            user.account_id
-          );
-          if (vendorData && vendorData.vendor_id) {
-            setVendorId(vendorData.vendor_id);
-          } else {
-            toast.error("Vendor ID not found");
-          }
-        } catch (error) {
-          console.error("Error fetching vendor ID:", error);
-          toast.error("Error fetching vendor ID");
+  const onCreate = async () => {
+    try {
+      console.log("--------------creating a product--------------");
+      let nextProdId = await Products.next();
+      console.log("(addprodform)new prod id:", nextProdId);
+      let vendor = await Vendors.getVendorByAccountId(user?.account_id);
+      let vendor_id = vendor.vendor_id;
+      console.log("(addprodform)vendor_id:", vendor_id);
+      if (file) {
+        let updatedFile = new File([file], `product_${nextProdId}`, {
+          type: file.type,
+          lastModified: file.lastModified,
+        });
+
+        let results = await fFile.create(updatedFile);
+        if (results.status === 200) {
+          toast.success("File uploaded successfully");
+          setShowModal(false);
         }
       } else {
-        toast.error("User not found");
+        console.log("No file selected");
       }
-    };
 
-    fetchVendorId();
-  }, []);
+      const data = {
+        vendor_id: vendor_id,
+        name: productName,
+        price: productPrice,
+        description: productDescription,
+        image_data: file
+          ? `${API_URL[DEBUG]}/images/product_${nextProdId}.jpg`
+          : null,
+        unit_count: unitCount,
+      };
+
+      let results = await Products.create(data);
+
+      if (results.status === 201) {
+        toast.success("Product added successfully");
+        onProductAdded(); // Call the callback
+      } else {
+        toast.error("Error adding product");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred while adding the product");
+    }
+  };
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     setFile(selectedFile);
     setImageURL(URL.createObjectURL(selectedFile));
-  };
-
-  const handleAddProduct = async () => {
-    if (!vendorId) {
-      toast.error("Vendor ID not found");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("name", productName);
-    formData.append("description", productDescription);
-    formData.append("price", productPrice);
-    formData.append("unit_count", unitCount);
-    formData.append("vendor_id", vendorId);
-    if (file) {
-      formData.append("image", file);
-    }
-
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/api/products/createProductWithImage",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      if (response.status === 201) {
-        toast.success("Product added successfully");
-        fetchProducts(); // Refresh the product list
-        setFile(null);
-        setProductName("");
-        setProductDescription("");
-        setProductPrice("");
-        setUnitCount("");
-        onClose(); // Close the modal
-      } else {
-        toast.error("Failed to add product");
-      }
-    } catch (error) {
-      console.error("Error occurred:", error);
-      toast.error("Error occurred: Failed to add product");
-    }
+    console.log("Selected file:", selectedFile);
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-        <h2 className="text-xl mb-4">Add Product</h2>
-        <div className="mb-4">
-          <label className="block mb-2">Product Name</label>
-          <input
-            type="text"
-            className="input input-bordered w-full bg-gray-100"
-            value={productName}
-            onChange={(e) => setProductName(e.target.value)}
-          />
+    <>
+      {showModal && (
+        <div className="absolute top-0 left-0 flex w-full min-h-screen bg-black/70 z-50">
+          <div className="flex md:items-center md:justify-center w-full">
+            <div className="bg-white h-fit p-8 rounded w-full md:w-1/2 flex flex-col gap-y-2">
+              <label className="font-semibold mb-4">Add Product</label>
+
+              <div className="flex">
+                <textarea
+                  className="textarea w-5/6 bg-white resize-none"
+                  placeholder="Product Name"
+                  value={productName}
+                  onChange={(e) => setProductName(e.target.value)}
+                ></textarea>
+              </div>
+
+              <div className="mb-4">
+                <input
+                  type="text"
+                  className="input input-bordered w-full bg-white"
+                  placeholder="Product Price"
+                  value={productPrice}
+                  onChange={(e) => setProductPrice(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-4">
+                <textarea
+                  className="textarea textarea-bordered w-full bg-white"
+                  placeholder="Product Description"
+                  value={productDescription}
+                  onChange={(e) => setProductDescription(e.target.value)}
+                ></textarea>
+              </div>
+
+              <div className="mb-4">
+                <input
+                  type="number"
+                  className="input input-bordered w-full bg-white"
+                  placeholder="Unit Count"
+                  value={unitCount}
+                  onChange={(e) => setUnitCount(e.target.value)}
+                />
+              </div>
+
+              <input
+                type="file"
+                className="file-input file-input-xs file-input-success bg-white w-full"
+                onChange={handleFileChange}
+              />
+
+              <div className="flex w-full justify-center">
+                {file && (
+                  <img
+                    src={imageURL}
+                    alt="Product Preview"
+                    className="flex w-1/4 rounded border-2"
+                  />
+                )}
+              </div>
+
+              <div className="flex justify-end gap-x-4 mt-5">
+                <button
+                  className="btn btn-sm btn-success text-white"
+                  onClick={onCreate}
+                >
+                  Add Product
+                </button>
+                <button
+                  className="btn btn-sm btn-error text-white"
+                  onClick={onClose}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="mb-4">
-          <label className="block mb-2">Product Price</label>
-          <input
-            type="text"
-            className="input input-bordered w-full bg-gray-100"
-            value={productPrice}
-            onChange={(e) => setProductPrice(e.target.value)}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2">Product Description</label>
-          <textarea
-            className="textarea textarea-bordered w-full bg-gray-100"
-            value={productDescription}
-            onChange={(e) => setProductDescription(e.target.value)}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2">Unit Count</label>
-          <input
-            type="number"
-            className="input input-bordered w-full bg-gray-100"
-            value={unitCount}
-            onChange={(e) => setUnitCount(e.target.value)}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2">Upload Image</label>
-          <input type="file" onChange={handleFileChange} />
-          {imageURL && (
-            <img
-              src={imageURL}
-              alt="Product Preview"
-              className="mt-2 w-1/4 rounded border-2"
-            />
-          )}
-        </div>
-        <div className="flex justify-end">
-          <button className="btn btn-secondary mr-2" onClick={onClose}>
-            Cancel
-          </button>
-          <button className="btn btn-primary" onClick={handleAddProduct}>
-            Add Product
-          </button>
-        </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 
