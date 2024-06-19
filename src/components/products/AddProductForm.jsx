@@ -48,7 +48,7 @@ const AddProductForm = ({
         price: productPrice,
         description: productDescription,
         image_data: file
-          ? `${API_URL[DEBUG]}/images/product_${nextProdId}.jpg`
+          ? `${API_URL[0]}/images/product_${nextProdId}.jpg`
           : null,
         unit_count: unitCount,
       };

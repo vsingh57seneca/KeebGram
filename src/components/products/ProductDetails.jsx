@@ -89,6 +89,8 @@ const ProductDetails = () => {
     return <div>Product not found</div>;
   }
 
+  console.log(product)
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">
@@ -144,6 +146,7 @@ const ProductDetails = () => {
           <p className="text-lg mb-2">Price: ${product.price}</p>
           <p className="text-lg mb-2">Units Remaining: {product.unit_count}</p>
           <p className="text-lg mb-2">Description: {product.description}</p>
+          <p>Image: <img className="w-fit" src={product?.image_data} /></p>
           <button
             onClick={() => setIsEditing(true)}
             className="btn btn-success mr-2"
