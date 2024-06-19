@@ -59,7 +59,7 @@ const CreateComment = ({ showComments, setShowComments, post, fetchComments }) =
           
         />
         <button
-          className={`bg-green-300 p-2 rounded hover:bg-green-600 flex mr-4 ${
+          className={`bg-green-300 p-2 rounded hover:bg-green-600 flex ${
             !showSubmit && "hidden"
           }`}
           onClick={() => handleSubmit()}
