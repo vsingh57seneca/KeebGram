@@ -48,7 +48,7 @@ const CreatePostForm = ({
       account_id: user?.account_id,
       content_text: message,
       content_image: file
-        ? `${API_URL[DEBUG]}/images/post_${nextPostId}.jpg`
+        ? `${API_URL[0]}/images/post_${nextPostId}.jpg`
         : null,
       created_at: Date.now(),
     };
