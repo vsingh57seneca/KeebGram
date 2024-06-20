@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Products from "@/functions/Products";
+import Vendors from "@/functions/Vendors";
 import toast from "react-hot-toast";
 
-const ProductDetails = () => {
+const ProductDetails = ({ user }) => {
   const router = useRouter();
   const { productId } = router.query;
   const [product, setProduct] = useState(null);
@@ -25,14 +26,26 @@ const ProductDetails = () => {
   const fetchProductDetails = async () => {
     try {
       const productData = await Products.getProductById(productId);
-      setProduct(productData);
-      setFormData({
-        name: productData.name,
-        price: productData.price,
-        description: productData.description,
-        unit_count: productData.unit_count,
-      });
-      setLoading(false);
+      console.log(
+        "(ProdDetails) vendor_id of the product:",
+        productData.vendor_id
+      );
+      console.log("(ProdDetails) account_id of the user:", user.account_id);
+      const userVendor = await Vendors.getVendorByAccountId(user.account_id);
+      console.log("(ProdDetails) vendor_id of the user:", userVendor.vendor_id);
+      if (productData.vendor_id == userVendor.vendor_id) {
+        setProduct(productData);
+        setFormData({
+          name: productData.name,
+          price: productData.price,
+          description: productData.description,
+          unit_count: productData.unit_count,
+        });
+        setLoading(false);
+      } else {
+        // Display a toast notification if the user's vendor ID does not match the product's vendor ID
+        toast.error("User's Vendor ID does not match the product's Vendor ID");
+      }
     } catch (error) {
       console.error("Error fetching product details:", error);
       setLoading(false);
@@ -89,7 +102,7 @@ const ProductDetails = () => {
     return <div>Product not found</div>;
   }
 
-  console.log(product)
+  console.log(product);
 
   return (
     <div className="container mx-auto p-4">
@@ -146,7 +159,9 @@ const ProductDetails = () => {
           <p className="text-lg mb-2">Price: ${product.price}</p>
           <p className="text-lg mb-2">Units Remaining: {product.unit_count}</p>
           <p className="text-lg mb-2">Description: {product.description}</p>
-          <p>Image: <img className="w-fit" src={product?.image_data} /></p>
+          <p>
+            Image: <img className="w-fit" src={product?.image_data} />
+          </p>
           <button
             onClick={() => setIsEditing(true)}
             className="btn btn-success mr-2"
