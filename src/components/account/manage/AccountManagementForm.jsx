@@ -253,7 +253,7 @@ const AccountManagementForm = ({ user }) => {
             {!user?.is_vendor && (
               <button
                 className="btn btn-sm"
-                onClick={() => router.push("/signup")}
+                onClick={() => router.push("/account/apply")}
               >
                 Become a vendor
               </button>
@@ -261,48 +261,50 @@ const AccountManagementForm = ({ user }) => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col justify-start mt-4">
-        <h1 className="font-semibold">Products</h1>
-        <div className="flex flex-wrap gap-4 mt-4">
-          {products.length > 0 ? (
-            products.map((product) => (
-              <div
-                key={product.product_id}
-                onClick={() => handleProductClick(product.product_id)}
-                className="card bg-gray-100 p-4 rounded shadow-md w-40 cursor-pointer"
-              >
-                <div className="mt-2">
-                  <div className="font-bold text-xs">{product.name}</div>
-                  <div className="text-xs text-gray-600">
-                    Units Remaining: {product.unit_count}
+      {user?.is_vendor && (
+        <div className="flex flex-col justify-start mt-4">
+          <h1 className="font-semibold">Products</h1>
+          <div className="flex flex-wrap gap-4 mt-4">
+            {products.length > 0 ? (
+              products.map((product) => (
+                <div
+                  key={product.product_id}
+                  onClick={() => handleProductClick(product.product_id)}
+                  className="card bg-gray-100 p-4 rounded shadow-md w-40 cursor-pointer"
+                >
+                  <div className="mt-2">
+                    <div className="font-bold text-xs">{product.name}</div>
+                    <div className="text-xs text-gray-600">
+                      Units Remaining: {product.unit_count}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            <div>No products found for this vendor.</div>
-          )}
+              ))
+            ) : (
+              <div>No products found for this vendor.</div>
+            )}
+          </div>
+          <div className="mt-4">
+            {user?.is_vendor && (
+              <button
+                className="btn btn-sm"
+                onClick={() => setShowAddProductModal(true)}
+              >
+                Add New Product
+              </button>
+            )}
+            {showAddProductModal && (
+              <AddProductForm
+                showModal={showAddProductModal}
+                setShowModal={setShowAddProductModal}
+                onClose={() => setShowAddProductModal(false)}
+                user={user}
+                onProductAdded={handleProductAdded} // Pass the callback
+              />
+            )}
+          </div>
         </div>
-        <div className="mt-4">
-          {user?.is_vendor && (
-            <button
-              className="btn btn-sm"
-              onClick={() => setShowAddProductModal(true)}
-            >
-              Add New Product
-            </button>
-          )}
-          {showAddProductModal && (
-            <AddProductForm
-              showModal={showAddProductModal}
-              setShowModal={setShowAddProductModal}
-              onClose={() => setShowAddProductModal(false)}
-              user={user}
-              onProductAdded={handleProductAdded} // Pass the callback
-            />
-          )}
-        </div>
-      </div>
+      )}
       <div className="flex justify-between mt-4">
         <button
           className="btn btn-sm bg-gray-300 hover:bg-gray-400"
