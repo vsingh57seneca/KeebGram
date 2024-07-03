@@ -5,8 +5,8 @@ import { MdOutlineEdit } from "react-icons/md";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import Like from "@/functions/Likes";
 import ShowCommentsButton from "../comments/ShowCommentsButton";
-import EditPostForm from "./EditPostForm";
 import { useRouter } from "next/router";
+import { motion } from "framer-motion";
 
 const PostActionBar = ({ post, showComments, setShowComments }) => {
   const [user, setUser] = useAtom(userAtom);
@@ -45,16 +45,23 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
   return (
     <div>
       <div className="p-2 flex flex-col gap-y-4">
-        <div
-          className={`cursor-pointer flex ${
+        <motion.div
+          whileHover={{ rotateZ: 360, scale: 1.5 }}
+          transition={{ duration: 0.5 }}
+          className={`cursor-pointer flex hover:text-green-500 ease-in-out transition-all duration-0 ${
             post?.account_id != user?.account_id && "hidden"
           }`}
         >
           {/* <MdOutlineEdit size={25} /> */}
-          <MdOutlineEdit size={25} onClick={() => router.push(`/posts/edit/${post?.post_id}`)}/>
-        </div>
-        <div
-          className={`cursor-pointer flex ${
+          <MdOutlineEdit
+            size={25}
+            onClick={() => router.push(`/posts/edit/${post?.post_id}`)}
+          />
+        </motion.div>
+        <motion.div
+          whileHover={{ rotateZ: 360, scale: 1.5 }}
+          transition={{ duration: 0.5 }}
+          className={`cursor-pointer flex hover:text-green-500 ease-in-out transition-all duration-0 ${
             post?.account_id == user?.account_id && "hidden"
           }`}
           onClick={() =>
@@ -66,10 +73,17 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
           ) : (
             <GoHeart size={25} />
           )}
-        </div>
-        <div className="">
-         <ShowCommentsButton showComments={showComments} setShowComments={setShowComments} />
-        </div>
+        </motion.div>
+        <motion.div
+          whileHover={{ rotateZ: 360, scale: 1.5 }}
+          transition={{ duration: 0.5 }}
+          className={`cursor-pointer flex hover:text-green-500 ease-in-out transition-all duration-0`}
+        >
+          <ShowCommentsButton
+            showComments={showComments}
+            setShowComments={setShowComments}
+          />
+        </motion.div>
       </div>
     </div>
   );

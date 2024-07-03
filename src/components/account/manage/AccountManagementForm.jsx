@@ -58,7 +58,7 @@ const AccountManagementForm = ({ user }) => {
         (async () => {
           console.log("(AccMangForm)user:", user.account_id);
           const vendor = await Vendors.getVendorByAccountId(user.account_id);
-          const vendorId = vendor.vendor_id;
+          const vendorId = vendor?.vendor_id;
           console.log("(AccMangForm)vend ID found:", vendorId);
           if (vendorId) {
             fetchProducts(vendorId);
