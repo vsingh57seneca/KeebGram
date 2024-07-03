@@ -117,32 +117,42 @@ const ProductDetails = ({ user }) => {
       /> */}
       {isEditing ? (
         <div>
+          <label htmlFor="" className="font-semibold">
+            Product Name
+          </label>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="block w-full p-2 mb-2 border"
+            className="block w-full p-2 mb-2 border bg-white rounded-lg"
           />
+          <label htmlFor="" className="font-semibold">
+            Unit Cost
+          </label>
           <input
             type="text"
             name="price"
             value={formData.price}
             onChange={handleChange}
-            className="block w-full p-2 mb-2 border"
+            className="block w-full p-2 mb-2 border bg-white rounded-lg"
           />
+          <label htmlFor="" className="font-semibold">
+            Product Description
+          </label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
-            className="block w-full p-2 mb-2 border"
+            className="block w-full p-2 mb-2 border bg-white rounded-lg"
           ></textarea>
+                    <label htmlFor="" className="font-semibold">Quantity</label>
           <input
             type="number"
             name="unit_count"
             value={formData.unit_count}
             onChange={handleChange}
-            className="block w-full p-2 mb-2 border"
+            className="block w-full p-2 mb-2 border bg-white rounded-lg"
           />
           <button onClick={handleEdit} className="btn btn-primary mr-2">
             Save

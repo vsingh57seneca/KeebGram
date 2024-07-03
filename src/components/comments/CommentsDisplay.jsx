@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Comment from "@/functions/Comments";
 import { MdChatBubbleOutline } from "react-icons/md";
 import CreateComment from "./CreateComment";
+import CommentActionBar from "./CommentActionBar";
 
 const CommentsDisplay = ({ post, showComments, setShowComments }) => {
   const [comments, setComments] = useState([]);
@@ -24,6 +25,8 @@ const CommentsDisplay = ({ post, showComments, setShowComments }) => {
     }
   }, [post]);
 
+  console.log(comments)
+
   return (
     <>
       <div className="p-2">
@@ -31,18 +34,28 @@ const CommentsDisplay = ({ post, showComments, setShowComments }) => {
         <>
           {comments?.map((comment, index) => {
             return (
-              <div className="border p-4">
-                <div className="flex gap-x-4">
-                  <img src={comment?.display_image} />
-                  <h1>{comment?.display_name}</h1>
-                  <p>{comment?.comment_date}</p>
+              <div className="border">
+                <div className="flex gap-x-4 items-center justify-between">
+                  <div className="">
+                    <img src={comment?.display_image} />
+                    <h1>{comment?.display_name}</h1>
+                  </div>
+                  <CommentActionBar comment={comment} />
                 </div>
-                <p className="p-6">{comment?.content}</p>
+                <p className="text-xs">{comment?.comment_date}</p>
+                <p className="pt-5 break-words whitespace-pre-wrap">
+                  {comment?.content}
+                </p>
               </div>
             );
           })}
         </>
-        <CreateComment fetchComments={fetchComments} post={post} setShowComments={setShowComments} showComments={showComments} />
+        <CreateComment
+          fetchComments={fetchComments}
+          post={post}
+          setShowComments={setShowComments}
+          showComments={showComments}
+        />
       </div>
     </>
   );

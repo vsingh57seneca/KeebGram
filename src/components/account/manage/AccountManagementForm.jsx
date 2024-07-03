@@ -58,7 +58,7 @@ const AccountManagementForm = ({ user }) => {
         (async () => {
           console.log("(AccMangForm)user:", user.account_id);
           const vendor = await Vendors.getVendorByAccountId(user.account_id);
-          const vendorId = vendor.vendor_id;
+          const vendorId = vendor?.vendor_id;
           console.log("(AccMangForm)vend ID found:", vendorId);
           if (vendorId) {
             fetchProducts(vendorId);
@@ -261,7 +261,7 @@ const AccountManagementForm = ({ user }) => {
           </div>
         </div>
       </div>
-      {user?.is_vendor && (
+      {user?.is_vendor > 0 && (
         <div className="flex flex-col justify-start mt-4">
           <h1 className="font-semibold">Products</h1>
           <div className="flex flex-wrap gap-4 mt-4">
