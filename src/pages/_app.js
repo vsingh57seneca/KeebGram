@@ -46,7 +46,7 @@ export default function App({ Component, pageProps }) {
         </div>
       )}
       <div className="w-px bg-gradient-to-b from-white via-gray-700 to-white"></div>
-      <div className="md:min-h-screen p-4 h-[calc(100vh-58px)] overflow-hidden overflow-y-auto w-full flex">
+      <div className="md:min-h-screen h-[calc(100vh-58px)] overflow-hidden overflow-y-auto w-full flex">
         <div className="w-full">
           <Component {...pageProps} />
         </div>
