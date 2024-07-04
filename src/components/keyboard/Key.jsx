@@ -9,22 +9,16 @@ const Key = ({
   legendColor,
 }) => {
 
-  const widthClass = length ? `${length}` : "w-12";
+  const widthClass = length ? `${length}` : ""; // Using Tailwind CSS width classes dynamically
+
   const displayLabel = label === "{empty}" ? "" : label;
 
   // Default styles for the button
   let buttonStyles = label === "{empty}"
-    ? { width: "2.5rem", visibility: "hidden" }
+    ? { visibility: "hidden" }
     : {
         backgroundColor: alphaColor,
         color: legendColor,
-        padding: "0.5rem",
-        borderRadius: "0.25rem",
-        border: "1px solid #ccc",
-        width: "2.5rem",
-        minWidth: "2.5rem",
-        borderTopColor: "white",
-        borderTopWidth: "2px",
       };
 
   const accentKeys = ["{esc}", "{enter}"];
@@ -62,7 +56,7 @@ const Key = ({
 
   return (
     <button
-      className={`text-black p-2 rounded border border-gray-500 mb-2 ${widthClass}`}
+      className={`text-black rounded border border-gray-500 ${widthClass} text-[8px] md:text-sm p-0.5 md:p-2 md:m-0.5`}
       style={buttonStyles}
     >
       {displayLabel.replace(/[{}]/g, "")}
