@@ -14,7 +14,7 @@ const Index = () => {
     if (postArray.length > 0) {
       const reversedArray = await postArray.reverse();
       return setPosts(reversedArray);
-    } else if (postArray?.response.status === 404) {
+    } else if (postArray?.response?.status === 404) {
       toast.error(postArray?.response?.data);
     }
   };
