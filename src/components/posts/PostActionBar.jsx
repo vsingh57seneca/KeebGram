@@ -11,7 +11,9 @@ import { motion } from "framer-motion";
 const PostActionBar = ({ post, showComments, setShowComments }) => {
   const [user, setUser] = useAtom(userAtom);
   const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   const router = useRouter();
+
   const handleLikePost = async (postId, accountId, liked, setLiked) => {
     console.log(
       `inside handleLikePost with post_id: ${postId} and account_id: ${accountId}`
@@ -38,9 +40,15 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
     setLiked(liked);
   };
 
+  const getLikeCount = async (post_id) => {
+    const count = await Like.getLikesCount(post?.post_id);
+    setLikeCount(count);
+  };
+
   useEffect(() => {
     isPostLiked(post?.post_id, user?.account_id);
-  }, [post, user]);
+    getLikeCount(post?.post_id);
+  }, [post, likeCount, user]);
 
   return (
     <div>
@@ -52,11 +60,16 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
             post?.account_id != user?.account_id && "hidden"
           }`}
         >
-          {/* <MdOutlineEdit size={25} /> */}
+          <div>
+          <span style={{ display: 'inline-flex', alignItems: 'center' }}  onClick={() => router.push(`/posts/edit/${post?.post_id}`)}>{likeCount} 
+            <GoHeartFill className="text-red-500" size={15}/>
+            </span>
+          <br/>
           <MdOutlineEdit
             size={25}
             onClick={() => router.push(`/posts/edit/${post?.post_id}`)}
           />
+          </div>
         </motion.div>
         <motion.div
           whileHover={{ rotateZ: 360, scale: 1.5 }}
@@ -68,7 +81,7 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
             handleLikePost(post?.post_id, user?.account_id, liked, setLiked)
           }
         >
-          {liked ? (
+          { liked ? (
             <GoHeartFill className="text-red-500" size={25} />
           ) : (
             <GoHeart size={25} />

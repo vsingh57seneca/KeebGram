@@ -100,6 +100,15 @@ const NavBar = ({ user, posts, setPosts }) => {
               <label className="lg:block hidden">Admin</label>
             </li>
             <li
+              onClick={() => router.push("/vendor/dashboard")}
+              className={`${
+                user?.is_vendor ? "flex" : "hidden"
+              } items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit`}
+            >
+              <MdAdminPanelSettings className="lg:mr-4" />
+              <label className="lg:block hidden">Vendor</label>
+            </li>
+            <li
               onClick={() => router.push("/account/manage")}
               className="flex items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit"
             >
