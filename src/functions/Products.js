@@ -111,6 +111,7 @@ module.exports = {
       let response = await axios.request(reqOptions);
       return response;
     } catch (error) {
+      console.log(error);
       return error;
     }
   },

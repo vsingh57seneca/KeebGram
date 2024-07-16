@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { userAtom } from "../../../store";
 
 const ProductDetails = dynamic(
-  () => import("../../components/products/ProductDetails"),
+  () => import("../../components/vendor/products/ProductDetails"),
   {
     ssr: false,
   }

@@ -5,13 +5,10 @@ import countryList from "../../data/country_list.json";
 import genderList from "../../data/gender_list.json";
 import languageList from "../../data/language_list.json";
 import Account from "../../../functions/Accounts.js";
-import Vendors from "../../../functions/Vendors.js";
-import Products from "../../../functions/Products.js";
 import AvatarUpload from "@/components/global_components/AvatarUpload";
 import { useAtom } from "jotai";
 import { displayImageAtom } from "../../../../store";
 import { DEBUG, API_URL } from "../../../../config";
-import AddProductForm from "../../products/AddProductForm";
 
 const AccountManagementForm = ({ user }) => {
   const router = useRouter();
@@ -31,8 +28,6 @@ const AccountManagementForm = ({ user }) => {
   const [displayImage, setDisplayImage] = useAtom(displayImageAtom);
 
   const [showModal, setShowModal] = useState(false);
-  const [products, setProducts] = useState([]);
-  const [showAddProductModal, setShowAddProductModal] = useState(false);
 
   useEffect(() => {
     setCountries(countryList);
@@ -53,40 +48,8 @@ const AccountManagementForm = ({ user }) => {
       setGender(user.gender || "");
       setEmail(user.email || "");
       setDisplayImage(`${API_URL[DEBUG]}/images/avatar_${user.account_id}.jpg`);
-
-      if (user.is_vendor) {
-        (async () => {
-          console.log("(AccMangForm)user:", user.account_id);
-          const vendor = await Vendors.getVendorByAccountId(user.account_id);
-          const vendorId = vendor?.vendor_id;
-          console.log("(AccMangForm)vend ID found:", vendorId);
-          if (vendorId) {
-            fetchProducts(vendorId);
-          } else {
-            console.error("Vendor not found for account ID:", user.account_id);
-          }
-        })();
-      }
     }
   }, [user]);
-
-  const fetchProducts = async (vendorId) => {
-    console.log("Fetching products for vendor ID:", vendorId); // Debugging
-    const response = await Products.getProductsByVendorId(vendorId);
-    console.log("(accMangeForm)Response from fetchProducts:", response); // Debugging
-
-    if (response) {
-      setProducts(response);
-    } else {
-      console.error("No products found for vendor ID:", vendorId); // Debugging
-    }
-  };
-
-  const handleProductClick = (productId) => {
-    console.log("--------start to get prod details--------");
-    console.log("(AccMangForm) the prod ID clicked:", productId);
-    router.push(`/product/${productId}`);
-  };
 
   const handleSubmit = async () => {
     let response = await Account.update({
@@ -118,17 +81,6 @@ const AccountManagementForm = ({ user }) => {
     if (response.status === 200) {
       toast.success(response.data);
       router.push("/"); // Redirect the user to the home page after successful deletion
-    }
-  };
-
-  const handleProductAdded = async () => {
-    setShowAddProductModal(false);
-    if (user && user.is_vendor) {
-      const vendor = await Vendors.getVendorByAccountId(user.account_id);
-      const vendorId = vendor.vendor_id;
-      if (vendorId) {
-        await fetchProducts(vendorId);
-      }
     }
   };
 
@@ -261,50 +213,6 @@ const AccountManagementForm = ({ user }) => {
           </div>
         </div>
       </div>
-      {user?.is_vendor > 0 && (
-        <div className="flex flex-col justify-start mt-4">
-          <h1 className="font-semibold">Products</h1>
-          <div className="flex flex-wrap gap-4 mt-4">
-            {products.length > 0 ? (
-              products.map((product) => (
-                <div
-                  key={product.product_id}
-                  onClick={() => handleProductClick(product.product_id)}
-                  className="card bg-gray-100 p-4 rounded shadow-md w-40 cursor-pointer"
-                >
-                  <div className="mt-2">
-                    <div className="font-bold text-xs">{product.name}</div>
-                    <div className="text-xs text-gray-600">
-                      Units Remaining: {product.unit_count}
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div>No products found for this vendor.</div>
-            )}
-          </div>
-          <div className="mt-4">
-            {user?.is_vendor && (
-              <button
-                className="btn btn-sm"
-                onClick={() => setShowAddProductModal(true)}
-              >
-                Add New Product
-              </button>
-            )}
-            {showAddProductModal && (
-              <AddProductForm
-                showModal={showAddProductModal}
-                setShowModal={setShowAddProductModal}
-                onClose={() => setShowAddProductModal(false)}
-                user={user}
-                onProductAdded={handleProductAdded} // Pass the callback
-              />
-            )}
-          </div>
-        </div>
-      )}
       <div className="flex justify-between mt-4">
         <button
           className="btn btn-sm bg-gray-300 hover:bg-gray-400"
