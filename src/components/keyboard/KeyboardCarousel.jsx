@@ -1,8 +1,10 @@
 // src/components/keyboard/KeyboardCarousel.jsx
 
-import React from 'react';
-import Slider from 'react-slick';
-import { useRouter } from 'next/router';
+import React from "react";
+import Slider from "react-slick";
+import { useRouter } from "next/router";
+import Keyboard from "./Keyboard";
+import Colors from "./colors";
 
 function SampleNextArrow(props) {
   const { className, style, onClick } = props;
@@ -27,54 +29,38 @@ function SamplePrevArrow(props) {
 }
 
 const KeyboardCarousel = ({ designs, onSelect }) => {
-    
-    const settings = {
-        dots: true,
-        infinite: false,
-        speed: 500,
-        slidesToShow: 4,
-        slidesToScroll: 1,
-        initialSlide: 0,
-        arrows: true,
-        nextArrow: <SampleNextArrow />,
-        prevArrow: <SamplePrevArrow />,
-        responsive: [
-            {
-                breakpoint: 1024,
-                settings: {
-                    slidesToShow: 3
-                }
-            },
-            {
-                breakpoint: 600,
-                settings: {
-                    slidesToShow: 2
-                }
-            },
-            {
-                breakpoint: 480,
-                settings: {
-                    slidesToShow: 1
-                }
-            }
-        ]
-    };
-
-    return (
-        <div className='slider-container mx-8 mt-4'>
-            <Slider {...settings}>
-                {designs.map(design => (
-                    <div key={design.design_id} className="p-4 border border-gray-300 rounded-lg bg-gray-100" onClick={() => onSelect(design)}>
-                        <h3>Name: {design.design_name}</h3>
-                        <p>Alphas: {design.alphas_color}</p>
-                        <p>Modifiers: {design.modifiers_color}</p>
-                        <p>Accents: {design.accents_color}</p>
-                        <p>Legends: {design.legends_color}</p>
-                    </div>
-                ))}
-            </Slider>
-        </div>
-    )
-}
+  return (
+    <div className="flex gap-x-4 no-scrollbar w-fit relative">
+      {designs &&
+        designs?.map((design, index) => {
+          return (
+            <div
+              onClick={() => onSelect(design)}
+              className="flex flex-col m-2 p-2 rounded-lg scale-50"
+            >
+              <div className="border-2 p-4 rounded-lg shadow">
+                <h2 className="text-lg font-bold">{design.design_name}</h2>
+                <div className="flex items-center">
+                    <div className="">Left</div>
+                  <Keyboard
+                    alphaColor={Colors[design?.alphas_color]}
+                    modifierColor={Colors[design?.modifiers_color]}
+                    accentColor={Colors[design?.accents_color]}
+                    legendColor={Colors[design?.legends_color]}
+                    scale="75"
+                  />
+                    <div className="">Right</div>
+                </div>
+                <div className="">Alpha: {design?.alphas_color}</div>
+                <div className="">Modifier: {design?.modifiers_color}</div>
+                <div className="">Accent: {design?.accents_color}</div>
+                <div className="">Legend: {design?.legends_color}</div>
+              </div>
+            </div>
+          );
+        })}
+    </div>
+  );
+};
 
 export default KeyboardCarousel;

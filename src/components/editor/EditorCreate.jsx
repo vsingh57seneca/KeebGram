@@ -101,6 +101,9 @@ const EditorCreate = ({ initialData }) => {
     setDesignName("");
   };
 
+
+  useEffect(() => {console.log(alphaColor)}, [alphaColor])
+
   return (
     <>
         <div className="m-2">

@@ -7,6 +7,7 @@ const Keyboard = ({
   modifierColor,
   accentColor,
   legendColor,
+  scale = "100"
 }) => {
   const layouts = {
     default: [
@@ -27,11 +28,7 @@ const Keyboard = ({
   };
 
   return (
-<<<<<<< HEAD
-    <div className="border-2 p-1 bg-black drop-shadow-lg">
-=======
-    <div id="keyboard" className="border-2 p-1 bg-black drop-shadow-lg">
->>>>>>> origin/dn
+    <div id="keyboard" className={`border-2 p-1 bg-black drop-shadow-lg scale-${scale}`}>
       {layouts[layout].map((row, index) => (
         <KeyRow
           key={index}
