@@ -127,7 +127,7 @@ const PostManagementView = () => {
               )}
               <div className="w-full flex justify-between p-4">
                 <button className="btn btn-sm text-white btn-error ">Delete</button>
-                <button className="btn btn-sm text-white w-fit" onClick={() => {
+                <button className="btn btn-sm text-black w-fit" onClick={() => {
                     setSelectedPost({})
                     setShowPostDetail(!showPostDetail)
                 }}>

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Accounts from "@/functions/Accounts";
 import { FaExternalLinkAlt } from "react-icons/fa";
+import { useRouter } from "next/router";
 
 const UserWidget = () => {
   const [users, setUsers] = useState({});
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -21,7 +23,7 @@ const UserWidget = () => {
         <div className="stat-value">{users?.length}</div>
         <div className="flex justify-between">
           <div className="stat-desc">Total accounts</div>
-          <div className="flex gap-x-2 items-center cursor-pointer">
+          <div className="flex gap-x-2 items-center cursor-pointer" onClick={() => router.push('/admin/users/manage')}>
             <div className="stat-desc">Users</div>
             <FaExternalLinkAlt size={10} />
           </div>
