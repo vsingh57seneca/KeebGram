@@ -27,7 +27,11 @@ const Keyboard = ({
   };
 
   return (
+<<<<<<< HEAD
     <div className="border-2 p-1 bg-black drop-shadow-lg">
+=======
+    <div id="keyboard" className="border-2 p-1 bg-black drop-shadow-lg">
+>>>>>>> origin/dn
       {layouts[layout].map((row, index) => (
         <KeyRow
           key={index}
