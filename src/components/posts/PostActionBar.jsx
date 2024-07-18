@@ -7,6 +7,7 @@ import Like from "@/functions/Likes";
 import ShowCommentsButton from "../comments/ShowCommentsButton";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
+import socket from "../../../store";
 
 const PostActionBar = ({ post, showComments, setShowComments }) => {
   const [user, setUser] = useAtom(userAtom);
@@ -30,6 +31,8 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
         console.log(response);
         if (response.status === 201) {
           setLiked(true);
+
+          socket.emit('post_liked', {post: post, user: user })
         }
       }
     }
@@ -52,7 +55,7 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
 
   return (
     <div>
-      <div className="p-2 flex flex-col gap-y-4">
+      <div className="p-2 flex flex-col gap-y-4 items-end ">
         <motion.div
           whileHover={{ rotateZ: 360, scale: 1.5 }}
           transition={{ duration: 0.5 }}
@@ -61,10 +64,6 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
           }`}
         >
           <div>
-          <span style={{ display: 'inline-flex', alignItems: 'center' }}  onClick={() => router.push(`/posts/edit/${post?.post_id}`)}>{likeCount} 
-            <GoHeartFill className="text-red-500" size={15}/>
-            </span>
-          <br/>
           <MdOutlineEdit
             size={25}
             onClick={() => router.push(`/posts/edit/${post?.post_id}`)}
@@ -74,13 +73,17 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
         <motion.div
           whileHover={{ rotateZ: 360, scale: 1.5 }}
           transition={{ duration: 0.5 }}
-          className={`cursor-pointer flex hover:text-green-500 ease-in-out transition-all duration-0 ${
-            post?.account_id == user?.account_id && "hidden"
-          }`}
+          className={`cursor-pointer flex hover:text-green-500 ease-in-out transition-all duration-0 items-center`}
           onClick={() =>
-            handleLikePost(post?.post_id, user?.account_id, liked, setLiked)
+          {
+            if(post?.account_id != user?.account_id)
+            {
+              handleLikePost(post?.post_id, user?.account_id, liked, setLiked)
+            }
+          }
           }
         >
+          <p>{likeCount > 0 && `${likeCount}`}</p>
           { liked ? (
             <GoHeartFill className="text-red-500" size={25} />
           ) : (

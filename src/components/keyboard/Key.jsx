@@ -8,17 +8,15 @@ const Key = ({
   accentColor,
   legendColor,
 }) => {
-
   const widthClass = length ? `${length}` : ""; // Using Tailwind CSS width classes dynamically
-
   const displayLabel = label === "{empty}" ? "" : label;
 
   // Default styles for the button
   let buttonStyles = label === "{empty}"
     ? { visibility: "hidden" }
     : {
-        backgroundColor: alphaColor,
-        color: legendColor,
+        backgroundColor: `#${alphaColor?.value}`,
+        color: `#${legendColor?.value}`,
       };
 
   const accentKeys = ["{esc}", "{enter}"];
@@ -38,20 +36,12 @@ const Key = ({
     "F8",
   ];
 
-  if (modifierKeys.includes(label)) {
-    // Set background color for modifier keys
-    buttonStyles = {
-      ...buttonStyles,
-      backgroundColor: modifierColor || accentColor || alphaColor,
-    };
-  }
-
   if (accentKeys.includes(label)) {
     // Set background color for accent keys
-    buttonStyles = {
-      ...buttonStyles,
-      backgroundColor: accentColor || modifierColor || alphaColor,
-    };
+    buttonStyles.backgroundColor = `#${accentColor?.value || modifierColor?.value || alphaColor?.value}`;
+  } else if (modifierKeys.includes(label)) {
+    // Set background color for modifier keys
+    buttonStyles.backgroundColor = `#${modifierColor?.value || accentColor?.value || alphaColor?.value}`;
   }
 
   return (

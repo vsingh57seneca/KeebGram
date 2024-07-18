@@ -38,7 +38,7 @@ const CreateComment = ({ showComments, setShowComments, post, fetchComments }) =
     if(results?.status === 201) {
         toast.success(results?.data)
         setContent("");
-        socket.emit('comment_created')
+        socket.emit('comment_created', { post: post, comment: comment, user: user });
         fetchComments(post?.post_id);
     } else {
         toast.error(results?.response?.data)
