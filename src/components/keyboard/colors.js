@@ -1,23 +1,20 @@
 const Colors = {
-    "white": "#FFFFFF",
-    "black": "#000000",
-    "red": "#FF0000",
-    "green": "#00FF00",
-    "blue": "#0000FF",
-    "yellow": "#FFFF00",
-    "orange": "#FFA500",
-    "purple": "#800080",
-    "cyan": "#00FFFF",
-    "magenta": "#FF00FF",
-    "gray": "#808080",
-    "lightGray": "#D3D3D3",
-    "darkGray": "#A9A9A9",
-    "brown": "#A52A2A",
-    "navy": "#000080",
-    "teal": "#008080",
-    "pink": "#FFC0CB",
-    "lime": "#00FF00",
-    "skyBlue": "#87CEEB"
-  };
+  "white": { name: "white", value: "fff" },
+  "black": { name: "black", value: "222222" },
+  "red": { name: "red", value: "d84247" },
+  "green": { name: "green", value: "3c8429" },
+  "blue": { name: "blue", value: "3448aa" },
+  "yellow": { name: "yellow", value: "f8f46c" },
+  "orange": { name: "orange", value: "efad3c" },
+  "purple": { name: "purple", value: "af62fc" },
+  "cyan": { name: "cyan", value: "3beded" },
+  "grey": { name: "grey", value: "6e6e6e" },
+  "brown": { name: "brown", value: "a86a00" },
+  "pink": { name: "pink", value: "f46ec1" },
+  "lime": { name: "lime", value: "00FF00" },
+  "creame": { name: "creame", value: "ffe6bc" },
+  "ocher": { name: "ocher", value: "ddbe0f" },
+  "light green": { name: "light green", value: "88e55e" },
+};
 
-  export default Colors
+export default Colors;

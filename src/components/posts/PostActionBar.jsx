@@ -7,11 +7,14 @@ import Like from "@/functions/Likes";
 import ShowCommentsButton from "../comments/ShowCommentsButton";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
+import socket from "../../../store";
 
 const PostActionBar = ({ post, showComments, setShowComments }) => {
   const [user, setUser] = useAtom(userAtom);
   const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   const router = useRouter();
+
   const handleLikePost = async (postId, accountId, liked, setLiked) => {
     console.log(
       `inside handleLikePost with post_id: ${postId} and account_id: ${accountId}`
@@ -28,6 +31,8 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
         console.log(response);
         if (response.status === 201) {
           setLiked(true);
+
+          socket.emit('post_liked', {post: post, user: user })
         }
       }
     }
@@ -38,13 +43,19 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
     setLiked(liked);
   };
 
+  const getLikeCount = async (post_id) => {
+    const count = await Like.getLikesCount(post?.post_id);
+    setLikeCount(count);
+  };
+
   useEffect(() => {
     isPostLiked(post?.post_id, user?.account_id);
-  }, [post, user]);
+    getLikeCount(post?.post_id);
+  }, [post, likeCount, user]);
 
   return (
     <div>
-      <div className="p-2 flex flex-col gap-y-4">
+      <div className="p-2 flex flex-col gap-y-4 items-end ">
         <motion.div
           whileHover={{ rotateZ: 360, scale: 1.5 }}
           transition={{ duration: 0.5 }}
@@ -52,23 +63,28 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
             post?.account_id != user?.account_id && "hidden"
           }`}
         >
-          {/* <MdOutlineEdit size={25} /> */}
+          <div>
           <MdOutlineEdit
             size={25}
             onClick={() => router.push(`/posts/edit/${post?.post_id}`)}
           />
+          </div>
         </motion.div>
         <motion.div
           whileHover={{ rotateZ: 360, scale: 1.5 }}
           transition={{ duration: 0.5 }}
-          className={`cursor-pointer flex hover:text-green-500 ease-in-out transition-all duration-0 ${
-            post?.account_id == user?.account_id && "hidden"
-          }`}
+          className={`cursor-pointer flex hover:text-green-500 ease-in-out transition-all duration-0 items-center`}
           onClick={() =>
-            handleLikePost(post?.post_id, user?.account_id, liked, setLiked)
+          {
+            if(post?.account_id != user?.account_id)
+            {
+              handleLikePost(post?.post_id, user?.account_id, liked, setLiked)
+            }
+          }
           }
         >
-          {liked ? (
+          <p>{likeCount > 0 && `${likeCount}`}</p>
+          { liked ? (
             <GoHeartFill className="text-red-500" size={25} />
           ) : (
             <GoHeart size={25} />

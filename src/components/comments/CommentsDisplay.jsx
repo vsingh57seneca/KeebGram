@@ -14,18 +14,18 @@ const CommentsDisplay = ({ post, showComments, setShowComments }) => {
       return;
     } else {
       setComments(comments);
-      console.log(comments);
+      // console.log(comments);
     }
   };
 
   useEffect(() => {
     if (post?.post_id) {
       fetchComments(post.post_id);
-      console.log(`Post ${post?.post_id}`, comments);
+      // console.log(`Post ${post?.post_id}`, comments);
     }
   }, [post]);
 
-  console.log(comments)
+  // console.log(comments)
 
   return (
     <>

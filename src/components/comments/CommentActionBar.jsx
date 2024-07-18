@@ -9,7 +9,7 @@ const CommentActionBar = ({ comment }) => {
     const [user, setUser] = useAtom(userAtom);
     const router = useRouter();
 
-    console.log(comment)
+    // console.log(comment)
   return (
     <div>
       <div className="p-2 flex flex-col gap-y-4">

@@ -5,6 +5,7 @@ import {useAtom} from "jotai";
 import {postsAtom, userAtom} from "../../store";
 import Account from "@/functions/Accounts";
 import React, {useState, useEffect} from "react";
+import { NotificationProvider } from "@/contexts/NotificationContext";
 
 export default function App({Component, pageProps}) {
     const [user, setUser] = useAtom(userAtom);
@@ -21,6 +22,7 @@ export default function App({Component, pageProps}) {
     }, []);
 
     return (
+        <NotificationProvider>
         <div className="bg-white text-black max-h-screen flex">
             <Toaster
                 toastOptions={{
@@ -57,5 +59,6 @@ export default function App({Component, pageProps}) {
                 ></div>
             </div>
         </div>
+       </NotificationProvider>
     );
 }
