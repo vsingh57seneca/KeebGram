@@ -3,6 +3,7 @@ import Products from "@/functions/Products";
 import Vendors from "@/functions/Vendors";
 import toast from "react-hot-toast";
 import fFile from "@/functions/Files";
+import Colors from "../../keyboard/colors"; // Import the colors
 import { DEBUG, API_URL } from "../../../../config";
 
 const AddProductForm = ({
@@ -18,6 +19,10 @@ const AddProductForm = ({
   const [unitCount, setUnitCount] = useState(0);
   const [imageURL, setImageURL] = useState(null);
   const [file, setFile] = useState(null);
+  const [alpha, setAlpha] = useState(null);
+  const [modifier, setModifier] = useState(null);
+  const [accent, setAccent] = useState(null);
+  const [legend, setLegend] = useState(null);
 
   const onCreate = async () => {
     try {
@@ -51,6 +56,10 @@ const AddProductForm = ({
           ? `${API_URL[0]}/images/product_${nextProdId}.jpg`
           : null,
         unit_count: unitCount,
+        alpha: alpha,
+        modifier: modifier,
+        accent: accent,
+        legend: legend,
       };
 
       let results = await Products.create(data);
@@ -125,6 +134,66 @@ const AddProductForm = ({
                 className="file-input file-input-xs file-input-success bg-white w-full"
                 onChange={handleFileChange}
               />
+
+              <div className="mb-4">
+                <select
+                  className="select select-bordered w-full bg-white"
+                  value={alpha}
+                  onChange={(e) => setAlpha(e.target.value)}
+                >
+                  <option value={null}>Select Alpha Color</option>
+                  {Object.entries(Colors).map(([key, color]) => (
+                    <option key={key} value={color.name}>
+                      {color.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-4">
+                <select
+                  className="select select-bordered w-full bg-white"
+                  value={modifier}
+                  onChange={(e) => setModifier(e.target.value)}
+                >
+                  <option value={null}>Select Modifier Color</option>
+                  {Object.entries(Colors).map(([key, color]) => (
+                    <option key={key} value={color.name}>
+                      {color.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-4">
+                <select
+                  className="select select-bordered w-full bg-white"
+                  value={accent}
+                  onChange={(e) => setAccent(e.target.value)}
+                >
+                  <option value={null}>Select Accent Color</option>
+                  {Object.entries(Colors).map(([key, color]) => (
+                    <option key={key} value={color.name}>
+                      {color.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-4">
+                <select
+                  className="select select-bordered w-full bg-white"
+                  value={legend}
+                  onChange={(e) => setLegend(e.target.value)}
+                >
+                  <option value={null}>Select Legend Color</option>
+                  {Object.entries(Colors).map(([key, color]) => (
+                    <option key={key} value={color.name}>
+                      {color.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               <div className="flex w-full justify-center">
                 {file && (
