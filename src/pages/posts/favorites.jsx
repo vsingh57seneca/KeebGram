@@ -5,9 +5,16 @@ import { useAtom } from "jotai";
 import { postsAtom } from "../../../store";
 import socket from "../../../store";
 import toast from "react-hot-toast";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 const Index = () => {
   const [posts, setPosts] = useAtom(postsAtom);
+  const { setSidebarContent } = useSidebar();
+
+  useEffect(() => {
+    setSidebarContent(<div></div>);
+    return () => setSidebarContent(null); // Cleanup sidebar content on unmount
+  }, [setSidebarContent]);
 
   const fetchPosts = async (account_id) => {
     const postArray = await Posts.getLiked(account_id);

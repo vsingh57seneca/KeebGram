@@ -1,5 +1,5 @@
 import EditorCreate from '@/components/editor/EditorCreate'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 const index = () => {

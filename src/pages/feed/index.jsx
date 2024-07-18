@@ -1,23 +1,30 @@
-import ContentDisplay from "@/components/content/ContentDisplay";
 import React, { useEffect } from "react";
-import Account from "@/functions/Accounts.js";
-import Posts from "@/functions/Posts.js";
 import { useAtom } from "jotai";
 import { postsAtom, userAtom } from "../../../store";
 import FinishSetup from "@/components/feed/FinishSetup";
+import ContentDisplay from "@/components/content/ContentDisplay";
 import socket from "../../../store";
 import toast from "react-hot-toast";
+import { useSidebar } from "@/contexts/SidebarContext";
+import Account from '@/functions/Accounts'
+import Posts from '@/functions/Posts'
 
 const Index = () => {
   const [user, setUser] = useAtom(userAtom);
   const [posts, setPosts] = useAtom(postsAtom);
+  const { setSidebarContent } = useSidebar();
+
+  useEffect(() => {
+    setSidebarContent(<div></div>);
+    return () => setSidebarContent(null); // Cleanup sidebar content on unmount
+  }, [setSidebarContent]);
 
   const fetchPosts = async () => {
     const postArray = await Posts.getAll();
     if (postArray.length > 0) {
       const reversedArray = await postArray.reverse();
-      return setPosts(reversedArray);
-    } else if (postArray?.response.status === 404) {
+      setPosts(reversedArray);
+    } else if (postArray?.response?.status === 404) {
       toast.error(postArray?.response?.data);
     }
   };
@@ -28,16 +35,15 @@ const Index = () => {
     if (storedUser && storedUser.email) {
       Account.getOne(storedUser.email);
     }
-    let fetchedPosts = fetchPosts();
-    setPosts(fetchedPosts);
-  }, []);
+    fetchPosts();
+  }, [setUser, setPosts]);
 
   useEffect(() => {
     socket.on("refresh_posts", () => {
-      console.log("Refresh posts");
       fetchPosts();
     });
-  }, [socket]);
+  }, []);
+ 
 
   return (
     <>

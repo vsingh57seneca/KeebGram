@@ -5,12 +5,20 @@ import { userAtom } from "../../../store";
 import { getDesignsByUserId, deleteDesign } from "../../functions/Designs";
 import DesignPreview from "@/components/editor/DesignPreview";
 import KeyboardCarousel from "@/components/keyboard/KeyboardCarousel";
+import { useSidebar } from "@/contexts/SidebarContext";
+import toast from "react-hot-toast";
 
 const Index = () => {
   const router = useRouter();
   const [user, setUser] = useAtom(userAtom);
   const [designs, setDesigns] = useState([]);
   const [selectedDesign, setSelectedDesign] = useState(null);
+  const { setSidebarContent } = useSidebar();
+
+  useEffect(() => {
+    setSidebarContent(<div></div>);
+    return () => setSidebarContent(null); // Cleanup sidebar content on unmount
+  }, [setSidebarContent]);
 
   useEffect(() => {
     if (!user) {
@@ -54,9 +62,9 @@ const Index = () => {
       } else {
         setSelectedDesign(null);
       }
-      alert("Design deleted successfully!");
+      toast.success("Design deleted successfully!");
     } else {
-      alert("Failed to delete design.");
+      toast.error("Failed to delete design.");
     }
   };
 
@@ -92,7 +100,7 @@ const Index = () => {
   }, [selectedDesign]);
 
   return (
-    <div className="flex flex-col gap-y-8 p-4">
+    <div className="flex flex-col gap-y-8 p-1">
       <DesignPreview design={selectedDesign} />
       <KeyboardCarousel
         designs={designs}
