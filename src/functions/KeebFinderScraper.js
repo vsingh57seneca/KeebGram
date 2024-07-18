@@ -1,6 +1,6 @@
 import axios from "axios";
 import cheerio from "cheerio";
-import { API_URL } from "../../config";
+import { API_URL, DEBUG } from "../../config";
 
 module.exports = {
   query: async (alpha = null, modifier = null, accent = null, legend = null, products, setProducts) => {
