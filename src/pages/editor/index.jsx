@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { useAtom } from "jotai";
 import { userAtom } from "../../../store";
 import { getDesignsByUserId, deleteDesign } from "../../functions/Designs";
-import { Keyboard, Colors } from "@/components/keyboard";
 import DesignPreview from "@/components/editor/DesignPreview";
 import KeyboardCarousel from "@/components/keyboard/KeyboardCarousel";
 
@@ -12,7 +11,6 @@ const Index = () => {
   const [user, setUser] = useAtom(userAtom);
   const [designs, setDesigns] = useState([]);
   const [selectedDesign, setSelectedDesign] = useState(null);
-  const observers = useRef([]);
 
   useEffect(() => {
     if (!user) {
@@ -39,34 +37,6 @@ const Index = () => {
         });
     }
   }, [user]);
-
-  useEffect(() => {
-    observers.current.forEach((observer) => observer.disconnect());
-    observers.current = [];
-
-    const handleIntersection = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const designIndex = entry.target.getAttribute("data-index");
-          setSelectedDesign(designs[designIndex]);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(handleIntersection, {
-      threshold: 0.5,
-    });
-
-    const designElements = document.querySelectorAll(".carousel-item");
-    designElements.forEach((element) => {
-      observer.observe(element);
-      observers.current.push(observer);
-    });
-
-    return () => {
-      observers.current.forEach((observer) => observer.disconnect());
-    };
-  }, [designs]);
 
   const handleSelect = (design) => {
     setSelectedDesign(design);
@@ -97,21 +67,42 @@ const Index = () => {
     });
   };
 
+  const handleLeft = () => {
+    if (selectedDesign) {
+      const currentIndex = designs.findIndex(
+        (design) => design.design_id === selectedDesign.design_id
+      );
+      const newIndex = (currentIndex - 1 + designs.length) % designs.length;
+      setSelectedDesign(designs[newIndex]);
+    }
+  };
+
+  const handleRight = () => {
+    if (selectedDesign) {
+      const currentIndex = designs.findIndex(
+        (design) => design.design_id === selectedDesign.design_id
+      );
+      const newIndex = (currentIndex + 1) % designs.length;
+      setSelectedDesign(designs[newIndex]);
+    }
+  };
+
   useEffect(() => {
     console.log(selectedDesign);
   }, [selectedDesign]);
 
   return (
-    <div className="flex flex-col w-full p-4">
-      <button
-        className="btn btn-sm btn-success text-white w-fit"
-        onClick={() => router.push("/editor/create")}
-      >
-        Create
-      </button>
-        <DesignPreview  design={selectedDesign} onDelete={handleDelete} onEdit={handleEdit} />
-
-        <KeyboardCarousel designs={designs} onSelect={handleSelect} />
+    <div className="flex flex-col gap-y-8 p-4">
+      <DesignPreview design={selectedDesign} />
+      <KeyboardCarousel
+        designs={designs}
+        onSelect={handleSelect}
+        selectedDesign={selectedDesign}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onLeft={handleLeft}
+        onRight={handleRight}
+      />
     </div>
   );
 };

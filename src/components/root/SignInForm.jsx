@@ -4,6 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import { DEBUG, API_URL } from "../../../config";
+import socket from "../../../store";
 
 const SignInForm = () => {
   const router = useRouter();
@@ -33,6 +34,7 @@ const SignInForm = () => {
       let response = await axios.request(reqOptions);
       if (response.status === 200) {
         localStorage.setItem("user", JSON.stringify(response.data));
+
         router.push('/feed')
       }
     } catch (error) {
