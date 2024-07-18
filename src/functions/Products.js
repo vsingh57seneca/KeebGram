@@ -102,6 +102,10 @@ module.exports = {
           description: product.description,
           image_data: product.image_data,
           unit_count: product.unit_count,
+          alpha: product.alpha,
+          modifier: product.modifier,
+          accent: product.accent,
+          legend: product.legend,
         },
         headers: {
           "Content-Type": "application/json",
@@ -111,6 +115,7 @@ module.exports = {
       let response = await axios.request(reqOptions);
       return response;
     } catch (error) {
+      console.log(error);
       return error;
     }
   },

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import AdminDisplay from "@/components/admin/AdminDisplay";
+import VendorInfoDisplay from "@/components/vendor/VendorInfoDisplay";
+import VendorProductsDisplay from "@/components/vendor/VendorProductsDisplay";
 import { useAtom } from "jotai";
 import { userAtom } from "../../../../store";
 import { useRouter } from "next/router";
@@ -9,7 +10,6 @@ import { useSidebar } from "@/contexts/SidebarContext";
 const index = () => {
   const [user, setUser] = useAtom(userAtom);
   const router = useRouter();
-
   const { setSidebarContent } = useSidebar();
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const index = () => {
   }, [setSidebarContent]);
 
   useEffect(() => {
-    if(user && !user?.is_admin) {
+    if(user && !user?.is_vendor) {
       toast.error("Unauthorized")
       router.push('/feed')
     }
@@ -26,7 +26,13 @@ const index = () => {
 
   return (
     <>
-        <AdminDisplay />
+    <div className="h-full">
+      <div className="grid grid-cols-1 gap-y-8 gap-x-4 p-4">
+        <h1 className="font-bold col-span-full">Dashboard</h1>
+        <VendorInfoDisplay user={user}/>
+        <VendorProductsDisplay user={user}/>
+      </div>
+    </div>
     </>
   );
 };

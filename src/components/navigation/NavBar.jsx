@@ -5,6 +5,7 @@ import {
   MdAdminPanelSettings,
   MdFavorite,
   MdKeyboardAlt,
+  MdNotifications,
 } from "react-icons/md";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -12,9 +13,16 @@ import Image from "next/image";
 import { IoLogOut } from "react-icons/io5";
 import CreatePostForm from "../posts/CreatePostForm";
 import toast from "react-hot-toast";
+import socket, { notificationsAtom } from "../../../store";
+import Notification from "@/functions/Notifications";
+import { useAtom } from "jotai";
+import { useNotification } from "@/contexts/NotificationContext";
 
 const NavBar = ({ user, posts, setPosts }) => {
   const router = useRouter();
+  const [notifications, setNotifications] = useAtom(notificationsAtom);
+  const { isNewNotification, setIsNewNotification } = useNotification() || {};
+
 
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
 
@@ -23,6 +31,48 @@ const NavBar = ({ user, posts, setPosts }) => {
       router.push("/");
     }
   }, [user]);
+
+  useEffect(() => {
+    if (user?.account_id) {
+      socket.emit("joinRoom", user.account_id);
+    }
+
+    socket.on("receive_notification", (data) => {
+      createNotification(data);
+    });
+    
+    fetchNotifications(user?.account_id);
+    // Clean up the event listener on unmount
+    return () => {
+      socket.off("receive_notification");
+    };
+
+  }, []);
+
+  const createNotification = async (data) => {
+    const response = await Notification.create(data);
+
+    if (response.status === 201) {
+      // console.log(data)
+      fetchNotifications(data?.post?.account_id)
+    }
+  };
+
+  const fetchNotifications = async (account_id) => {
+    const response = await Notification.getUserNotifications(account_id);
+
+    if (response?.status == 200) {
+      setNotifications(response?.data);
+    } else {
+      return;
+    }
+  };
+
+  useEffect(() => {
+    if (notifications.some((n) => n?.is_read?.data[0] == 0)) {
+      setIsNewNotification(true);
+    }
+  }, [notifications]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -88,6 +138,21 @@ const NavBar = ({ user, posts, setPosts }) => {
               <MdKeyboardAlt className="lg:mr-4" />
               <label className="lg:block hidden">Editor</label>
             </li>
+            <li
+              onClick={() => router.push("/notifications")}
+              className="flex items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit"
+            >
+              {isNewNotification ? (
+                <p className="lg:mr-4 text-center bg-red-400 rounded-full px-1 text-white font-semibold">
+                  {notifications &&
+                    notifications.filter((n) => n?.is_read?.data[0] == 0)
+                      .length}
+                </p>
+              ) : (
+                <MdNotifications className="lg:mr-4" />
+              )}
+              <label className="lg:block hidden">Notifications</label>
+            </li>
           </ul>
           <ul className="p-4 space-y-2 text-md">
             <li
@@ -98,6 +163,15 @@ const NavBar = ({ user, posts, setPosts }) => {
             >
               <MdAdminPanelSettings className="lg:mr-4" />
               <label className="lg:block hidden">Admin</label>
+            </li>
+            <li
+              onClick={() => router.push("/vendor/dashboard")}
+              className={`${
+                user?.is_vendor ? "flex" : "hidden"
+              } items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit`}
+            >
+              <MdAdminPanelSettings className="lg:mr-4" />
+              <label className="lg:block hidden">Vendor</label>
             </li>
             <li
               onClick={() => router.push("/account/manage")}
