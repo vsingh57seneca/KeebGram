@@ -5,18 +5,46 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import { DEBUG, API_URL } from "../../../config";
 import socket from "../../../store";
+import { GoogleLogin, googleLogout } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
+import Accounts from '@/functions/Accounts'
 
 const SignInForm = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = async () => {
+  const responseMessage = async (response) => {
+    let decoded = jwtDecode(response.credential);
+    console.log(decoded);
 
-    if(!email || !password) {
-        toast.error("All fields are required")
-        return;
-      }
+    let results = await Accounts.registerGoogleAccount(decoded);
+    
+    if(results?.status === 201) {
+      localStorage.setItem("user", JSON.stringify(results?.data));
+      router.push('/feed')
+    } 
+    else if(results?.response?.status === 409) {
+      localStorage.setItem("user", JSON.stringify(results?.response?.data));
+      router.push('/feed')
+    }
+
+
+  };
+  
+  const errorMessage = (error) => {
+    console.log(error);
+  };
+
+  const handleLogin = async () => {
+    
+  }
+
+  const handleSubmit = async () => {
+    if (!email || !password) {
+      toast.error("All fields are required");
+      return;
+    }
 
     try {
       let reqOptions = {
@@ -35,7 +63,7 @@ const SignInForm = () => {
       if (response.status === 200) {
         localStorage.setItem("user", JSON.stringify(response.data));
 
-        router.push('/feed')
+        router.push("/feed");
       }
     } catch (error) {
       toast.error(error?.response?.data);
@@ -84,6 +112,10 @@ const SignInForm = () => {
         >
           Sign-in
         </button>
+
+        <div className="mt-5">
+          <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
+        </div>
 
         <div className="divider divider-primary divider-start"></div>
         <p className="italic text-xs">Dont have an account?</p>

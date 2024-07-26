@@ -3,6 +3,7 @@ import Image from "next/image";
 import SignInForm from "@/components/root/SignInForm";
 import { motion } from "framer-motion";
 
+
 export default function Home() {
   useEffect(() => {
     localStorage.removeItem("user");
