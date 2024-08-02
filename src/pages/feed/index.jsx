@@ -6,8 +6,8 @@ import ContentDisplay from "@/components/content/ContentDisplay";
 import socket from "../../../store";
 import toast from "react-hot-toast";
 import { useSidebar } from "@/contexts/SidebarContext";
-import Account from '@/functions/Accounts'
-import Posts from '@/functions/Posts'
+import Account from "@/functions/Accounts";
+import Posts from "@/functions/Posts";
 
 const Index = () => {
   const [user, setUser] = useAtom(userAtom);
@@ -43,14 +43,19 @@ const Index = () => {
       fetchPosts();
     });
   }, []);
- 
 
   return (
     <>
-      {!user?.setup_finished ? (
-        <FinishSetup user={user} />
+      {!user?.is_verified ? (
+        <>Verify</>
       ) : (
-        <ContentDisplay posts={posts} setPosts={setPosts} />
+        <>
+          {!user?.setup_finished ? (
+            <FinishSetup user={user} />
+          ) : (
+            <ContentDisplay posts={posts} setPosts={setPosts} />
+          )}
+        </>
       )}
     </>
   );
