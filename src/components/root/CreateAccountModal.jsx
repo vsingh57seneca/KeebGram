@@ -1,20 +1,24 @@
 import React, { useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import Account from '@/functions/Accounts';
+import Account from "@/functions/Accounts";
 
 const CreateAccountModal = ({ modal_name }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async () => {
-    let results = await Account.create({email: email, password: password});
-    
+    if (email == "" || password == "") {
+      toast.error("All fields required");
+      return;
+    }
+    let results = await Account.create({ email: email, password: password });
+
     if (results.status === 201) {
-      toast.success(results.data)
+      toast.success(results?.data);
       document.getElementById(modal_name).close();
     } else {
-      toast.error(results.response.data)
+      toast.error(results?.response?.data);
     }
   };
 
@@ -66,7 +70,22 @@ const CreateAccountModal = ({ modal_name }) => {
           </form>
         </div>
       </div>
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          success: {
+            style: {
+              background: "green",
+              color: "#fff",
+            },
+          },
+          error: {
+            style: {
+              background: "red",
+              color: "#fff",
+            },
+          },
+        }}
+      />
     </dialog>
   );
 };

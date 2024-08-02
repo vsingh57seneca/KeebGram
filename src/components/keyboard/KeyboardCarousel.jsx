@@ -82,7 +82,7 @@ const KeyboardCarousel = ({
                 </button>
               </div>
 
-              <div className=" flex justify-center">
+              <div className="flex justify-center mt-4">
                 {designs &&
                   designs.map((design) => (
                     <div

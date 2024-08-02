@@ -154,4 +154,45 @@ module.exports = {
       console.error("Error deleting account:", error);
     }
   },
+
+  registerGoogleAccount: async (data) => {
+    let reqOptions = {
+      url: `${API_URL[DEBUG]}/api/accounts/registerGoogleAccount`,
+      method: "POST",
+      data: {
+        data,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      let response = await axios(reqOptions);
+      return response; // return only the data
+    } catch (error) {
+      console.error("Error updating user:", error);
+      return error;
+    }
+  },
+
+  verify: async (token) => {
+    let reqOptions = {
+      url: `${API_URL[DEBUG]}/api/accounts/verify`,
+      method: "POST",
+      data: {
+        token: token.replace('token=', ''),
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      let response = await axios(reqOptions);
+      return response;
+    } catch (error) {
+      return error;
+    }
+  },
 };
