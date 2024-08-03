@@ -2,13 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Accounts from "../../functions/Accounts";
 import Designs from "../../functions/Designs";
+import { DEBUG, API_URL } from "../../../config";
+import DesignPreview from "../editor/DesignPreview";
+import Modal from "./UserDesignModal";
+import { FaItalic } from "react-icons/fa";
+import { GoItalic } from "react-icons/go";
 
 const UserPage = () => {
   const router = useRouter();
-  const { username } = router.query; 
+  const { username } = router.query;
 
   const [user, setUser] = useState(null);
   const [designs, setDesigns] = useState([]);
+  const [selectedDesign, setSelectedDesign] = useState(null); 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,22 +25,29 @@ const UserPage = () => {
 
   const fetchUserData = async () => {
     try {
-      console.log("this is the username:" + username)
+      console.log("this is the username:" + username);
       const userData = await Accounts.getOneByUsername(username);
-   
+
       if (userData) {
-        console.log("this is the user data:" + userData)
         setUser(userData);
         const userDesigns = await Designs.getDesignsByUserId(userData.account_id);
         setDesigns(userDesigns || []);
       } else {
-        console.log("user not found")
+        console.log("user not found");
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDesignClick = (design) => {
+    setSelectedDesign(design); // Set the selected design for the modal
+  };
+
+  const handleCloseModal = () => {
+    setSelectedDesign(null); // Close the modal by clearing the selected design
   };
 
   if (loading) {
@@ -57,17 +70,18 @@ const UserPage = () => {
       </div>
 
       <div className="mt-8">
-        <h2 className="text-xl font-semibold">Designs</h2>
+        <h2 className="text-xl font-semibold">Designs created by <em>{user.display_name}</em></h2>
         <ul className="mt-4">
           {designs.length > 0 ? (
             designs.map((design) => (
-              <li key={design.design_id} className="p-2 border-b">
+              <li key={design.design_id} className="p-2 border-b border-gray-300"> {/* Added bottom border */}
                 <button
                   className="text-blue-500 hover:underline"
-                  onClick={() => console.log(`Clicked on design: ${design.design_name}`)}
+                  onClick={() => handleDesignClick(design)} // Open modal with design details
                 >
-                  {design.design_name}
+                  <strong>"{design.design_name}"</strong> - <strong>Created on: {new Date(design.created_at).toLocaleDateString()}</strong>
                 </button>
+                <DesignPreview design={design} />
               </li>
             ))
           ) : (
@@ -75,6 +89,27 @@ const UserPage = () => {
           )}
         </ul>
       </div>
+
+      {selectedDesign && (
+        <Modal onClose={handleCloseModal}>
+          <DesignPreview design={selectedDesign} />
+          <div className="mt-4">
+            <p><strong>Created At:</strong> {new Date(selectedDesign.created_at).toLocaleString()}</p>
+            <p><strong>Alpha Color:</strong> {selectedDesign.alphas_color}</p>
+            <p><strong>Modifier Color:</strong> {selectedDesign.modifiers_color}</p>
+            <p><strong>Accent Color:</strong> {selectedDesign.accents_color}</p>
+            <p><strong>Legend Color:</strong> {selectedDesign.legends_color}</p>
+          </div>
+          <div className="flex justify-end space-x-4 mt-4">
+            <button className="bg-red-500 text-white p-2 rounded" onClick={handleCloseModal}>
+              Close
+            </button>
+            <button className="bg-green-500 text-white p-2 rounded" onClick={() => console.log('Share clicked')}>
+              Share
+            </button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
