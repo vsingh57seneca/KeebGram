@@ -43,6 +43,34 @@ module.exports = {
     }
   },
 
+getOneByUsername: async (username) => {
+  if (!username) {
+    console.error("No username provided");
+    return;
+  }
+
+  console.log("In Account Functions: username=" + username)
+
+  let url = `${API_URL[DEBUG]}/api/accounts/getOneByUsername?username=${username}`;
+
+  try {
+    let response = await axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("API response:", response); // Log the entire response
+
+    if (response.status === 200) {
+      return response.data;
+    }
+  } catch (error) {
+    console.error("Error fetching user data", error.response?.data || error.message); // Log error details
+  }
+},
+
+
   getOneById: async (id) => {
     if (!id) {
       console.error("No Id provided");
