@@ -9,8 +9,12 @@ const UserWidget = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      let users = await Accounts.getAll();
-      setUsers(users);
+      try {
+        let users = await Accounts.getAll();
+        setUsers(users);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchUsers();
