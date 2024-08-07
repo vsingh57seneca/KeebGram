@@ -49,6 +49,21 @@ module.exports = {
     }
   },
 
+  getReported: async () => {
+    let url = `${API_URL[DEBUG]}/api/posts/getReported`;
+
+    try {
+      let response = await axios.get(url);
+
+      if (response.status === 200) {
+        console.log(response.data);
+        return response.data;
+      }
+    } catch (error) {
+      return error;
+    }
+  },
+
   create: async (post) => {
     console.log(post);
     try {
@@ -86,6 +101,45 @@ module.exports = {
         url: `${API_URL[DEBUG]}/api/posts/edit/${post?.post_id}`,
         method: "POST",
         data: post,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      let response = await axios.request(reqOptions);
+      return response;
+    } catch (error) {
+      return error;
+    }
+  },
+
+  setReported: async (post_id, report_id) => {
+    try {
+      let reqOptions = {
+        url: `${API_URL[DEBUG]}/api/posts/setReported/${post_id}`,
+        method: "POST",
+        data: {
+          "post_id": post_id, 
+          "report_id": report_id,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      let response = await axios.request(reqOptions);
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
+  removeReport: async (post_id) => {
+    try {
+      let reqOptions = {
+        url: `${API_URL[DEBUG]}/api/posts/removeReport`,
+        method: "POST",
+        data: {
+          post_id: post_id
+        },
         headers: {
           "Content-Type": "application/json",
         },

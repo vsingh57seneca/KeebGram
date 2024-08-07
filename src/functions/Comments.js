@@ -35,6 +35,21 @@ module.exports = {
     }
   },
 
+  getReported: async () => {
+    let url = `${API_URL[DEBUG]}/api/comments/getReported`;
+
+    try {
+      let response = await axios.get(url);
+
+      if (response.status === 200) {
+        console.log(response.data);
+        return response.data;
+      }
+    } catch (error) {
+      return error;
+    }
+  },
+
   create: async (comment) => {
     try {
       let reqOptions = {
@@ -64,6 +79,45 @@ module.exports = {
         url: `${API_URL[DEBUG]}/api/comments/edit/${comment?.comment_id}`,
         method: "POST",
         data: comment,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      let response = await axios.request(reqOptions);
+      return response;
+    } catch (error) {
+      return error;
+    }
+  },
+
+  setReported: async (comment_id, report_id) => {
+    try {
+      let reqOptions = {
+        url: `${API_URL[DEBUG]}/api/comments/setReported/${comment_id}`,
+        method: "POST",
+        data: {
+          "comment_id": comment_id, 
+          "report_id": report_id,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      let response = await axios.request(reqOptions);
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
+  removeReport: async (comment_id) => {
+    try {
+      let reqOptions = {
+        url: `${API_URL[DEBUG]}/api/comments/removeReport`,
+        method: "POST",
+        data: {
+          comment_id: comment_id
+        },
         headers: {
           "Content-Type": "application/json",
         },

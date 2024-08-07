@@ -1,9 +1,10 @@
 import { useAtom } from "jotai";
 import React, { useState, useEffect } from "react";
 import { userAtom } from "../../../store";
-import { MdOutlineEdit } from "react-icons/md";
+import { MdOutlineEdit, MdReport } from "react-icons/md";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import Like from "@/functions/Likes";
+import ReportDisplay from "@/components/reports/ReportDisplay";
 import ShowCommentsButton from "../comments/ShowCommentsButton";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
@@ -13,7 +14,9 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
   const [user, setUser] = useAtom(userAtom);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
+  const [showReportsModal, setShowReportsModal] = useState(false);
   const router = useRouter();
+
 
   const handleLikePost = async (postId, accountId, liked, setLiked) => {
     console.log(
@@ -48,12 +51,24 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
     setLikeCount(count);
   };
 
+  const handleCloseModal = () => {
+    setShowReportsModal(false);
+  };
+
   useEffect(() => {
     isPostLiked(post?.post_id, user?.account_id);
     getLikeCount(post?.post_id);
   }, [post, likeCount, user]);
 
   return (
+    <>
+    <ReportDisplay
+     onClose={handleCloseModal}
+     id={post?.post_id}
+     type={"post"}
+     setShowModal={setShowReportsModal}
+     showModal={showReportsModal} 
+     />
     <div>
       <div className="p-2 flex flex-col gap-y-4 items-end ">
         <motion.div
@@ -100,8 +115,17 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
             setShowComments={setShowComments}
           />
         </motion.div>
+        <motion.div
+          whileHover={{ rotateZ: 360, scale: 1.5 }}
+          transition={{ duration: 0.5 }}
+          className={`cursor-pointer flex hover:text-green-500 ease-in-out transition-all duration-0`}
+          onClick={() => setShowReportsModal(!showReportsModal)}
+        >
+          <MdReport className="text-red-500" size={30}/>
+        </motion.div>
       </div>
     </div>
+    </>
   );
 };
 
