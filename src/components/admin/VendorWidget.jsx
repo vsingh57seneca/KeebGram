@@ -9,8 +9,12 @@ const VendorWidget = () => {
 
   useEffect(() => {
     const fetchApplications = async () => {
-      let vendors = await Vendors.getAll();
-      setApplications(vendors);
+      try {
+        let vendors = await Vendors.getAll();
+        setApplications(vendors);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchApplications();
