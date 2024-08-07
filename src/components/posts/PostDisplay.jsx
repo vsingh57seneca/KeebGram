@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MdAccountCircle, MdImage, MdOutlineEdit } from "react-icons/md";
+import { FaShieldAlt, FaCheck } from "react-icons/fa";
+
 import Comment from "@/functions/Comments";
 import { DEBUG, API_URL } from "../../../config";
 import axios from "axios";
@@ -36,7 +38,11 @@ const PostDisplay = ({ post, owner }) => {
               />
             </button>
             <div className="flex flex-col">
-              <h1 className="font-semibold">{owner?.display_name}</h1>
+              <h1 className="font-semibold">
+                {owner?.display_name}
+                {owner?.is_admin ? <FaShieldAlt className="inline-block ml-2 text-blue-500" title="Admin" /> : null}
+                {owner?.is_vendor ? <FaCheck className="inline-block ml-2 text-green-500" title="Vendor" /> : null}
+              </h1>
               <p className="text-xs">{post?.created_at}</p>
             </div>
           </div>
