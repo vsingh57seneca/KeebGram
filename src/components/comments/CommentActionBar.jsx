@@ -42,7 +42,7 @@ const CommentActionBar = ({ comment }) => {
           className={`cursor-pointer flex hover:text-green-500 ease-in-out transition-all duration-0`}
           onClick={() => setShowReportsModal(!showReportsModal)}
         >
-          <MdReport className="text-red-500" size={30}/>
+          <MdReport className="text-red-500" size={20}/>
         </motion.div>
       </div>
     </div>

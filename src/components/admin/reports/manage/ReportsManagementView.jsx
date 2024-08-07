@@ -77,11 +77,11 @@ const ReportsManagementView = () => {
     console.log(`type: ${type}, id: ${id}`);
     try {
       if (type === 'post') {
-        await Promise.all(Posts.removeReport(id));
+        await Posts.removeReport(id);
       } else if (type === 'comment') {
-        await Promise.all(Comments.removeReport(id));
+        await Comments.removeReport(id);
       }
-      updateList(type);
+      await updateList(type);
     } catch (error) {
       console.error(error);
     }
@@ -90,21 +90,22 @@ const ReportsManagementView = () => {
   const deletePostComment = async (type, id) => {
     try {
       if (type === 'post') {
-        await Promise.all(Posts.delete(id));
+        await Posts.delete(id);
       } else if (type === 'comment') {
-        await Promise.all(Comments.delete(id));
+        await Comments.delete(id);
       }
-      updateList(type);
+      await updateList(type);
     } catch (error) {
       console.error(error);
     }
   };
 
   const updateList = async (type) => {
+    console.log("Inside UpdateList");
     if (type === 'post') {
       const updatedPosts = await Posts.getReported();
       setPosts(updatedPosts);
-    } else if (type === "comment") {
+    } else if (type === 'comment') {
       const updatedComments = await Comments.getReported();
       setComments(updatedComments);
     }
@@ -164,6 +165,49 @@ const ReportsManagementView = () => {
               </tfoot>
             </table>
           </div>
+          <br />
+          <h3>Reported Comments</h3>
+          <div className="overflow-x-auto">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Owner</th>
+                  <th>Content</th>
+                  <th>Report Cause</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {comments?.length > 0 ? comments.map((comment) => (
+                  <tr key={comment.comment_id}>
+                    <td>{comment.comment_id}</td>
+                    <td>{details[comment.account_id]}</td>
+                    <td>{comment.content}</td>
+                    <td>{getReportDescription(comment.is_reported)}</td>
+                    <td>
+                      <button className="btn btn-xs btn-success text-white" onClick={() => removeReport('comment', comment.comment_id)}>
+                        <IoIosAddCircleOutline />
+                      </button>
+                      <button className="btn btn-xs btn-error text-white" onClick={() => deletePostComment('comment', comment.comment_id)}>
+                        <IoMdTrash />
+                      </button>
+                    </td>
+                  </tr>
+                )) : <></>
+                }
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>ID</th>
+                  <th>Owner</th>
+                  <th>Content</th>
+                  <th>Report Cause</th>
+                  <th>Action</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
         </>
       ) : (
         <div className="absolute top-0 left-0 bg-black/70 w-full flex h-full justify-center items-center">
@@ -188,48 +232,6 @@ const ReportsManagementView = () => {
         </div>
       )}
       <br />
-      <h3>Reported Comments</h3>
-      <div className="overflow-x-auto">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Owner</th>
-              <th>Content</th>
-              <th>Report Cause</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {comments?.length > 0 ? comments.map((comment) => (
-              <tr key={comment.comment_id}>
-                <td>{comment.comment_id}</td>
-                <td>{details[comment.account_id]}</td>
-                <td>{comment.content}</td>
-                <td>{getReportDescription(comment.is_reported)}</td>
-                <td>
-                  <button className="btn btn-xs btn-success text-white" onClick={() => removeReport('comment', comment.comment_id)}>
-                    <IoIosAddCircleOutline />
-                  </button>
-                  <button className="btn btn-xs btn-error text-white" onClick={() => deletePostComment('comment', comment.comment_id)}>
-                    <IoMdTrash />
-                  </button>
-                </td>
-              </tr>
-            )) : <></>
-            }
-          </tbody>
-          <tfoot>
-            <tr>
-              <th>ID</th>
-              <th>Owner</th>
-              <th>Content</th>
-              <th>Report Cause</th>
-              <th>Action</th>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
     </>
   );
 };
