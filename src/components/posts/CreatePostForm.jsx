@@ -6,6 +6,7 @@ import socket from "../../../store";
 import { DEBUG, API_URL } from "../../../config";
 import Designs from "@/functions/Designs";
 import { Keyboard, Colors } from "../keyboard";
+import { useRouter } from "next/router";
 
 const CreatePostForm = ({
   showModal,
@@ -13,7 +14,9 @@ const CreatePostForm = ({
   onClose,
   user,
   setPosts,
+  initialDesign = null  // if design is shared from other user profile
 }) => {
+  const router = useRouter();
   const MAX_CHAR = 140;
   const [message, setMessage] = useState("");
   const [imageURL, setImageURL] = useState(null);
@@ -21,6 +24,13 @@ const CreatePostForm = ({
   const [uploadType, setUploadType] = useState("image");
   const [designs, setDesigns] = useState([]);
   const [selectedDesign, setSelectedDesign] = useState(null);
+
+  useEffect(() => {
+    if (initialDesign) {
+        setSelectedDesign(initialDesign);
+        setUploadType("keyboard")
+    }
+  }, [initialDesign]);
 
   const onCreate = async () => {
     let nextPostId = await Posts.next();
@@ -62,7 +72,11 @@ const CreatePostForm = ({
       setSelectedDesign(null);
       setMessage("");
       socket.emit("post_created");
+
+      setShowModal(false);
       onClose();
+      router.push('/feed');
+
     } else {
       toast.error("Failed to create post.");
       console.error(results);
