@@ -29,12 +29,17 @@ module.exports = {
 
             let url = `${API_URL[DEBUG]}/api/notifications/getUserNotifications?account_id=${account_id}`;
 
+            console.log(account)
             let response = await axios.get(url, {
                 headers: {
                     "Content-Type": "application/json"
                 }
             });
-            return response;
+            if(response.status === 404) {
+                return null
+            } else {
+                return response;
+            }
         } catch (error) {
             return error
         }
