@@ -8,7 +8,7 @@ const VendorProductsDisplay = ({ products, storeUrl }) => {
         {products.map((product) => (
           <div key={product.product_id} className="p-4 bg-white rounded-lg shadow-sm">
             <img
-              src={product.image_data || "/placeholder-image.png"} // Assuming product has image_data
+              src={product.image_data || "/placeholder-image.png"} 
               alt={product.name}
               className="w-full h-32 object-cover rounded-lg"
             />
@@ -17,7 +17,7 @@ const VendorProductsDisplay = ({ products, storeUrl }) => {
             <p className="font-bold text-gray-800">${product.price}</p>
             {storeUrl && (
               <button
-                onClick={() => window.open(storeUrl, "_blank")} // Use storeUrl from prop
+                onClick={() => window.open(storeUrl, "_blank")} 
                 className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
               >
                 View in store
