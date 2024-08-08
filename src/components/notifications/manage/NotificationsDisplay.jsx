@@ -16,6 +16,8 @@ const NotificationsDisplay = ({ notifications, setNotifications, user }) => {
         if(response?.status === 200) {
             setIsNewNotification(false);
             fetchNotifications(account_id);
+        } else if (response?.response?.status === 404) {
+          toast.error(response?.response.data?.message)
         }
     }
 

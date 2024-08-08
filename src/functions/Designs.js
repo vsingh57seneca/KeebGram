@@ -31,6 +31,24 @@ module.exports = {
         }
     },
 
+    getDesignById: async (design_id) => {
+        if(!design_id) {
+            console.error("No Design Id provided")
+            return;
+        }
+
+        let url = `${API_URL[DEBUG]}/api/designs/getById?design_id=${design_id}`;
+
+        try {
+            let response = await axios.get(url);
+            if(response.status === 200) {
+                return response.data
+            }
+        } catch (error) {
+            console.error("Error fetching design", error);
+        }
+    },
+
     createDesign: async (design) => {
         let url = `${API_URL[DEBUG]}/api/designs/create`;
         try {

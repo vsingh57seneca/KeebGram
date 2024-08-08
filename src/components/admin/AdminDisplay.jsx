@@ -2,6 +2,7 @@ import React from "react";
 import UserWidget from "./UserWidget";
 import VendorWidget from "./VendorWidget";
 import PostsWidget from "./PostsWidget";
+import ReportsWidget from "./ReportsWidget";
 
 const AdminDisplay = () => {
   return (
@@ -16,6 +17,9 @@ const AdminDisplay = () => {
         </div>
         <div className="col-span-full">
           <PostsWidget />
+        </div>
+        <div className="col-span-full">
+          <ReportsWidget />
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import Accounts from "@/functions/Accounts";
 import Comment from "@/functions/Comments";
 import PostActionBar from "../posts/PostActionBar";
 import CommentsDisplay from "../comments/CommentsDisplay";
+import { DEBUG, API_URL } from "../../../config";
 
 const ContentDisplay = ({ posts, setPosts }) => {
   const [postDetails, setPostDetails] = useState([]);
@@ -13,6 +14,10 @@ const ContentDisplay = ({ posts, setPosts }) => {
       const details = await Promise.all(
         posts.map(async (post) => {
           const account = await Accounts.getOneById(post?.account_id);
+          // const account = await fetch(
+          //     `${API_URL[DEBUG]}/api/accounts/getUserDetailsById?id=${post.account_id}`
+          // ).then((response) => response.json());
+
           return { ...post, account };
         })
       );
