@@ -1,27 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { MdAccountCircle, MdImage, MdOutlineEdit } from "react-icons/md";
-import Comment from "@/functions/Comments";
-import { DEBUG, API_URL } from "../../../config";
-import axios from "axios";
-import CommentsDisplay from "../comments/CommentsDisplay";
-import CreateComment from "../comments/CreateComment";
-import socket, { postsAtom, userAtom } from "../../../store";
-import { useAtom } from "jotai";
-import { GoHeart, GoHeartFill } from "react-icons/go";
-import EditPostForm from "./EditPostForm";
-import PostActionBar from "./PostActionBar";
+import { FaShieldAlt, FaCheck } from "react-icons/fa";
 import { useRouter } from "next/router";
-
+import Image from "next/image";
+import { DEBUG, API_URL } from "../../../config";
+import CommentsDisplay from "../comments/CommentsDisplay";
+import Designs from "@/functions/Designs";
+import PostActionBar from "./PostActionBar";
+import { Colors, Key, Keyboard } from "../keyboard";
 
 const PostDisplay = ({ post, owner }) => {
   const [showComments, setShowComments] = useState(false);
   const router = useRouter();
+  const [design, setDesign] = useState([]);
 
   const handleAvatarClick = () => {
     // Navigate to the user's profile page using their username
-    console.log(owner)
+    console.log(owner);
     router.push(`/account/${owner.display_name}`);
   };
+
+  const fetchDesign = async () => {
+    if (post?.design_id != null) {
+      const results = await Designs.getDesignById(post?.design_id);
+      setDesign(results[0]);
+    }
+  };
+
+  useEffect(() => {
+    if (post?.design_id) {
+      fetchDesign(post?.design_id);
+    }
+  }, []);
 
   return (
     <div className="flex w-full justify-between border">
@@ -36,7 +45,21 @@ const PostDisplay = ({ post, owner }) => {
               />
             </button>
             <div className="flex flex-col">
-              <h1 className="font-semibold">{owner?.display_name}</h1>
+              <h1 className="font-semibold">
+                {owner?.display_name}
+                {owner?.is_admin && (
+                  <FaShieldAlt
+                    className="inline-block ml-2 text-blue-500"
+                    title="Admin"
+                  />
+                )}
+                {owner?.is_vendor && (
+                  <FaCheck
+                    className="inline-block ml-2 text-green-500"
+                    title="Vendor"
+                  />
+                )}
+              </h1>
               <p className="text-xs">{post?.created_at}</p>
             </div>
           </div>
@@ -44,11 +67,25 @@ const PostDisplay = ({ post, owner }) => {
             <p>{post?.content_text}</p>
             <div className="overflow-hidden overflow-y-auto no-scrollbar">
               {post?.content_image && (
-                <img
+                <Image
                   className="rounded-lg max-w-[80%]"
-                  src={post?.content_image}
+                  src={post.content_image}
                   alt="Post Content"
+                  layout="responsive"
+                  width={700} // Adjust width to match your image's aspect ratio
+                  height={475} // Adjust height to match your image's aspect ratio
                 />
+              )}
+              {post?.design_id && (
+                <>
+                  <h1 className="text-lg font-bold">{design?.design_name}</h1>
+                  <Keyboard
+                    accentColor={Colors[design?.accents_color]}
+                    alphaColor={Colors[design?.alphas_color]}
+                    legendColor={Colors[design?.legends_color]}
+                    modifierColor={Colors[design?.modifiers_color]}
+                  />
+                </>
               )}
             </div>
           </div>
@@ -61,7 +98,7 @@ const PostDisplay = ({ post, owner }) => {
           )}
         </div>
       </div>
-      <div className="">
+      <div>
         <PostActionBar
           post={post}
           setShowComments={setShowComments}

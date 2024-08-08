@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { postsAtom, userAtom } from "../../../store";
 import FinishSetup from "@/components/feed/FinishSetup";
@@ -9,9 +9,20 @@ import { useSidebar } from "@/contexts/SidebarContext";
 import Account from "@/functions/Accounts";
 import Posts from "@/functions/Posts";
 
+const VerificationModal = () => (
+  <div className="modal modal-open">
+    <div className="modal-box" style={{ backgroundColor: "white", color: "black" }}>
+      <h3 className="font-bold text-lg">Verification Required!</h3>
+      <p className="py-4">Your account must be verified to continue.</p>
+      <p className="py-4">Please verify your account by following the instructions sent to your email.</p>
+    </div>
+  </div>
+);
+
 const Index = () => {
   const [user, setUser] = useAtom(userAtom);
   const [posts, setPosts] = useAtom(postsAtom);
+  const [loading, setLoading] = useState(true);
   const { setSidebarContent } = useSidebar();
 
   useEffect(() => {
@@ -33,21 +44,33 @@ const Index = () => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     setUser(storedUser);
     if (storedUser && storedUser.email) {
-      Account.getOne(storedUser.email);
+      Account.getOne(storedUser.email).then(() => {
+        fetchPosts().then(() => {
+          setLoading(false);
+        });
+      });
+    } else {
+      setLoading(false);
     }
-    fetchPosts();
   }, [setUser, setPosts]);
 
   useEffect(() => {
     socket.on("refresh_posts", () => {
       fetchPosts();
     });
+    return () => {
+      socket.off("refresh_posts");
+    };
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
       {!user?.is_verified ? (
-        <>Verify</>
+        <VerificationModal />
       ) : (
         <>
           {!user?.setup_finished ? (

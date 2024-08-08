@@ -79,6 +79,7 @@ module.exports = {
           content_text: post.content_text,
           content_image: post.content_image,
           created_at: post.created_at,
+          design_id: post.design_id
         },
         headers: {
           "Content-Type": "application/json",
