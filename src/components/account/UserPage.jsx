@@ -9,12 +9,15 @@ import DesignPreview from "../editor/DesignPreview";
 import Modal from "./UserDesignModal";
 import VendorProductsDisplay from "../vendor/products/VendorProductsDisplay"; 
 import { useSidebar } from "@/contexts/SidebarContext"; 
+import CreatePostForm from "../posts/CreatePostForm";
+import { useAtom } from "jotai";
+import { postsAtom, userAtom } from "../../../store";
 
 const UserPage = () => {
   const router = useRouter();
   const { username } = router.query;
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);   // is the user's profile we are on
   const [designs, setDesigns] = useState([]);
   const [selectedDesign, setSelectedDesign] = useState(null);
   const [vendorProducts, setVendorProducts] = useState([]);
@@ -22,6 +25,15 @@ const UserPage = () => {
   const [loading, setLoading] = useState(true);
 
   const { setSidebarContent } = useSidebar(); 
+
+  const [showPostForm, setShowPostForm] = useState(false);
+  const [, setPosts] = useAtom(postsAtom);
+  const [loggedInUser, ] = useAtom(userAtom)    // currently logged in user
+
+  const handleShareDesign = (design) => {
+    setSelectedDesign(design);
+    setShowPostForm(true);
+  };
 
   useEffect(() => {
     if (username) {
@@ -123,11 +135,22 @@ const UserPage = () => {
               <button className="bg-red-500 text-white p-2 rounded" onClick={handleCloseModal}>
                 Close
               </button>
-              <button className="bg-green-500 text-white p-2 rounded" onClick={() => console.log('Share clicked')}>
+              <button className="bg-green-500 text-white p-2 rounded" onClick={() => handleShareDesign(selectedDesign)}>
                 Share
               </button>
             </div>
           </Modal>
+        )}
+
+        {showPostForm && (
+            <CreatePostForm
+                showModal={showPostForm}
+                setShowModal={setShowPostForm}
+                onClose={() => setShowPostForm(false)}
+                user={loggedInUser}
+                setPosts={setPosts}
+                initialDesign={selectedDesign}
+            />
         )}
       </div>
     </div>
