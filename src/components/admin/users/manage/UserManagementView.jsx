@@ -123,7 +123,11 @@ const UserManagementView = () => {
                 <div className="flex justify-between mt-4">
                   <button
                     className="btn btn-sm btn-error text-white"
-                    onClick={() => onDeleteUser(selectedUser.email)}
+                    onClick={() => {
+                      onDeleteUser(selectedUser.email);
+                      setSelectedUser({});
+                      setShowUserDetail(false)
+                    }}
                   >
                     Delete
                   </button>

@@ -66,7 +66,10 @@ const PostManagementView = () => {
       toast.error("Error deleting post");
     }
   }
-
+  
+  useEffect(() => {
+    console.log(selectedPost)
+  }, [selectedPost])
   return (
     <>
       {!showPostDetail ? (
@@ -139,7 +142,7 @@ const PostManagementView = () => {
                 <>No post selected</>
               )}
               <div className="w-full flex justify-between p-4">
-                <button className="btn btn-sm text-white btn-error ">Delete</button>
+                <button className="btn btn-sm text-white btn-error " onClick={() => {onDeletePost(selectedPost?.post?.post_id); setSelectedPost({}); setShowPostDetail(!showPostDetail)}}>Delete</button>
                 <button className="btn btn-sm text-black w-fit" onClick={() => {
                     setSelectedPost({})
                     setShowPostDetail(!showPostDetail)
