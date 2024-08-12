@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Account from '@/functions/Accounts.js'
+import Files from '@/functions/Files.js';
 
 import countryList from "../data/country_list.json";
 import genderList from "../data/gender_list.json";
 import languageList from "../data/language_list.json";
 import toast, { Toaster } from "react-hot-toast";
+import { API_URL } from "../../../config";
 
 const FinishSetup = ({ user }) => {
   const router = useRouter();
@@ -21,6 +23,9 @@ const FinishSetup = ({ user }) => {
   const [language, setLanguage] = useState("");
   const [gender, setGender] = useState("");
   const [birthdate, setBirthdate] = useState("");
+
+  const [file, setFile] = useState(null);
+  const [imageUrl, setImageURL] = useState(null);
 
   useEffect(() => {
     setCountries(countryList);
@@ -39,15 +44,34 @@ const FinishSetup = ({ user }) => {
       language: language,
       gender: gender,
       birthdate: birthdate,
-      email: user?.email
+      email: user?.email,
     };
-
+    console.log(user?.account_id)
     let response = await Account.update(updatedUser);
     console.log(response)
     toast.success(response.data)
 
     if(response.status === 200) {
       response = await Account.getOne(user?.email)
+      try {
+        // Load the file after a successful account creation
+        const response = await fetch("/images/avatar/default.jpg");
+        const blob = await response.blob();
+        const file = new File([blob], `avatar_${user?.account_id}`, { type: blob.type });
+        setFile(file);
+  
+        console.log(file)
+        // Upload the file using the create function in Files.js
+        const uploadResponse = await Files.create(file);
+
+        if (uploadResponse.status === 200) {
+          console.log("File uploaded successfully");
+        } else {
+          console.log("File upload failed");
+        }
+      } catch (error) {
+        console.error("Error loading or uploading file:", error);
+      }
       window.location.reload();
     }
     

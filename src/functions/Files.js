@@ -3,11 +3,13 @@ import { DEBUG, API_URL } from "../../config";
 
 module.exports = {
     create: async (file) => {
+        console.log(file)
         if (file) {
             const formData = new FormData();
             formData.append('image', file);
-      
+            
             try {
+                console.log(formData)
               const response = await axios.post(`${API_URL[DEBUG]}/api/images/create`, formData, {
                   headers: {
                       'Content-Type': 'multipart/form-data'

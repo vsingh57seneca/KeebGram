@@ -113,6 +113,7 @@ getOneByUsername: async (username) => {
       };
 
       let response = await axios.request(reqOptions);
+      console.log(response)
       return response;
     } catch (error) {
       return error;
@@ -132,6 +133,8 @@ getOneByUsername: async (username) => {
       return "All fields required";
     }
 
+    console.log(updatedUser);
+
     let reqOptions = {
       url: `${API_URL[DEBUG]}/api/accounts/update`,
       method: "POST",
@@ -144,6 +147,7 @@ getOneByUsername: async (username) => {
         gender: updatedUser.gender,
         language: updatedUser.language,
         email: updatedUser.email,
+        displayImage : updatedUser.displayImage
       },
       headers: {
         "Content-Type": "application/json",

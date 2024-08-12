@@ -19,8 +19,8 @@ const Index = () => {
   const fetchPosts = async (account_id) => {
     const postArray = await Posts.getLiked(account_id);
     if (postArray.length > 0) {
-      const reversedArray = await postArray.reverse();
-      return setPosts(reversedArray);
+      // const reversedArray = await postArray.reverse();
+      return setPosts(postArray);
     } else if (postArray?.response?.status === 404) {
       toast.error(postArray?.response?.data);
     }

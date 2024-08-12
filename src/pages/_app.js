@@ -22,6 +22,10 @@ export default function App({ Component, pageProps }) {
     setIsClient(true);
   }, []);
 
+  useEffect(() => {
+    setPosts(posts.reverse())
+  }, [posts])
+
   return (
     <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_WEB_CLIENT_KEY}>
       <SidebarProvider>

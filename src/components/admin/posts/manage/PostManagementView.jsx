@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { IoMdTrash, IoMdInformationCircleOutline } from "react-icons/io";
 import Accounts from "@/functions/Accounts";
 import PostDisplay from "@/components/posts/PostDisplay";
+import Posts from '@/functions/Posts';
 
 const PostManagementView = () => {
   const [user, setUser] = useAtom(userAtom);
@@ -54,6 +55,18 @@ const PostManagementView = () => {
     setShowPostDetail(!showPostDetail);
   };
 
+  const onDeletePost = async (post_id) => {
+    try {
+      await Posts.delete(post_id);
+      const updatedPosts = await Posts.getAll();
+      setPosts(updatedPosts);
+      toast.success("Post deleted successfully");
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      toast.error("Error deleting post");
+    }
+  }
+
   return (
     <>
       {!showPostDetail ? (
@@ -92,7 +105,7 @@ const PostManagementView = () => {
                             </button>
                           </td>
                           <td>
-                            <button className="btn btn-xs btn-error text-white">
+                            <button className="btn btn-xs btn-error text-white" onClick={() => onDeletePost(post?.post_id)}>
                               <IoMdTrash />
                             </button>
                           </td>
