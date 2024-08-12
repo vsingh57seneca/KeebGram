@@ -103,8 +103,8 @@ const UserPage = () => {
             Designs created by <em>{user.display_name}</em>
           </h2>
           <ul className="mt-4 space-y-4">
-            {designs.length > 0 ? (
-              designs.map((design) => (
+            {designs?.length > 0 ? (
+              designs?.map((design) => (
                 <li key={design.design_id} className="p-4 border border-gray-300 rounded-lg">
                   <button
                     className="text-blue-500 hover:underline"
