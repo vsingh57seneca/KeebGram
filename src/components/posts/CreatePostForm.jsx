@@ -14,6 +14,8 @@ const CreatePostForm = ({
   onClose,
   user,
   setPosts,
+  designs,
+  setDesigns,
   initialDesign = null  // if design is shared from other user profile
 }) => {
   const router = useRouter();
@@ -22,7 +24,7 @@ const CreatePostForm = ({
   const [imageURL, setImageURL] = useState(null);
   const [file, setFile] = useState(null);
   const [uploadType, setUploadType] = useState("image");
-  const [designs, setDesigns] = useState([]);
+
   const [selectedDesign, setSelectedDesign] = useState(null);
 
   useEffect(() => {
@@ -95,25 +97,6 @@ const CreatePostForm = ({
     setImageURL(null);
     setSelectedDesign(null);
   };
-
-  const fetchDesigns = async () => {
-    try {
-      const designs = await Designs.getDesignsByUserId(user?.account_id);
-      if (Array.isArray(designs)) {
-        setDesigns(designs);
-      } else {
-        console.error("Unexpected designs format", designs);
-      }
-    } catch (error) {
-      console.error("Failed to fetch designs", error);
-    }
-  };
-
-  useEffect(() => {
-    if (user?.account_id) {
-      fetchDesigns();
-    }
-  }, [user?.account_id]);
 
   useEffect(() => {
     console.log(selectedDesign);
@@ -199,13 +182,13 @@ const CreatePostForm = ({
                     }}
                   >
                     <option disabled selected value="">
-                      {designs.length > 0 ? (
+                      {designs?.length > 0 ? (
                         `Choose Design: (${designs.length})`
                       ) : (
                         "No designs created"
                       )}
                     </option>
-                    {designs.map((design, index) => (
+                    {designs?.map((design, index) => (
                       <option key={index} value={design.design_name}>
                         {design.design_name}
                       </option>

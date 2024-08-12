@@ -19,27 +19,22 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
 
 
   const handleLikePost = async (postId, accountId, liked, setLiked) => {
-    console.log(
-      `inside handleLikePost with post_id: ${postId} and account_id: ${accountId}`
-    );
     if (postId) {
       if (liked) {
         let response = await Like.delete(postId, accountId);
-        console.log(response);
         if (response.status === 200) {
           setLiked(false);
         }
       } else {
         let response = await Like.add(postId, accountId);
-        console.log(response);
         if (response.status === 201) {
           setLiked(true);
-
-          socket.emit('post_liked', {post: post, user: user })
+          socket.emit('post_liked', { post: { id: postId }, user: { id: accountId } });
         }
       }
     }
   };
+  
 
   const isPostLiked = async (post_id, account_id) => {
     const liked = await Like.isPostLiked(post_id, account_id);

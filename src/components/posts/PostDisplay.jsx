@@ -30,7 +30,7 @@ const PostDisplay = ({ post, owner }) => {
     if (post?.design_id) {
       fetchDesign(post?.design_id);
     }
-  }, []);
+  }, [post]);
 
   return (
     <div className="flex w-full justify-between border">

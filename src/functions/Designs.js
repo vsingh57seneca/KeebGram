@@ -28,6 +28,7 @@ module.exports = {
             }
         } catch (error) {
             console.error("Error fetching designs for user", error);
+            return error.response;
         }
     },
 

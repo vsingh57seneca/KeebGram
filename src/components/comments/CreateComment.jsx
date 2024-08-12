@@ -20,31 +20,38 @@ const CreateComment = ({ showComments, setShowComments, post, fetchComments }) =
   }, [content]);
 
   useEffect(() => {
-    socket.on("refresh_comments", () => {
-    //   console.log("Refresh comments");
-        fetchComments(post?.post_id)
-    });
-  }, [socket]);
+    const handleRefreshComments = () => {
+      fetchComments(post?.post_id);
+    };
+  
+    socket.on("refresh_comments", handleRefreshComments);
+  
+    // Clean up on unmount
+    return () => {
+      socket.off("refresh_comments", handleRefreshComments);
+    };
+  }, [socket, post?.post_id]);
+  
 
   const handleSubmit = async () => {
     const comment = {
-        post_id: post?.post_id,
-        account_id: user?.account_id,
-        content: content,
-    }
-
+      post_id: post?.post_id,
+      account_id: user?.account_id,
+      content: content,
+    };
+  
     let results = await Comment.create(comment);
-
-    if(results?.status === 201) {
-        toast.success(results?.data)
-        setContent("");
-        socket.emit('comment_created', { post: post, comment: comment, user: user });
-        fetchComments(post?.post_id);
+  
+    if (results?.status === 201) {
+      toast.success(results?.data);
+      setContent("");
+      socket.emit('comment_created', { post: post, comment: comment, user: user });
+      fetchComments(post?.post_id);
     } else {
-        toast.error(results?.response?.data)
+      toast.error(results?.response?.data);
     }
-    
-  }
+  };
+  
 
   return (
     <div className="flex flex-col gap-x-4 w-full p-2">

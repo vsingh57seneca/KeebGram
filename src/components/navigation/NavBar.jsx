@@ -17,12 +17,13 @@ import socket, { notificationsAtom } from "../../../store";
 import Notification from "@/functions/Notifications";
 import { useAtom } from "jotai";
 import { useNotification } from "@/contexts/NotificationContext";
+import Designs from '@/functions/Designs'
 
 const NavBar = ({ user, posts, setPosts }) => {
   const router = useRouter();
   const [notifications, setNotifications] = useAtom(notificationsAtom);
   const { isNewNotification, setIsNewNotification } = useNotification() || {};
-
+  const [designs, setDesigns] = useState([]);
 
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
 
@@ -84,6 +85,25 @@ const NavBar = ({ user, posts, setPosts }) => {
     setShowCreatePostModal(false);
   };
 
+  const fetchDesigns = async () => {
+    try {
+      const designs = await Designs.getDesignsByUserId(user?.account_id);
+      if (Array.isArray(designs)) {
+        setDesigns(designs);
+      } else if (designs?.status === 404) {
+        // console.error("Unexpected designs format", designs);
+        setDesigns([])
+      }
+    } catch (error) {
+      console.error("Failed to fetch designs", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDesigns(user?.account_id)
+    console.log(designs)
+  }, [showCreatePostModal])
+
   return (
     <>
       <CreatePostForm
@@ -93,6 +113,7 @@ const NavBar = ({ user, posts, setPosts }) => {
         setShowModal={setShowCreatePostModal}
         showModal={showCreatePostModal}
         user={user}
+        designs={designs}
       />
       <div className="md:block hidden">
         <ul className="hidden md:flex flex-col justify-between h-full w-full select-none p-2">

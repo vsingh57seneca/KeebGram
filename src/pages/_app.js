@@ -23,7 +23,14 @@ export default function App({ Component, pageProps }) {
   }, []);
 
   useEffect(() => {
-    setPosts(posts.reverse())
+    setPosts(posts?.reverse())
+
+    if (posts?.length > 0) {
+      if(posts[0]?.post_id < posts[posts.length - 1]?.post_id)
+        {
+          setPosts(posts?.reverse())
+        }
+    }
   }, [posts])
 
   return (
