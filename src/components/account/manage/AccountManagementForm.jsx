@@ -47,7 +47,7 @@ const AccountManagementForm = ({ user }) => {
       setCountry(user.country || "");
       setGender(user.gender || "");
       setEmail(user.email || "");
-      setDisplayImage(`${API_URL[DEBUG]}/images/avatar_${user.account_id}.jpg`);
+      setDisplayImage(`${API_URL[0]}/images/avatar_${user.account_id}.jpg`);
     }
   }, [user]);
 
