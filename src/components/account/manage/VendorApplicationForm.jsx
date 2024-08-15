@@ -89,7 +89,7 @@ const VendorApplicationForm = () => {
   };
 
   return (
-    <>
+    <div className="p-4">
       <h1 className="font-bold mb-10">Apply to be a vendor</h1>
       <div className="flex flex-col gap-y-4">
         <form ref={formRef} className="flex flex-col" onSubmit={handleSubmit}>
@@ -190,7 +190,7 @@ const VendorApplicationForm = () => {
           <div className="col-span-2 md:col-span-1 space-y-2">
             <button
               onClick={handleCancel}
-              className="btn btn-xs  text-white w-full"
+              className="btn btn-sm btn-error border-none text-white w-full"
             >
               Cancel
             </button>
@@ -198,14 +198,14 @@ const VendorApplicationForm = () => {
           <div className="col-span-2 md:col-span-1 space-y-2">
             <button
               onClick={handleSubmit}
-              className="btn btn-xs btn-success text-white w-full"
+              className="btn btn-sm btn-success text-white w-full"
             >
               Submit Application
             </button>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

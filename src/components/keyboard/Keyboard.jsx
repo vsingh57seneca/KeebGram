@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import KeyRow from "./KeyRow";
 import { useRouter } from "next/router";
 
@@ -10,9 +10,12 @@ const Keyboard = ({
   accentColor,
   legendColor,
   scale = "100",
-  select = true
+  select = true,
+  allowHover = true
 }) => {
   const router = useRouter();
+  const [onHover, setOnHover] = useState(false);
+
   const layouts = {
     default: [
       "{esc} {empty} F1 F2 F3 F4 {empty} F5 F6 F7 F8 {empty} F9 F10 F11 F12",
@@ -32,7 +35,15 @@ const Keyboard = ({
   };
 
   return (
-    <div id="keyboard" className={`border-2 p-1 bg-black drop-shadow-lg ${select === false && 'pointer-events-none'} scale-${scale}`} onClick={() => router.push(`/design/${id}`)}>
+    <div
+      id="keyboard"
+      className={`relative z-0 border-2 p-1 bg-black drop-shadow-lg ${
+        select === false && "pointer-events-none"
+      } scale-${scale}`}
+      onClick={() => router.push(`/design/${id}`)}
+      onMouseEnter={() => setOnHover(true)}
+      onMouseLeave={() => setOnHover(false)}
+    >
       {layouts[layout].map((row, index) => (
         <KeyRow
           key={index}
@@ -43,6 +54,12 @@ const Keyboard = ({
           legendColor={legendColor}
         />
       ))}
+
+      {onHover && allowHover && (
+        <div className="absolute inset-0 bg-black/40 z-20 w-full h-full">
+          <div className="flex text-white text-lg items-center justify-center h-full font-semibold">Click to view details</div>
+        </div>
+      )}
     </div>
   );
 };

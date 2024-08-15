@@ -28,7 +28,7 @@ const KeyboardCarousel = ({
           Create
         </button>
         <button
-          className="btn btn-sm btn-primary"
+          className="btn btn-sm btn-info text-white"
           onClick={(e) => {
             e.stopPropagation();
             onEdit(selectedDesign);
@@ -37,7 +37,7 @@ const KeyboardCarousel = ({
           Edit
         </button>
         <button
-          className="btn btn-sm btn-danger"
+          className="btn btn-sm btn-error text-white"
           onClick={(e) => {
             e.stopPropagation();
             onDelete(selectedDesign.design_id);

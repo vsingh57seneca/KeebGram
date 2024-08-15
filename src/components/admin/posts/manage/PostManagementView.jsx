@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { IoMdTrash, IoMdInformationCircleOutline } from "react-icons/io";
 import Accounts from "@/functions/Accounts";
 import PostDisplay from "@/components/posts/PostDisplay";
-import Posts from '@/functions/Posts';
+import Posts from "@/functions/Posts";
 
 const PostManagementView = () => {
   const [user, setUser] = useAtom(userAtom);
@@ -65,11 +65,11 @@ const PostManagementView = () => {
       console.error("Error deleting post:", error);
       toast.error("Error deleting post");
     }
-  }
-  
+  };
+
   useEffect(() => {
-    console.log(selectedPost)
-  }, [selectedPost])
+    console.log(selectedPost);
+  }, [selectedPost]);
   return (
     <>
       {!showPostDetail ? (
@@ -108,7 +108,10 @@ const PostManagementView = () => {
                             </button>
                           </td>
                           <td>
-                            <button className="btn btn-xs btn-error text-white" onClick={() => onDeletePost(post?.post_id)}>
+                            <button
+                              className="btn btn-xs btn-error text-white"
+                              onClick={() => onDeletePost(post?.post_id)}
+                            >
                               <IoMdTrash />
                             </button>
                           </td>
@@ -142,11 +145,23 @@ const PostManagementView = () => {
                 <>No post selected</>
               )}
               <div className="w-full flex justify-between p-4">
-                <button className="btn btn-sm text-white btn-error " onClick={() => {onDeletePost(selectedPost?.post?.post_id); setSelectedPost({}); setShowPostDetail(!showPostDetail)}}>Delete</button>
-                <button className="btn btn-sm text-black w-fit" onClick={() => {
-                    setSelectedPost({})
-                    setShowPostDetail(!showPostDetail)
-                }}>
+                {/* <button
+                  className="btn btn-sm text-white bg-red-700 hover:bg-red-900 "
+                  onClick={() => {
+                    onDeletePost(selectedPost?.post?.post_id);
+                    setSelectedPost({});
+                    setShowPostDetail(!showPostDetail);
+                  }}
+                >
+                  Delete
+                </button> */}
+                <button
+                  className="btn btn-sm text-white btn-info w-full"
+                  onClick={() => {
+                    setSelectedPost({});
+                    setShowPostDetail(!showPostDetail);
+                  }}
+                >
                   Close
                 </button>
               </div>

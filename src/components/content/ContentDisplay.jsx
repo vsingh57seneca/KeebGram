@@ -32,7 +32,7 @@ const ContentDisplay = ({ posts, setPosts }) => {
 
   return (
     <>
-      <div className="h-full">
+      <div className="h-full w-full">
         {posts == undefined || posts?.length < 1 ? (
           <div className="flex items-center justify-center h-full">
             No Posts Available

@@ -40,9 +40,12 @@ const Index = () => {
   }, [socket]);
 
   return (
-    <>
-    <ContentDisplay posts={posts} setPosts={setPosts} />
-    </>
+    <div className="h-full">
+      <h1 className="p-4 font-bold">Favorites</h1>
+      <div className="flex items-center h-full w-full">
+        <ContentDisplay posts={posts} setPosts={setPosts} />
+      </div>
+    </div>
   );
 };
 

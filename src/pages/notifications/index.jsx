@@ -28,7 +28,7 @@ const index = () => {
       }, [setUser])
   
     return (
-    <div>{!user ? <p>Loading...</p> : <NotificationsDisplay notifications={notifications} setNotifications={setNotifications} user={user} /> }</div>
+    <div className='h-full'>{!user ? <p>Loading...</p> : <NotificationsDisplay notifications={notifications} setNotifications={setNotifications} user={user} /> }</div>
   )
 }
 

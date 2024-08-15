@@ -100,7 +100,8 @@ const Index = () => {
   }, [selectedDesign]);
 
   return (
-    <div className="flex flex-col gap-y-8 p-1">
+    <div className="flex flex-col gap-y-2 p-4">
+      <h1 className="font-bold">Editor</h1>
       <DesignPreview design={selectedDesign} />
       <KeyboardCarousel
         designs={designs}

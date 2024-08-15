@@ -7,11 +7,13 @@ import CommentsDisplay from "../comments/CommentsDisplay";
 import Designs from "@/functions/Designs";
 import PostActionBar from "./PostActionBar";
 import { Colors, Key, Keyboard } from "../keyboard";
+import Accounts from '@/functions/Accounts'
 
 const PostDisplay = ({ post, owner }) => {
   const [showComments, setShowComments] = useState(false);
   const router = useRouter();
   const [design, setDesign] = useState([]);
+  const [postOwner, setPostOwner] = useState({});
 
   const handleAvatarClick = () => {
     // Navigate to the user's profile page using their username
@@ -26,12 +28,23 @@ const PostDisplay = ({ post, owner }) => {
     }
   };
 
+  const fetchOwner = async (owner) => {
+    if(owner) {
+      let results = await Accounts.getOneByUsername(owner);
+      setPostOwner(results);
+    }
+  };
+
   useEffect(() => {
     if (post?.design_id) {
       fetchDesign(post?.design_id);
     }
   }, [post]);
 
+  useEffect(() => {
+    fetchOwner(owner);
+  }, [owner])
+  
   return (
     <div className="flex w-full justify-between border">
       <div className="w-full">
@@ -39,7 +52,7 @@ const PostDisplay = ({ post, owner }) => {
           <div className="flex items-center gap-x-4 p-2 w-fit">
             <button className="focus:outline-none" onClick={handleAvatarClick}>
               <img
-                src={`${API_URL[0]}/images/avatar_${owner?.account_id}.jpg`}
+                src={`${API_URL[0]}/images/avatar_${postOwner?.account_id}.jpg`}
                 className="w-12 h-12 rounded-full object-cover"
                 alt="User Avatar"
               />

@@ -79,6 +79,7 @@ const DesignPage = () => {
         alphaColor={Colors[design?.alphas_color]}
         modifierColor={Colors[design?.modifiers_color]}
         legendColor={Colors[design?.legends_color]}
+        allowHover={false}
       />
       <h1><span className="font-semibold">Created by: </span>{owner?.display_name || "Loading..."}</h1>
 

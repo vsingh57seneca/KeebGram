@@ -121,8 +121,8 @@ const UserManagementView = () => {
                   <p><strong>Language:</strong> {selectedUser.language}</p>
                 </div>
                 <div className="flex justify-between mt-4">
-                  <button
-                    className="btn btn-sm btn-error text-white"
+                  {/* <button
+                    className="btn btn-sm bg-red-600 hover:bg-red-900 text-white"
                     onClick={() => {
                       onDeleteUser(selectedUser.email);
                       setSelectedUser({});
@@ -130,9 +130,9 @@ const UserManagementView = () => {
                     }}
                   >
                     Delete
-                  </button>
+                  </button> */}
                   <button
-                    className="btn btn-sm text-black w-fit"
+                    className="btn btn-sm text-white btn-info w-full"
                     onClick={() => setShowUserDetail(false)}
                   >
                     Close

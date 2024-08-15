@@ -46,11 +46,11 @@ const NotificationsDisplay = ({ notifications, setNotifications, user }) => {
       }
 
   return (
-    <div className="p-4 flex flex-col">
+    <div className="p-4 flex flex-col h-full">
       <h1 className=" font-bold">Notifications</h1>
 
       {notifications.length < 1 ? (
-        <p>No notifications</p>
+        <p className="flex justify-center items-center h-full">No notifications</p>
       ) : (
         <>
           {notifications &&
