@@ -106,4 +106,29 @@ module.exports = {
       return null;
     }
   },
+
+  fetchVendorProductByColors: async (design) => {
+    if(!design) {
+      console.error("No design provided");
+      return null;
+    }
+
+    let url = `${API_URL[DEBUG]}/api/vendors/fetchVendorProductByColors?alpha=${design?.alphas_color}&modifier=${design?.modifiers_color}&accent=${design?.accents_color}&legend=${design?.legends_color}`;
+
+    try {
+      let response = await axios.get(url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if(response.status === 200) {
+        return response?.data;
+      }
+    } catch (error) {
+      if (error?.response?.status === 404) {
+        return;
+      }
+    }
+  }
 };

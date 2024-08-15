@@ -42,7 +42,7 @@ const AvatarUpload = ({ user, setDisplayImage, showModal, setShowModal }) => {
   return (
     <>
       <button
-        className="btn btn-success btn-xs text-white"
+        className="btn btn-success btn-sm text-white"
         onClick={() => setShowModal(true)} // Update this line
       >
         Upload

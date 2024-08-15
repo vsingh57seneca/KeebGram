@@ -1,14 +1,18 @@
 import React from "react";
 import KeyRow from "./KeyRow";
+import { useRouter } from "next/router";
 
 const Keyboard = ({
+  id,
   layout = "default",
   alphaColor,
   modifierColor,
   accentColor,
   legendColor,
-  scale = "100"
+  scale = "100",
+  select = true
 }) => {
+  const router = useRouter();
   const layouts = {
     default: [
       "{esc} {empty} F1 F2 F3 F4 {empty} F5 F6 F7 F8 {empty} F9 F10 F11 F12",
@@ -28,7 +32,7 @@ const Keyboard = ({
   };
 
   return (
-    <div id="keyboard" className={`border-2 p-1 bg-black drop-shadow-lg scale-${scale}`}>
+    <div id="keyboard" className={`border-2 p-1 bg-black drop-shadow-lg ${select === false && 'pointer-events-none'} scale-${scale}`} onClick={() => router.push(`/design/${id}`)}>
       {layouts[layout].map((row, index) => (
         <KeyRow
           key={index}

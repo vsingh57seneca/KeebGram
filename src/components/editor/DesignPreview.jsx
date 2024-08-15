@@ -12,6 +12,7 @@ const DesignPreview = ({ design, onEdit, onDelete }) => {
   return (
     <div className="bg-gray-100 p-4 rounded-lg shadow max-w-full">
       <Keyboard
+        id={design?.design_id}
         alphaColor={Colors[design?.alphas_color]}
         modifierColor={Colors[design?.modifiers_color]}
         accentColor={Colors[design?.accents_color]}

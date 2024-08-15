@@ -29,7 +29,7 @@ const index = () => {
 
   return (
     <>
-      <AccountManagementForm user={user} />
+      <AccountManagementForm user={user} setUser={setUser} />
     </>
   );
 };

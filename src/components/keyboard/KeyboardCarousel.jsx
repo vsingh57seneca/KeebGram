@@ -48,7 +48,7 @@ const KeyboardCarousel = ({
       </div>
       <div className="flex w-full justify-center scale-75">
         {designs &&
-          designs.map((design) => (
+          designs.map((design, index) => (
             <div
               key={design.design_id}
               className={`absolute ${
@@ -66,6 +66,7 @@ const KeyboardCarousel = ({
                   <FaChevronCircleLeft size={30} />
                 </button>
                 <Keyboard
+                  id={design?.design_id}
                   alphaColor={Colors[design?.alphas_color]}
                   modifierColor={Colors[design?.modifiers_color]}
                   accentColor={Colors[design?.accents_color]}

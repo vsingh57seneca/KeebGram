@@ -49,7 +49,6 @@ const FinishSetup = ({ user }) => {
     console.log(user?.account_id)
     let response = await Account.update(updatedUser);
     console.log(response)
-    toast.success(response.data)
 
     if(response.status === 200) {
       response = await Account.getOne(user?.email)
@@ -59,8 +58,7 @@ const FinishSetup = ({ user }) => {
         const blob = await response.blob();
         const file = new File([blob], `avatar_${user?.account_id}`, { type: blob.type });
         setFile(file);
-  
-        console.log(file)
+
         // Upload the file using the create function in Files.js
         const uploadResponse = await Files.create(file);
 
@@ -73,6 +71,8 @@ const FinishSetup = ({ user }) => {
         console.error("Error loading or uploading file:", error);
       }
       window.location.reload();
+    } else if (response?.response?.status === 403) {
+      toast.error(response?.response?.data)
     }
     
   };

@@ -20,13 +20,14 @@ const EditorCreate = ({ initialData }) => {
   const [accentColor, setAccentColor] = useState("white");
   const [legendColor, setLegendColor] = useState("black");
   const [designId, setDesignId] = useState(null);
+  const [design, setDesign] = useState({})
 
   const { setSidebarContent } = useSidebar();
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    setSidebarContent(<ProductsDisplay products={products} />);
-  }, [setSidebarContent]);
+    setSidebarContent(<ProductsDisplay products={products} design={design} />);
+  }, [setSidebarContent, products, design]);
 
   useEffect(() => {
     if (initialData) {
@@ -49,10 +50,18 @@ const EditorCreate = ({ initialData }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       const fetchedProducts = await KeebFinderScraper.query(
-        !initialData ? Colors[alphaColor]?.value : Colors[initialData?.alphas_color]?.value,
-        !initialData ? Colors[modifierColor]?.value : Colors[initialData?.modifiers_color]?.value,
-        !initialData ? Colors[accentColor]?.value : Colors[initialData?.accents_color]?.value,
-        !initialData ? Colors[legendColor]?.value : Colors[initialData?.legends_color]?.value,
+        !initialData
+          ? Colors[alphaColor]?.value
+          : Colors[initialData?.alphas_color]?.value,
+        !initialData
+          ? Colors[modifierColor]?.value
+          : Colors[initialData?.modifiers_color]?.value,
+        !initialData
+          ? Colors[accentColor]?.value
+          : Colors[initialData?.accents_color]?.value,
+        !initialData
+          ? Colors[legendColor]?.value
+          : Colors[initialData?.legends_color]?.value,
         products,
         setProducts
       );
@@ -62,9 +71,13 @@ const EditorCreate = ({ initialData }) => {
   }, [initialData, alphaColor, modifierColor, accentColor, legendColor]);
 
   useEffect(() => {
-    console.log(products);
-    setSidebarContent(<ProductsDisplay products={products} />);
-  }, [products]);
+    setDesign({
+      alphas_color: alphaColor,
+      modifiers_color: modifierColor,
+      accents_color: accentColor,
+      legends_color: legendColor
+    })
+  }, [alphaColor, modifierColor, accentColor, legendColor])
 
   const handleCancel = () => {
     router.push("/editor");
@@ -120,13 +133,15 @@ const EditorCreate = ({ initialData }) => {
   return (
     <>
       <div className="m-2">
-        <Keyboard
-          alphaColor={Colors[alphaColor]}
-          modifierColor={Colors[modifierColor]}
-          accentColor={Colors[accentColor]}
-          legendColor={Colors[legendColor]}
-        />
-
+        <div className="select-none">
+          <Keyboard
+            alphaColor={Colors[alphaColor]}
+            modifierColor={Colors[modifierColor]}
+            accentColor={Colors[accentColor]}
+            legendColor={Colors[legendColor]}
+            select={false}
+          />
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <label className="form-control w-full max-w-xs">
             <div className="label">

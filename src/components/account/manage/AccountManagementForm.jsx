@@ -10,7 +10,7 @@ import { useAtom } from "jotai";
 import { displayImageAtom } from "../../../../store";
 import { DEBUG, API_URL } from "../../../../config";
 
-const AccountManagementForm = ({ user }) => {
+const AccountManagementForm = ({ user, setUser }) => {
   const router = useRouter();
 
   const [firstName, setFirstName] = useState("");
@@ -63,12 +63,14 @@ const AccountManagementForm = ({ user }) => {
       email: user?.email,
     });
 
-    console.log(response);
-
-    toast.success(response.data);
+    console.log(response)
 
     if (response.status === 200) {
       response = await Account.getOne(user?.email);
+      setUser(response);
+      toast.success("Account updated successfully!");
+    } else if (response?.response?.status === 403){
+      toast.error(response?.response?.data)
     }
   };
 
@@ -85,155 +87,182 @@ const AccountManagementForm = ({ user }) => {
   };
 
   return (
-    <>
-      <h1 className="font-semibold mb-10">Account Details</h1>
-      <div className="grid grid-cols-2 gap-y-4">
-        <div className="flex gap-x-4 items-center m-2 col-span-full">
-          <img
-            src={displayImage}
-            className="w-16 h-16 rounded-full object-cover"
-          />
-          <AvatarUpload
-            user={user}
-            setDisplayImage={setDisplayImage}
-            showModal={showModal}
-            setShowModal={setShowModal}
-          />
-        </div>
-        <div className="flex flex-col col-span-full">
-          <div className="font-bold">{firstName + " " + lastName}</div>
-          <div className="">{email}</div>
-        </div>
-        <div className="flex items-center">
-          <h1>Display Name</h1>
-        </div>
-        <input
-          type="text"
-          placeholder="Type here"
-          className="input input-bordered input-sm w-full bg-white border-black"
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-        />
-        <div className="flex items-center">
-          <h1>Gender</h1>
-        </div>
-        <div className="dropdown">
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-sm w-full bg-white text-black hover:bg-white"
-          >
-            {gender ? gender : "Select Gender"}
+    <div className="h-full">
+      <div className="grid grid-cols-1 gap-y-8 gap-x-4 p-4">
+        <h1 className="font-bold col-span-full">Account Management</h1>
+
+        <div className="flex flex-col gap-y-6 gap-x-4 items-center justify-between col-span-full">
+          <div className="border rounded-lg p-4 w-full flex items-center justify-between">
+            <div className="flex gap-x-4 items-center">
+              <img
+                src={displayImage}
+                className="w-16 h-16 rounded-full object-cover"
+              />
+              <AvatarUpload
+                user={user}
+                setDisplayImage={setDisplayImage}
+                showModal={showModal}
+                setShowModal={setShowModal}
+              />
+            </div>
+            <p className="font-bold">{user?.display_name}</p>
+            <p className="font-bold">{user?.email}</p>
           </div>
-          <ul
-            tabIndex={0}
-            className="dropdown-content p-2 shadow w-full rounded-box bg-white overflow-y-auto h-fit z-10"
-          >
-            {genders.map((gend, index) => (
-              <li
-                key={index}
-                onClick={() => setGender(gend.name)}
-                className="w-full hover:bg-gray-300 rounded"
-              >
-                {gend.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="flex items-center">
-          <h1>Birthdate</h1>
-        </div>
-        <p className="border p-2 rounded w-full bg-gray-200">{birthdate}</p>
-        <div className="flex items-center">
-          <h1>Country</h1>
-        </div>
-        <div className="dropdown">
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-sm w-full bg-white text-black hover:bg-white"
-          >
-            {country ? country : "Select Country"}
-          </div>
-          <ul
-            tabIndex={0}
-            className="dropdown-content p-2 shadow w-full rounded-box bg-white overflow-y-auto h-[150px] z-10"
-          >
-            {countries.map((country, index) => (
-              <li
-                key={index}
-                onClick={() => setCountry(country.name)}
-                className="w-full hover:bg-gray-300 rounded"
-              >
-                {country.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="flex items-center">
-          <h1>Language</h1>
-        </div>
-        <div className="dropdown">
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-sm w-full bg-white text-black hover:bg-white"
-          >
-            {language ? language : "Select Language"}
-          </div>
-          <ul
-            tabIndex={0}
-            className="dropdown-content p-2 shadow w-full rounded-box bg-white overflow-y-auto h-[150px]"
-          >
-            {languages.map((lang, index) => (
-              <li
-                key={index}
-                onClick={() => setLanguage(lang.name)}
-                className="w-full hover:bg-gray-300 rounded"
-              >
-                {lang.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="flex items-center">
-          <h1>Account Type</h1>
-        </div>
-        <div className="flex flex-col">
-          <div className=""> {user?.is_vendor ? "Vendor" : "Basic"}</div>
-          <div className="">
-            {!user?.is_vendor && (
-              <button
-                className="btn btn-sm"
-                onClick={() => router.push("/account/apply")}
-              >
-                Become a vendor
-              </button>
-            )}
+
+          <div className="border rounded-lg p-4 w-full flex items-center justify-between">
+            <div className="grid grid-cols-2 w-full gap-4">
+              <div className="col-span-1">
+                <div className="flex items-center">
+                  <h1 className="font-semibold">Display Name</h1>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Type here"
+                  className="input input-bordered input-sm w-full bg-white border-black"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                />
+              </div>
+              <div className="col-span-1">
+                <div className="flex items-center">
+                  <h1 className="font-semibold">Language</h1>
+                </div>
+                <div className="dropdown w-full">
+                  <div
+                    tabIndex={0}
+                    role="button"
+                    className="btn btn-sm w-full bg-white text-black hover:bg-white"
+                  >
+                    {language ? language : "Select Language"}
+                  </div>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content p-2 shadow w-full rounded-box bg-white overflow-y-auto h-[150px]"
+                  >
+                    {languages.map((lang, index) => (
+                      <li
+                        key={index}
+                        onClick={() => setLanguage(lang.name)}
+                        className="w-full hover:bg-gray-300 rounded"
+                      >
+                        {lang.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <div className="col-span-1">
+                <div className="flex items-center">
+                  <h1 className="font-semibold">Birthdate</h1>
+                </div>
+                <p className="border p-1 rounded-lg w-full bg-gray-200 select-none">
+                  {birthdate}
+                </p>
+              </div>
+              <div className="col-span-1">
+                <div className="flex items-center">
+                  <h1 className="font-semibold">Country</h1>
+                </div>
+                <div className="dropdown w-full">
+                  <div
+                    tabIndex={0}
+                    role="button"
+                    className="btn btn-sm w-full bg-white text-black hover:bg-white"
+                  >
+                    {country ? country : "Select Country"}
+                  </div>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content p-2 shadow w-full rounded-box bg-white overflow-y-auto h-[150px] z-10"
+                  >
+                    {countries.map((country, index) => (
+                      <li
+                        key={index}
+                        onClick={() => setCountry(country.name)}
+                        className="w-full hover:bg-gray-300 rounded"
+                      >
+                        {country.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <div className="col-span-1">
+                <div className="flex items-center">
+                  <h1 className="font-semibold">Gender</h1>
+                </div>
+                <div className="dropdown w-full">
+                  <div
+                    tabIndex={0}
+                    role="button"
+                    className="btn btn-sm w-full bg-white text-black hover:bg-white"
+                  >
+                    {gender ? gender : "Select Gender"}
+                  </div>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content p-2 shadow w-full rounded-box bg-white overflow-y-auto h-fit z-10"
+                  >
+                    {genders.map((gend, index) => (
+                      <li
+                        key={index}
+                        onClick={() => setGender(gend.name)}
+                        className="w-full hover:bg-gray-300 rounded"
+                      >
+                        {gend.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <div className="col-span-1">
+                <div className="flex items-center">
+                  <h1 className="font-semibold">Account Type</h1>
+                </div>
+                <div className="flex justify-between border border-black py-0.5 px-2 rounded-lg">
+                  <div className="select-none">
+                    {user?.is_vendor ? "Vendor" : "Basic"}
+                  </div>
+                  <div className="">
+                    {!user?.is_vendor && (
+                      <button
+                        className="btn btn-info text-white btn-xs"
+                        onClick={() => router.push("/account/apply")}
+                      >
+                        Become a vendor
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="col-span-2 w-full flex">
+                <div className="w-full flex gap-x-4">
+                  <button
+                    className="btn btn-sm bg-blue-500 text-white hover:bg-blue-600 border-none"
+                    onClick={handleSubmit}
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    className="btn btn-sm bg-white text-black hover:bg-gray-400 border"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </button>
+                </div>
+                <button
+                  className="btn btn-sm bg-red-700 text-white hover:bg-red-900 border-none"
+                  onClick={handleDelete}
+                >
+                  Delete Account
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div className="flex justify-between mt-4">
-        <button
-          className="btn btn-sm bg-gray-300 hover:bg-gray-400"
-          onClick={handleCancel}
-        >
-          Cancel
-        </button>
-        <button
-          className="btn btn-sm bg-red-500 text-white hover:bg-red-600"
-          onClick={handleDelete}
-        >
-          Delete Account
-        </button>
-        <button
-          className="btn btn-sm bg-blue-500 text-white hover:bg-blue-600"
-          onClick={handleSubmit}
-        >
-          Save
-        </button>
-      </div>
-    </>
+    </div>
   );
 };
 

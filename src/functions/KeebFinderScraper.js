@@ -4,6 +4,7 @@ import { API_URL, DEBUG } from "../../config";
 
 module.exports = {
   query: async (alpha = null, modifier = null, accent = null, legend = null, products, setProducts) => {
+
     try {
       const filters = {
         alpha: alpha,
@@ -39,8 +40,8 @@ module.exports = {
 
         productsList.push(product);
       })
-
       setProducts(productsList)
+      return productsList;
 
     } catch (error) {
       console.error('Error fetching the page:', error);

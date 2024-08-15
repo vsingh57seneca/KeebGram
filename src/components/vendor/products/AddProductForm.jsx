@@ -32,20 +32,6 @@ const AddProductForm = ({
       let vendor = await Vendors.getVendorByAccountId(user?.account_id);
       let vendor_id = vendor.vendor_id;
       console.log("(addprodform)vendor_id:", vendor_id);
-      if (file) {
-        let updatedFile = new File([file], `product_${nextProdId}`, {
-          type: file.type,
-          lastModified: file.lastModified,
-        });
-
-        let results = await fFile.create(updatedFile);
-        if (results.status === 200) {
-          toast.success("File uploaded successfully");
-          setShowModal(false);
-        }
-      } else {
-        console.log("No file selected");
-      }
 
       const data = {
         vendor_id: vendor_id,
@@ -65,6 +51,22 @@ const AddProductForm = ({
       let results = await Products.create(data);
 
       if (results.status === 201) {
+        console.log(file)
+        if (file) {
+          let updatedFile = new File([file], `product_${nextProdId}`, {
+            type: file.type,
+            lastModified: file.lastModified,
+          });
+  
+          let results = await fFile.create(updatedFile);
+          if (results.status === 200) {
+            toast.success("File uploaded successfully");
+            setShowModal(false);
+          }
+        } else {
+          console.log("No file selected");
+        }
+  
         toast.success("Product added successfully");
         onProductAdded(); // Call the callback
       } else {

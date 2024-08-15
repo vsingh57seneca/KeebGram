@@ -35,8 +35,11 @@ module.exports = {
         },
       });
 
+      console.log(response)
+
       if (response.status === 200) {
         localStorage.setItem("user", JSON.stringify(response.data));
+        return response.data
       }
     } catch (error) {
       console.error("Error fetching user data", error);
@@ -159,7 +162,7 @@ getOneByUsername: async (username) => {
       return response; // return only the data
     } catch (error) {
       console.error("Error updating user:", error);
-      return "Failed to update user";
+      return error
     }
   },
 
