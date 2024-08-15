@@ -67,7 +67,7 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
     <div>
       <div className="p-2 flex flex-col gap-y-4 items-end ">
         <motion.div
-          whileHover={{ rotateZ: 360, scale: 1.5 }}
+          whileHover={{ scale: 1.5 }}
           transition={{ duration: 0.5 }}
           className={`cursor-pointer flex hover:text-green-500 ease-in-out transition-all duration-0 ${
             post?.account_id != user?.account_id && "hidden"
@@ -81,7 +81,7 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
           </div>
         </motion.div>
         <motion.div
-          whileHover={{ rotateZ: 360, scale: 1.5 }}
+          whileHover={{ scale: 1.5 }}
           transition={{ duration: 0.5 }}
           className={`cursor-pointer flex hover:text-green-500 ease-in-out transition-all duration-0 items-center`}
           onClick={() =>
@@ -101,7 +101,7 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
           )}
         </motion.div>
         <motion.div
-          whileHover={{ rotateZ: 360, scale: 1.5 }}
+          whileHover={{ scale: 1.5 }}
           transition={{ duration: 0.5 }}
           className={`cursor-pointer flex hover:text-green-500 ease-in-out transition-all duration-0`}
         >
@@ -111,7 +111,7 @@ const PostActionBar = ({ post, showComments, setShowComments }) => {
           />
         </motion.div>
         <motion.div
-          whileHover={{ rotateZ: 360, scale: 1.5 }}
+          whileHover={{ scale: 1.5 }}
           transition={{ duration: 0.5 }}
           className={`cursor-pointer flex hover:text-green-500 ease-in-out transition-all duration-0`}
           onClick={() => setShowReportsModal(!showReportsModal)}

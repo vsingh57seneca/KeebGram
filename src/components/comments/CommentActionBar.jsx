@@ -37,7 +37,7 @@ const CommentActionBar = ({ comment }) => {
           />
         </div>
         <motion.div
-          whileHover={{ rotateZ: 360, scale: 1.5 }}
+          whileHover={{ scale: 1.5 }}
           transition={{ duration: 0.5 }}
           className={`cursor-pointer flex hover:text-green-500 ease-in-out transition-all duration-0`}
           onClick={() => setShowReportsModal(!showReportsModal)}
