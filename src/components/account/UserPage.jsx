@@ -93,7 +93,7 @@ const UserPage = () => {
           <img
             src={`${API_URL[0]}/images/avatar_${user.account_id}.jpg`}
             alt="User Avatar"
-            className="w-16 h-16 rounded-full"
+            className="w-16 h-16 rounded-full object-cover"
           />
           <h1 className="ml-4 text-2xl font-semibold">{user.display_name}</h1>
         </div>
