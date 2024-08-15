@@ -70,6 +70,7 @@ const PostDisplay = ({ post, owner }) => {
                 <>
                   <h1 className="text-lg font-bold">{design?.design_name}</h1>
                   <Keyboard
+                    id={design?.design_id}
                     accentColor={Colors[design?.accents_color]}
                     alphaColor={Colors[design?.alphas_color]}
                     legendColor={Colors[design?.legends_color]}

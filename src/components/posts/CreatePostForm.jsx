@@ -200,6 +200,7 @@ const CreatePostForm = ({
               <div className="flex w-full justify-center scale-50">
                 {selectedDesign && (
                   <Keyboard
+                    id={selectedDesign?.design_id}
                     accentColor={Colors[selectedDesign.accents_color]}
                     alphaColor={Colors[selectedDesign.alphas_color]}
                     legendColor={Colors[selectedDesign.legends_color]}
