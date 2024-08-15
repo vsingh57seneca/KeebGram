@@ -106,9 +106,7 @@ const ProductDetails = ({ user }) => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">
-        Product Details for: {product.name}
-      </h1>
+      <h1 className="font-bold mb-4">Product Details for: {product.name}</h1>
       {isEditing ? (
         <div>
           <label htmlFor="" className="font-semibold">
@@ -140,44 +138,78 @@ const ProductDetails = ({ user }) => {
             onChange={handleChange}
             className="block w-full p-2 mb-2 border bg-white rounded-lg"
           ></textarea>
-                    <label htmlFor="" className="font-semibold">Quantity</label>
+          <label htmlFor="" className="font-semibold">
+            Quantity
+          </label>
           <input
             type="number"
+            min={1}
             name="unit_count"
             value={formData.unit_count}
             onChange={handleChange}
             className="block w-full p-2 mb-2 border bg-white rounded-lg"
           />
-          <button onClick={handleEdit} className="btn btn-primary mr-2">
-            Save
-          </button>
-          <button
-            onClick={() => setIsEditing(false)}
-            className="btn btn-secondary"
-          >
-            Cancel
-          </button>
+          <div className="flex gap-x-4">
+            <button
+              onClick={handleEdit}
+              className="btn btn-sm btn-success text-white"
+            >
+              Save Changes
+            </button>
+            <button
+              onClick={() => setIsEditing(false)}
+              className="btn btn-sm btn-error text-white"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       ) : (
-        <div>
-          <p className="text-lg mb-2">Price: ${product.price}</p>
-          <p className="text-lg mb-2">Units Remaining: {product.unit_count}</p>
-          <p className="text-lg mb-2">Description: {product.description}</p>
-          <p>
-            Image: <img className="w-fit" src={product?.image_data} />
-          </p>
-          <button
-            onClick={() => setIsEditing(true)}
-            className="btn btn-success mr-2"
-          >
-            Edit
-          </button>
-          <button onClick={handleDelete} className="btn btn-warning mr-2">
-            Delete
-          </button>
-          <button onClick={() => router.back()} className="btn btn-dark mt-2">
-            Back
-          </button>
+        <div className="flex flex-col gap-y-4">
+          <div className="flex gap-x-4">
+            <h1 className="font-bold">Price:</h1>
+            <p className="mb-2">${product.price}</p>
+          </div>
+          <div className="flex gap-x-4">
+            <h1 className="font-bold">Quantity:</h1>
+            <p className="mb-2"> {product.unit_count} Available</p>
+          </div>
+          <div className="flex gap-x-4">
+            <h1 className="font-bold">Description:</h1>
+            <p className="mb-2">{product.description}</p>
+          </div>
+          <div className="flex gap-x-4">
+            <h1 className="font-bold">Image:</h1>
+            <img
+              className="rounded-lg"
+              width={400}
+              height={400}
+              src={product?.image_data}
+            />
+          </div>
+
+          <div className="flex gap-x-4 justify-between items-center">
+            <div className="flex gap-x-4">
+              <button
+                onClick={() => setIsEditing(true)}
+                className="btn btn-sm btn-info text-white"
+              >
+                Edit Details
+              </button>
+              <button
+                onClick={() => router.back()}
+                className="btn btn-sm bg-white text-black hover:bg-gray-300"
+              >
+                Back
+              </button>
+            </div>
+            <button
+              onClick={handleDelete}
+              className="btn btn-sm btn-error text-white"
+            >
+              Delete
+            </button>
+          </div>
         </div>
       )}
     </div>

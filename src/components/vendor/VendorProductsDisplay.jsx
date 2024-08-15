@@ -80,13 +80,12 @@ const VendorProductsDisplay = ({ user }) => {
             )}
           </div>
           <div className="mt-4">
-              <button
-                className="btn btn-sm"
+              {/* <button
+                className="btn btn-sm btn-success text-white"
                 onClick={() => setShowAddProductModal(true)}
               >
                 Add New Product
-              </button>
-            {showAddProductModal && (
+              </button> */}
               <AddProductForm
                 showModal={showAddProductModal}
                 setShowModal={setShowAddProductModal}
@@ -94,7 +93,6 @@ const VendorProductsDisplay = ({ user }) => {
                 user={user}
                 onProductAdded={handleProductAdded} // Pass the callback
               />
-            )}
           </div>
         </div>
   );

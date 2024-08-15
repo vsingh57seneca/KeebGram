@@ -28,7 +28,7 @@ const index = () => {
     <>
     <div className="h-full">
       <div className="grid grid-cols-1 gap-y-8 gap-x-4 p-4">
-        <h1 className="font-bold col-span-full">Dashboard</h1>
+        <h1 className="font-bold col-span-full">Vendor Dashboard</h1>
         <VendorInfoDisplay user={user}/>
         <VendorProductsDisplay user={user}/>
       </div>
