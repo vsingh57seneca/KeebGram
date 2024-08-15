@@ -159,7 +159,7 @@ const NavBar = ({ user, posts, setPosts }) => {
               <MdKeyboardAlt className="lg:mr-4" />
               <label className="lg:block hidden">Editor</label>
             </li>
-            <li
+            {/* <li
               onClick={() => router.push("/notifications")}
               className="flex items-center px-2 py-3 hover:bg-gray-300 rounded transition-all duration-300 ease-in-out cursor-pointer lg:w-full w-fit"
             >
@@ -173,7 +173,7 @@ const NavBar = ({ user, posts, setPosts }) => {
                 <MdNotifications className="lg:mr-4" />
               )}
               <label className="lg:block hidden">Notifications</label>
-            </li>
+            </li> */}
           </ul>
           <ul className="p-4 space-y-2 text-md">
             <li
