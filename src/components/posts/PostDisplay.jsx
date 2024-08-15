@@ -7,7 +7,7 @@ import CommentsDisplay from "../comments/CommentsDisplay";
 import Designs from "@/functions/Designs";
 import PostActionBar from "./PostActionBar";
 import { Colors, Key, Keyboard } from "../keyboard";
-import Accounts from '@/functions/Accounts'
+import Accounts from "@/functions/Accounts";
 
 const PostDisplay = ({ post, owner }) => {
   const [showComments, setShowComments] = useState(false);
@@ -29,8 +29,9 @@ const PostDisplay = ({ post, owner }) => {
   };
 
   const fetchOwner = async (owner) => {
-    if(owner) {
-      let results = await Accounts.getOneByUsername(owner);
+    if (owner) {
+      let results = await Accounts.getOneByUsername(owner?.display_name);
+      console.log(results);
       setPostOwner(results);
     }
   };
@@ -43,73 +44,97 @@ const PostDisplay = ({ post, owner }) => {
 
   useEffect(() => {
     fetchOwner(owner);
-  }, [owner])
-  
+  }, [owner]);
+
   return (
-    <div className="flex w-full justify-between border">
-      <div className="w-full">
-        <div className="flex flex-col">
-          <div className="flex items-center gap-x-4 p-2 w-fit">
-            <button className="focus:outline-none" onClick={handleAvatarClick}>
-              <img
-                src={`${API_URL[0]}/images/avatar_${postOwner?.account_id}.jpg`}
-                className="w-12 h-12 rounded-full object-cover"
-                alt="User Avatar"
-              />
-            </button>
-            <div className="flex flex-col">
-              <h1 className="font-semibold">
-                {owner?.display_name}
-                {owner?.is_admin ? <FaShieldAlt className="inline-block ml-2 text-blue-500" title="Admin" /> : null}
-                {owner?.is_vendor ? <FaCheck className="inline-block ml-2 text-green-500" title="Vendor" /> : null}
-              </h1>
-              <p className="text-xs">{post?.created_at}</p>
-            </div>
-          </div>
-          <div className="w-fit p-4 flex flex-col gap-y-4">
-            <p>{post?.content_text}</p>
-            <div className="overflow-hidden overflow-y-auto no-scrollbar">
-              {post?.content_image && (
-                <Image
-                  className="rounded-lg max-w-[80%]"
-                  src={post.content_image}
-                  alt="Post Content"
-                  layout="responsive"
-                  width={700} // Adjust width to match your image's aspect ratio
-                  height={475} // Adjust height to match your image's aspect ratio
-                />
-              )}
-              {post?.design_id && (
-                <>
-                  <h1 className="text-lg font-bold">{design?.design_name}</h1>
-                  <Keyboard
-                    id={design?.design_id}
-                    accentColor={Colors[design?.accents_color]}
-                    alphaColor={Colors[design?.alphas_color]}
-                    legendColor={Colors[design?.legends_color]}
-                    modifierColor={Colors[design?.modifiers_color]}
+    <>
+      {postOwner ? (
+        <>
+          {" "}
+          <div className="flex w-full justify-between border">
+            <div className="w-full">
+              <div className="flex flex-col">
+                <div className="flex items-center gap-x-4 p-2 w-fit">
+                  <button
+                    className="focus:outline-none"
+                    onClick={handleAvatarClick}
+                  >
+                    <img
+                      src={`${API_URL[0]}/images/avatar_${postOwner?.account_id}.jpg`}
+                      className="w-12 h-12 rounded-full object-cover"
+                      alt="User Avatar"
+                    />
+                  </button>
+                  <div className="flex flex-col">
+                    <h1 className="font-semibold">
+                      {postOwner?.display_name}
+                      {postOwner?.is_admin ? (
+                        <FaShieldAlt
+                          className="inline-block ml-2 text-blue-500"
+                          title="Admin"
+                        />
+                      ) : null}
+                      {postOwner?.is_vendor ? (
+                        <FaCheck
+                          className="inline-block ml-2 text-green-500"
+                          title="Vendor"
+                        />
+                      ) : null}
+                    </h1>
+                    <p className="text-xs">{post?.created_at}</p>
+                  </div>
+                </div>
+                <div className="w-fit p-4 flex flex-col gap-y-4">
+                  <p>{post?.content_text}</p>
+                  <div className="overflow-hidden overflow-y-auto no-scrollbar">
+                    {post?.content_image && (
+                      <Image
+                        className="rounded-lg max-w-[80%]"
+                        src={post.content_image}
+                        alt="Post Content"
+                        layout="responsive"
+                        width={700} // Adjust width to match your image's aspect ratio
+                        height={475} // Adjust height to match your image's aspect ratio
+                      />
+                    )}
+                    {post?.design_id && (
+                      <>
+                        <h1 className="text-lg font-bold">
+                          {design?.design_name}
+                        </h1>
+                        <Keyboard
+                          id={design?.design_id}
+                          accentColor={Colors[design?.accents_color]}
+                          alphaColor={Colors[design?.alphas_color]}
+                          legendColor={Colors[design?.legends_color]}
+                          modifierColor={Colors[design?.modifiers_color]}
+                        />
+                      </>
+                    )}
+                  </div>
+                </div>
+                {showComments && (
+                  <CommentsDisplay
+                    post={post}
+                    showComments={showComments}
+                    setShowComments={setShowComments}
                   />
-                </>
-              )}
+                )}
+              </div>
+            </div>
+            <div>
+              <PostActionBar
+                post={post}
+                setShowComments={setShowComments}
+                showComments={showComments}
+              />
             </div>
           </div>
-          {showComments && (
-            <CommentsDisplay
-              post={post}
-              showComments={showComments}
-              setShowComments={setShowComments}
-            />
-          )}
-        </div>
-      </div>
-      <div>
-        <PostActionBar
-          post={post}
-          setShowComments={setShowComments}
-          showComments={showComments}
-        />
-      </div>
-    </div>
+        </>
+      ) : (
+        <>Loading...</>
+      )}
+    </>
   );
 };
 
