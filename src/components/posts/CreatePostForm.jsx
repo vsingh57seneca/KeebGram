@@ -24,13 +24,12 @@ const CreatePostForm = ({
   const [imageURL, setImageURL] = useState(null);
   const [file, setFile] = useState(null);
   const [uploadType, setUploadType] = useState("image");
-
   const [selectedDesign, setSelectedDesign] = useState(null);
 
   useEffect(() => {
     if (initialDesign) {
-        setSelectedDesign(initialDesign);
-        setUploadType("keyboard")
+      setSelectedDesign(initialDesign);
+      setUploadType("keyboard");
     }
   }, [initialDesign]);
 
@@ -71,14 +70,15 @@ const CreatePostForm = ({
         setPosts(posts);
       }
       setFile(null);
+      setImageURL(null);  // Clear the image URL state
       setSelectedDesign(null);
       setMessage("");
+      setUploadType("image"); // Reset the upload type
       socket.emit("post_created");
 
       setShowModal(false);
       onClose();
       router.push('/feed');
-
     } else {
       toast.error("Failed to create post.");
       console.error(results);
@@ -87,8 +87,13 @@ const CreatePostForm = ({
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
-    setFile(selectedFile);
-    setImageURL(URL.createObjectURL(selectedFile));
+    if (selectedFile) {
+      setFile(selectedFile);
+      setImageURL(URL.createObjectURL(selectedFile));
+    } else {
+      setFile(null);
+      setImageURL(null);
+    }
   };
 
   const handleRadioChange = (event) => {

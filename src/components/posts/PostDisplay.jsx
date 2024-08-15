@@ -88,14 +88,19 @@ const PostDisplay = ({ post, owner }) => {
                   <p>{post?.content_text}</p>
                   <div className="overflow-hidden overflow-y-auto no-scrollbar">
                     {post?.content_image && (
-                      <Image
-                        className="rounded-lg max-w-[80%]"
-                        src={post.content_image}
-                        alt="Post Content"
-                        layout="responsive"
-                        width={700} // Adjust width to match your image's aspect ratio
-                        height={475} // Adjust height to match your image's aspect ratio
+                      // <Image
+                      //   className="rounded-lg max-w-[80%]"
+                      //   src={post.content_image}
+                      //   alt="Post Content"
+                      //   layout="responsive"
+                      //   width={700} // Adjust width to match your image's aspect ratio
+                      //   height={475} // Adjust height to match your image's aspect ratio
+                      //   unoptimized
+                      // />
+                      <img
+                        src={post?.content_image}
                       />
+
                     )}
                     {post?.design_id && (
                       <>
